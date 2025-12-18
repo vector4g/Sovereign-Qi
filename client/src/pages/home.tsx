@@ -47,11 +47,11 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-6xl md:text-8xl font-display font-bold mb-6 text-white leading-tight">
-              AI AS <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary neon-glow">LIBERATION</span> TECHNOLOGY
+              Simulation Before <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary neon-glow">Legislation</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light mb-10">
-              Simulation Before Legislation. Train on the struggle, not the identity.
-              Leadership without surveillance.
+              We use digital twins and zero-knowledge identity to train on the struggle, not the identity.
+              Experience leadership without surveillance, moving from AI as a tool to AI as liberation technology.
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link href={user ? "/dashboard" : "/login"}>
