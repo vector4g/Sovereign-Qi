@@ -64,7 +64,7 @@ class MockStorage {
   private listeners: (() => void)[] = [];
 
   getPilots() {
-    return [...this.pilots];
+    return this.pilots;
   }
 
   addPilot(pilot: Omit<PilotProject, "id" | "createdAt" | "status">) {
