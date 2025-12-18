@@ -1,0 +1,353 @@
+
+So now give me the code to make the mvp and also the prompts map for the website
+Here’s a concrete way to treat this as an MVP you can actually ship in a few sprints: a thin SaaS web app with (1) a “Simulation Before Legislation” intake, (2) a Synthetic Sovereignty explainer, and (3) a Qi Wallet / ZK access story landing.​
+
+Below is two things:
+
+A minimal, but real, full-stack MVP scaffold (Next.js + API + simple “simulation config” model + auth).
+
+A prompts map for the marketing site and in-product copy wired to the Sovereign Qi thesis.​
+
+MVP code scaffold
+Assumptions:
+
+Next.js 15 (or 14 App Router) + TypeScript.
+
+A simple Postgres/Supabase-style DB for “Pilot Projects” (enterprise or city).
+
+Auth via magic-link/email (e.g., Supabase auth or NextAuth with email provider).
+
+No real Omniverse or ZK yet – you treat “simulation runs” as stored configs + status for now.
+
+1. Data model (Prisma example)
+ts
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  pilots    PilotProject[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PilotType {
+  ENTERPRISE
+  CITY
+  HEALTHCARE
+}
+
+model PilotProject {
+  id                String     @id @default(cuid())
+  owner             User       @relation(fields: [ownerId], references: [id])
+  ownerId           String
+  name              String
+  type              PilotType
+  orgName           String
+  region            String
+  primaryObjective  String     // e.g. "Reduce burnout", "Lower liability"
+  majorityLogicDesc String     // how they work today
+  qiLogicDesc       String     // desired Qi-logic norms
+  status            String     @default("DRAFT") // DRAFT | CONFIGURED | RUNNING | COMPLETED
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+2. Next.js API routes for pilots
+ts
+// app/api/pilots/route.ts (Next.js App Router)
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: { pilots: true },
+  });
+
+  return NextResponse.json({ pilots: user?.pilots ?? [] });
+}
+
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json();
+  const { name, type, orgName, region, primaryObjective, majorityLogicDesc, qiLogicDesc } = body;
+
+  const user = await prisma.user.upsert({
+    where: { email: session.user.email },
+    update: {},
+    create: { email: session.user.email },
+  });
+
+  const pilot = await prisma.pilotProject.create({
+    data: {
+      name,
+      type,
+      orgName,
+      region,
+      primaryObjective,
+      majorityLogicDesc,
+      qiLogicDesc,
+      ownerId: user.id,
+    },
+  });
+
+  return NextResponse.json({ pilot }, { status: 201 });
+}
+3. Simple “Run Simulation” mock
+You can start with a fake “A vs. B” result generator that mirrors the Magnum Opus story: Scenario A (Majority Rules) vs Scenario B (Qi Logic) with delta metrics (innovation up, liability down).​
+
+ts
+// app/api/pilots/[id]/run/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const pilot = await prisma.pilotProject.findUnique({
+    where: { id: params.id },
+  });
+
+  if (!pilot) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // TODO: replace with real Omniverse integration
+  const result = {
+    scenarioA: {
+      label: "Majority Logic",
+      innovationIndex: 1.0,
+      burnoutIndex: 0.8,
+      liabilityIndex: 0.7,
+    },
+    scenarioB: {
+      label: "Qi Logic",
+      innovationIndex: 1.4, // +40%
+      burnoutIndex: 0.3,    // lower is better
+      liabilityIndex: 0.1,  // -90%
+    },
+  };
+
+  // You could persist this in a separate SimulationResult table
+  return NextResponse.json({ pilotId: pilot.id, result });
+}
+4. Basic dashboard page
+tsx
+// app/dashboard/page.tsx
+"use client";
+
+import useSWR from "swr";
+import { useState } from "react";
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
+
+export default function Dashboard() {
+  const { data, mutate } = useSWR("/api/pilots", fetcher);
+  const [form, setForm] = useState({
+    name: "",
+    type: "ENTERPRISE",
+    orgName: "",
+    region: "",
+    primaryObjective: "",
+    majorityLogicDesc: "",
+    qiLogicDesc: "",
+  });
+
+  const createPilot = async () => {
+    await fetch("/api/pilots", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    mutate();
+  };
+
+  const runSimulation = async (id: string) => {
+    const res = await fetch(`/api/pilots/${id}/run`, { method: "POST" });
+    const json = await res.json();
+    alert(
+      `Simulation for ${id}\nInnovation: +40%\nLiability: -90%\n(This is a mocked result for now.)`
+    );
+  };
+
+  return (
+    <main className="max-w-4xl mx-auto py-12">
+      <h1 className="text-3xl font-semibold mb-6">Sovereign Qi Lab</h1>
+
+      <section className="mb-10 border rounded-lg p-4">
+        <h2 className="text-xl font-medium mb-2">Configure a Pilot</h2>
+        <div className="grid gap-2">
+          <input
+            placeholder="Pilot name"
+            value={form.name}
+            onChange={e => setForm({ ...form, name: e.target.value })}
+            className="border rounded px-3 py-2"
+          />
+          <select
+            value={form.type}
+            onChange={e => setForm({ ...form, type: e.target.value })}
+            className="border rounded px-3 py-2"
+          >
+            <option value="ENTERPRISE">Enterprise</option>
+            <option value="CITY">City</option>
+            <option value="HEALTHCARE">Healthcare</option>
+          </select>
+          <input
+            placeholder="Organisation name"
+            value={form.orgName}
+            onChange={e => setForm({ ...form, orgName: e.target.value })}
+            className="border rounded px-3 py-2"
+          />
+          <input
+            placeholder="Region / jurisdiction"
+            value={form.region}
+            onChange={e => setForm({ ...form, region: e.target.value })}
+            className="border rounded px-3 py-2"
+          />
+          <input
+            placeholder="Primary objective (reduce burnout, liability, etc.)"
+            value={form.primaryObjective}
+            onChange={e => setForm({ ...form, primaryObjective: e.target.value })}
+            className="border rounded px-3 py-2"
+          />
+          <textarea
+            placeholder="How does the system work today? (Majority logic)"
+            value={form.majorityLogicDesc}
+            onChange={e =>
+              setForm({ ...form, majorityLogicDesc: e.target.value })
+            }
+            className="border rounded px-3 py-2"
+          />
+          <textarea
+            placeholder="What would Qi Logic look like here? (Dignity-first norms)"
+            value={form.qiLogicDesc}
+            onChange={e => setForm({ ...form, qiLogicDesc: e.target.value })}
+            className="border rounded px-3 py-2"
+          />
+          <button
+            onClick={createPilot}
+            className="mt-2 bg-black text-white px-4 py-2 rounded"
+          >
+            Save Pilot
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-xl font-medium mb-2">Your Pilots</h2>
+        <div className="space-y-3">
+          {data?.pilots?.map((p: any) => (
+            <div
+              key={p.id}
+              className="border rounded px-3 py-2 flex items-center justify-between"
+            >
+              <div>
+                <div className="font-medium">{p.name}</div>
+                <div className="text-sm text-gray-500">
+                  {p.orgName} · {p.type} · {p.region}
+                </div>
+              </div>
+              <button
+                onClick={() => runSimulation(p.id)}
+                className="bg-indigo-600 text-white px-3 py-1 rounded text-sm"
+              >
+                Run Qi Simulation
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+Prompts map for the website
+Below is a structured “prompt map” you can feed into your CMS / design system or use as system prompts for on-page microcopy generation. Each row = page/section → purpose → tone → example prompt for the model.​
+
+1. Home hero (Liberation-Grade AI)
+Purpose: Immediately position Sovereign Qi as “Liberation-Grade AI” and anchor the Magnum Opus language.
+
+Tone: Bold, declarative, boardroom-ready but queer-coded.
+
+Prompt:
+
+“Write a homepage hero headline and subheadline for ‘Sovereign Qi’, an AI platform that uses NVIDIA Omniverse digital twins, synthetic data, and zero-knowledge identity to move from ‘AI as a Tool’ to ‘AI as Liberation Technology’. Speak to Fortune 100 GCs, city CTOs, and queer youth at once. Emphasise ‘Simulation Before Legislation’, ‘train on the struggle, not the identity’, and ‘leadership without surveillance’. 3–5 word headline, 20–30 word subheadline.”​
+
+2. “Simulation Before Legislation” section
+Purpose: Explain the Digital Twin lab offer.
+
+Tone: Technical but accessible, evidence-driven.
+
+Prompt:
+
+“Write a section heading, 2-sentence explainer, and 3 bullet points for a website section called ‘Simulation Before Legislation’. Explain that Sovereign Qi uses NVIDIA Omniverse and Isaac Sim to build digital twins of companies and cities, then runs A/B tests: Majority Logic vs Qi Logic, measuring innovation, burnout, and liability. Make it clear we never experiment on live humans.”​
+
+3. “Synthetic Sovereignty” section
+Purpose: Explain synthetic data / anti-surveillance move.
+
+Tone: Protective, precise, anti-extractive.
+
+Prompt:
+
+“Write copy for a section titled ‘Synthetic Sovereignty’. Explain in 2–3 sentences that marginalised communities are ‘data poor’ by design, and that Sovereign Qi uses Omniverse Replicator to generate synthetic personas that model bias pathways without recording any real human interaction. Add 3 bullets that translate this into benefits: privacy, robustness, and regulatory alignment.”​
+
+4. “Zero-Knowledge Leadership” / Qi Wallet section
+Purpose: Introduce DID + ZKP and the Qi Wallet story.
+
+Tone: Cryptography-as-dignity, simple explanation.
+
+Prompt:
+
+“Write a website section titled ‘Zero-Knowledge Leadership’ describing the Qi Wallet. In 2–3 sentences, explain that DIDs, verifiable credentials, and zero-knowledge proofs let doors, services, and systems verify ‘has the right?’ without seeing who you are or logging your movements. Include the ‘Safe Office’ example where the system knows someone with permission entered, but never that ‘Levi entered at 8:02am’.”​
+
+5. “Curb Cut for Humanity” section
+Purpose: Make the “not a niche tool” argument.
+
+Tone: Inspirational, systems-thinking.
+
+Prompt:
+
+“Write a section titled ‘The Curb Cut for Humanity’. In 2–3 sentences, explain that queer-led, accessibility-first AI improves safety and clarity for everyone, the way curb cuts help wheelchairs, strollers, and luggage alike. Give 3 short bullets showing how models tuned to understand neurodivergent cues and anti-trans dog-whistles also help interpret veterans’ trauma, stroke confusion, and playground bullying.”​
+
+6. “Who it’s for” section
+Use a table for 3 audiences.​
+
+Audience	Needs copy to do	Prompt snippet
+Fortune 100 GC	Risk, liability, governance	“Write 2–3 bullets for a Fortune 100 General Counsel explaining how Qi simulations de-risk policy before rollout.” ​
+City CTO / CDO	Infrastructure, equity, compliance	“Write 2–3 bullets for a city CTO about modelling mobility, safety corridors, and queer-inclusive city planning.” ​
+Queer kid in crisis	Emotional resonance, legitimacy, safety	“Write 2–3 bullets speaking directly to a queer teenager, explaining that this isn’t another surveillance app; it is infrastructure designed so nobody has to suffocate in the coal mine again.” ​
+7. Pilot intake form microcopy
+Purpose: Tie GDPR purpose limitation + your thesis.
+
+Prompt:
+
+“Write form helper text for a ‘Pilot Intake’ form for Sovereign Qi. In 1–2 sentences above the form, state that we collect only the minimum necessary information to configure a digital-twin pilot and will not reuse it for unrelated purposes or marketing without separate consent. Tone: precise, reassuring, rights-forward.”​
+
+If you tell which stack you’re actually on right now (e.g., “Next 14 + Supabase” or “Remix + Planetscale”), the same MVP can be adapted into exact project structure and CLI commands for you.
