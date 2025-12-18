@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { mockApi, PilotProject, PilotType } from "@/lib/mock-api";
 import { SimulationChart } from "@/components/ui/simulation-chart";
@@ -10,9 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Play, LayoutDashboard, Activity, CheckCircle2, AlertCircle, Globe } from "lucide-react";
+import { Plus, Play, LayoutDashboard, Activity, CheckCircle2, AlertCircle, Globe, LogOut } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/lib/auth";
 
 // Custom hook to sync with our mock store
 function usePilots() {
@@ -24,10 +25,18 @@ function usePilots() {
 }
 
 export default function Dashboard() {
+  const { user, logout, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
   const pilots = usePilots();
   const { toast } = useToast();
   const [activePilotId, setActivePilotId] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setLocation("/login");
+    }
+  }, [user, isLoading, setLocation]);
 
   const form = useForm<Omit<PilotProject, "id" | "createdAt" | "status" | "simulationResult">>({
     defaultValues: {
@@ -69,6 +78,10 @@ export default function Dashboard() {
   // Find the currently selected pilot object
   const activePilot = pilots.find(p => p.id === activePilotId);
 
+  if (isLoading || !user) {
+    return null; // or loading spinner
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
       {/* Sidebar */}
@@ -89,13 +102,16 @@ export default function Dashboard() {
         </nav>
 
         <div className="mt-auto pt-6 border-t border-white/10">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary" />
-            <div className="text-sm">
-              <div className="font-bold text-white">Admin User</div>
-              <div className="text-gray-500 text-xs">admin@sovereignqi.ai</div>
+            <div className="text-sm overflow-hidden">
+              <div className="font-bold text-white truncate max-w-[120px]">User</div>
+              <div className="text-gray-500 text-xs truncate max-w-[140px]">{user}</div>
             </div>
           </div>
+          <Button variant="outline" onClick={logout} className="w-full justify-start gap-2 border-white/10 text-gray-400 hover:text-white hover:bg-white/5">
+            <LogOut size={16} /> Sign Out
+          </Button>
         </div>
       </aside>
 

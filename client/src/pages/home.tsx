@@ -2,8 +2,11 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Shield, Globe, Cpu, Users } from "lucide-react";
 import heroBg from "@assets/generated_images/abstract_digital_twin_data_flow.png";
+import { useAuth } from "@/lib/auth";
 
 export default function Home() {
+  const { user } = useAuth();
+  
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Navigation */}
@@ -13,11 +16,19 @@ export default function Home() {
             SOVEREIGN <span className="text-primary">QI</span>
           </div>
           <div className="flex gap-4">
-            <Link href="/dashboard">
-              <a className="bg-primary/90 hover:bg-primary text-white px-6 py-2 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(124,58,237,0.5)]">
-                Launch Lab
-              </a>
-            </Link>
+            {user ? (
+               <Link href="/dashboard">
+                <a className="bg-primary/90 hover:bg-primary text-white px-6 py-2 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(124,58,237,0.5)]">
+                  Dashboard
+                </a>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <a className="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-full font-medium transition-all border border-white/10">
+                  Log In
+                </a>
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -43,9 +54,9 @@ export default function Home() {
               Leadership without surveillance.
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <Link href="/dashboard">
+              <Link href={user ? "/dashboard" : "/login"}>
                 <a className="group bg-white text-black px-8 py-4 rounded-full text-lg font-bold flex items-center justify-center gap-2 hover:scale-105 transition-transform">
-                  Enter The Lab <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  {user ? "Enter The Lab" : "Access Terminal"} <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </a>
               </Link>
             </div>
