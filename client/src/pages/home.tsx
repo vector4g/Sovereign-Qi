@@ -104,10 +104,12 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-white">
-              Synthetic <span className="text-primary">Sovereignty</span>
+              Synthetic <span className="text-primary">Sovereignty</span> <br/>
+              <span className="text-2xl text-gray-400 block mt-2">(The Anti‑Surveillance Move)</span>
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Marginalized communities are "data poor" by design. We use Omniverse Replicator to generate synthetic personas that model bias pathways without extractive surveillance.
+            <p className="text-gray-400 max-w-3xl mx-auto text-lg leading-relaxed">
+              Marginalized communities are often 'data poor' because they must hide from surveillance to survive. 
+              Sovereign Qi leverages Omniverse Replicator to generate synthetic personas that statistically mirror these lived challenges—such as medical bias faced by a Black trans woman—without ever recording or exposing real individuals.
             </p>
           </div>
 
@@ -115,18 +117,18 @@ export default function Home() {
             {[
               {
                 icon: Shield,
-                title: "Privacy by Design",
-                desc: "No real human data is harvested. We simulate the struggle, not the person."
+                title: "Train on the Struggle",
+                desc: "We model the systemic friction, not the individual identity. Synthetic data captures the dynamic of bias without the surveillance of vulnerable people."
               },
               {
                 icon: Cpu,
-                title: "Robustness",
-                desc: "Stress-test policies against edge cases that rarely appear in training data."
+                title: "Privacy by Default",
+                desc: "No real human data is harvested. We generate statistical twins that face real-world barriers, protecting community anonymity completely."
               },
               {
                 icon: Users,
-                title: "Alignment",
-                desc: "Ensure regulatory compliance before a single line of policy is written."
+                title: "Robustness & Justice",
+                desc: "Fill the gaps in 'data poor' datasets. Ensure your systems work for the critical edge cases that matter most, not just the statistical majority."
               }
             ].map((feature, i) => (
               <div key={i} className="glass-panel p-8 rounded-xl hover:border-primary/50 transition-colors">
