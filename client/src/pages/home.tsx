@@ -190,8 +190,7 @@ export default function Home() {
               The Curb Cut for <span className="text-secondary">Humanity</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Just as curb cuts were built for wheelchairs but improved life for parents with strollers and travelers with luggage, queer-led, accessibility-first AI creates safer systems for everyone. 
-              By designing for the most marginalized, we solve edge cases that mainstream models miss.
+              Sovereign Qi is built on an accessibility‑first principle: design for those most excluded, and everyone else inherits the safety and clarity. When our models learn to read neurodivergent cues, anti‑trans dog‑whistles, and intersectional bias, they become more reliable for veterans, stroke survivors, kids in conflict, and anyone navigating complex systems.
             </p>
           </div>
 
@@ -199,15 +198,15 @@ export default function Home() {
             {[
               {
                 title: "Trauma-Informed AI",
-                desc: "Models tuned to understand neurodivergent non-verbal cues are exceptionally effective at interpreting veterans' trauma responses and PTSD signals."
+                desc: "Neurodivergent-aware sensing that also improves support for trauma‑affected veterans."
               },
               {
                 title: "Safety Beyond Identity",
-                desc: "Detecting sophisticated anti-trans dog-whistles trains the system to catch subtle forms of school bullying and workplace harassment that standard filters miss."
+                desc: "Anti‑trans dog‑whistle detection that also flags subtle school bullying and workplace harassment."
               },
               {
                 title: "Universal Care",
-                desc: "Algorithms trained to detect medical bias against trans patients become hyper-sensitive to diagnostic errors for all complex, non-standard edge cases."
+                desc: "Bias detection tuned on trans healthcare that raises diagnostic quality for all edge‑case patients."
               }
             ].map((item, i) => (
               <div key={i} className="glass-panel p-8 rounded-xl border border-white/5 hover:border-secondary/30 transition-all group">

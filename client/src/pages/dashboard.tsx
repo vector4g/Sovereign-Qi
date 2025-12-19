@@ -135,8 +135,7 @@ export default function Dashboard() {
                 <div className="mt-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md text-xs text-blue-200">
                   <p className="font-semibold mb-1">Data Usage & Privacy</p>
                   <p>
-                    We collect this data solely to configure your digital twin pilot and coordinate its execution—never for broad identity logging or unrelated marketing. 
-                    Our intake process is designed for strict data minimization, capturing only the essential parameters required to model your simulation.
+                    We use this information only to configure and run your Sovereign Qi digital‑twin pilot and to follow up with you about that specific project. We collect only the minimum details needed to scope the simulation, and we do not reuse this data for unrelated analytics or marketing without your explicit consent.
                   </p>
                 </div>
               </DialogHeader>
