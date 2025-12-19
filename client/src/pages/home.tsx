@@ -72,14 +72,15 @@ export default function Home() {
               Simulation Before <br /><span className="text-secondary">Legislation</span>
             </h2>
             <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-              We use NVIDIA Omniverse and Isaac Sim to build high-fidelity digital twins of entire corporate and civic ecosystems. 
-              We run massive A/B tests: Majority Logic vs. Qi Logic, measuring the hidden costs of compliance and the liberated value of dignity.
+              Sovereign Qi utilizes NVIDIA Omniverse and Isaac Sim to construct high-fidelity digital twins of organizational and civic ecosystems. 
+              We deploy autonomous social agents to A/B test standard 'Majority Logic' against dignity-first 'Qi Logic' protocols. 
+              This approach allows us to measure innovation velocity, burnout rates, and liability exposure over simulated years, eliminating the ethical risks of experimenting on live human subjects.
             </p>
             <ul className="space-y-4">
               {[
-                "Zero risk to human subjects",
-                "Model burnout & liability vectors",
-                "Quantify the ROI of dignity"
+                "High-fidelity simulation of complex social dynamics using Isaac Sim",
+                "Comparative analysis of Majority vs. Qi governance models",
+                "Longitudinal risk assessment over simulated multi-year timelines"
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-gray-300">
                   <div className="w-2 h-2 bg-secondary rounded-full" />
