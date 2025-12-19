@@ -1,38 +1,98 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { 
+  type Pilot, 
+  type InsertPilot,
+  type Session,
+  type InsertSession,
+  type Simulation,
+  type InsertSimulation,
+  pilots,
+  sessions,
+  simulations
+} from "@shared/schema";
+import { db } from "../db";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // Session management (email-only auth)
+  createSession(session: InsertSession): Promise<Session>;
+  getSession(id: string): Promise<Session | undefined>;
+  deleteSession(id: string): Promise<void>;
+  
+  // Pilot CRUD - purpose-limited to simulation configuration
+  createPilot(pilot: InsertPilot): Promise<Pilot>;
+  getPilotsByOwner(ownerEmail: string): Promise<Pilot[]>;
+  getPilot(id: string): Promise<Pilot | undefined>;
+  updatePilotStatus(id: string, status: "DRAFT" | "CONFIGURED" | "RUNNING" | "COMPLETED"): Promise<void>;
+  
+  // Simulation results
+  createSimulation(simulation: InsertSimulation): Promise<Simulation>;
+  getSimulationByPilot(pilotId: string): Promise<Simulation | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  // Sessions
+  async createSession(session: InsertSession): Promise<Session> {
+    const [result] = await db.insert(sessions).values(session).returning();
+    return result;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getSession(id: string): Promise<Session | undefined> {
+    const [session] = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.id, id))
+      .limit(1);
+    return session;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async deleteSession(id: string): Promise<void> {
+    await db.delete(sessions).where(eq(sessions.id, id));
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  // Pilots
+  async createPilot(pilot: InsertPilot): Promise<Pilot> {
+    const [result] = await db.insert(pilots).values(pilot).returning();
+    return result;
+  }
+
+  async getPilotsByOwner(ownerEmail: string): Promise<Pilot[]> {
+    return await db
+      .select()
+      .from(pilots)
+      .where(eq(pilots.ownerEmail, ownerEmail))
+      .orderBy(desc(pilots.createdAt));
+  }
+
+  async getPilot(id: string): Promise<Pilot | undefined> {
+    const [pilot] = await db
+      .select()
+      .from(pilots)
+      .where(eq(pilots.id, id))
+      .limit(1);
+    return pilot;
+  }
+
+  async updatePilotStatus(id: string, status: "DRAFT" | "CONFIGURED" | "RUNNING" | "COMPLETED"): Promise<void> {
+    await db
+      .update(pilots)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(pilots.id, id));
+  }
+
+  // Simulations
+  async createSimulation(simulation: InsertSimulation): Promise<Simulation> {
+    const [result] = await db.insert(simulations).values(simulation).returning();
+    return result;
+  }
+
+  async getSimulationByPilot(pilotId: string): Promise<Simulation | undefined> {
+    const [simulation] = await db
+      .select()
+      .from(simulations)
+      .where(eq(simulations.pilotId, pilotId))
+      .limit(1);
+    return simulation;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

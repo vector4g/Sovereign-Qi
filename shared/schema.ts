@@ -1,18 +1,67 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+import { pgTable, text, varchar, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
+// Session storage for email-only auth
+export const sessions = pgTable("sessions", {
+  id: varchar("id").primaryKey(),
+  email: text("email").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
+export const insertSessionSchema = createInsertSchema(sessions);
+export type InsertSession = z.infer<typeof insertSessionSchema>;
+export type Session = typeof sessions.$inferSelect;
+
+// Pilot project types enum
+export const pilotTypeEnum = pgEnum("pilot_type", ["ENTERPRISE", "CITY", "HEALTHCARE"]);
+export const pilotStatusEnum = pgEnum("pilot_status", ["DRAFT", "CONFIGURED", "RUNNING", "COMPLETED"]);
+
+// Pilot projects table - GDPR-aligned: minimal data, purpose-limited
+export const pilots = pgTable("pilots", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  ownerEmail: text("owner_email").notNull(), // Email session identifier
+  name: text("name").notNull(),
+  type: pilotTypeEnum("type").notNull(),
+  orgName: text("org_name").notNull(),
+  region: text("region").notNull(),
+  primaryObjective: text("primary_objective").notNull(),
+  majorityLogicDesc: text("majority_logic_desc").notNull(),
+  qiLogicDesc: text("qi_logic_desc").notNull(),
+  status: pilotStatusEnum("status").notNull().default("DRAFT"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertPilotSchema = createInsertSchema(pilots).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+export const selectPilotSchema = createSelectSchema(pilots);
+
+export type InsertPilot = z.infer<typeof insertPilotSchema>;
+export type Pilot = typeof pilots.$inferSelect;
+
+// Simulation results table
+export const simulations = pgTable("simulations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  pilotId: varchar("pilot_id").notNull().references(() => pilots.id, { onDelete: "cascade" }),
+  scenarioAInnovation: text("scenario_a_innovation").notNull(),
+  scenarioABurnout: text("scenario_a_burnout").notNull(),
+  scenarioALiability: text("scenario_a_liability").notNull(),
+  scenarioBInnovation: text("scenario_b_innovation").notNull(),
+  scenarioBBurnout: text("scenario_b_burnout").notNull(),
+  scenarioBLiability: text("scenario_b_liability").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertSimulationSchema = createInsertSchema(simulations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertSimulation = z.infer<typeof insertSimulationSchema>;
+export type Simulation = typeof simulations.$inferSelect;

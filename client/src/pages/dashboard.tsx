@@ -1,44 +1,70 @@
-import { useState, useSyncExternalStore, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
-import { mockApi, PilotProject, PilotType } from "@/lib/mock-api";
+import { pilotsApi } from "@/lib/api";
 import { SimulationChart } from "@/components/ui/simulation-chart";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Play, LayoutDashboard, Activity, CheckCircle2, AlertCircle, Globe, LogOut } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// Custom hook to sync with our mock store
-function usePilots() {
-  const pilots = useSyncExternalStore(
-    (cb) => mockApi.subscribe(cb),
-    () => mockApi.getPilots()
-  );
-  return pilots;
+interface Pilot {
+  id: string;
+  name: string;
+  type: "ENTERPRISE" | "CITY" | "HEALTHCARE";
+  orgName: string;
+  region: string;
+  primaryObjective: string;
+  majorityLogicDesc: string;
+  qiLogicDesc: string;
+  status: "DRAFT" | "CONFIGURED" | "RUNNING" | "COMPLETED";
+  createdAt: string;
+}
+
+interface SimulationResult {
+  scenarioA: {
+    label: string;
+    innovationIndex: number;
+    burnoutIndex: number;
+    liabilityIndex: number;
+  };
+  scenarioB: {
+    label: string;
+    innovationIndex: number;
+    burnoutIndex: number;
+    liabilityIndex: number;
+  };
 }
 
 export default function Dashboard() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, logout, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
-  const pilots = usePilots();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [activePilotId, setActivePilotId] = useState<string | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [simulationResults, setSimulationResults] = useState<Record<string, SimulationResult>>({});
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!authLoading && !user) {
       setLocation("/login");
     }
-  }, [user, isLoading, setLocation]);
+  }, [user, authLoading, setLocation]);
 
-  const form = useForm<Omit<PilotProject, "id" | "createdAt" | "status" | "simulationResult">>({
+  const { data: pilots = [], isLoading: pilotsLoading } = useQuery({
+    queryKey: ["pilots"],
+    queryFn: pilotsApi.list,
+    enabled: !!user,
+  });
+
+  const form = useForm<Omit<Pilot, "id" | "createdAt" | "status" | "ownerEmail">>({
     defaultValues: {
       type: "ENTERPRISE",
       name: "",
@@ -50,36 +76,58 @@ export default function Dashboard() {
     }
   });
 
-  const onSubmit = (data: any) => {
-    mockApi.addPilot(data);
-    toast({
-      title: "Pilot Project Created",
-      description: "Ready for simulation configuration.",
-    });
-    form.reset();
-  };
+  const createPilotMutation = useMutation({
+    mutationFn: pilotsApi.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pilots"] });
+      toast({
+        title: "Pilot Project Created",
+        description: "Ready for simulation configuration.",
+      });
+      form.reset();
+      setIsDialogOpen(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
-  const handleRunSimulation = async (id: string) => {
-    setIsSimulating(true);
-    setActivePilotId(id);
-    try {
-      await mockApi.runSimulation(id);
+  const runSimulationMutation = useMutation({
+    mutationFn: pilotsApi.runSimulation,
+    onSuccess: (data, pilotId) => {
+      queryClient.invalidateQueries({ queryKey: ["pilots"] });
+      setSimulationResults(prev => ({ ...prev, [pilotId]: data }));
       toast({
         title: "Simulation Complete",
         description: "Metrics available. Innovation factor increased.",
       });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsSimulating(false);
-    }
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Simulation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onSubmit = (data: any) => {
+    createPilotMutation.mutate(data);
   };
 
-  // Find the currently selected pilot object
-  const activePilot = pilots.find(p => p.id === activePilotId);
+  const handleRunSimulation = async (id: string) => {
+    runSimulationMutation.mutate(id);
+  };
 
-  if (isLoading || !user) {
-    return null; // or loading spinner
+  const activePilot = pilots.find((p: Pilot) => p.id === activePilotId);
+  const activePilotSimulation = activePilotId ? simulationResults[activePilotId] : null;
+
+  if (authLoading || !user) {
+    return null;
   }
 
   return (
@@ -123,7 +171,7 @@ export default function Dashboard() {
             <p className="text-gray-400">Manage digital twins and simulation runs.</p>
           </div>
           
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-primary hover:bg-primary/90 text-white gap-2">
                 <Plus size={18} /> New Pilot
@@ -193,8 +241,12 @@ export default function Dashboard() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full bg-white text-black hover:bg-gray-200">
-                  Initialize Pilot
+                <Button 
+                  type="submit" 
+                  className="w-full bg-white text-black hover:bg-gray-200"
+                  disabled={createPilotMutation.isPending}
+                >
+                  {createPilotMutation.isPending ? "Creating..." : "Initialize Pilot"}
                 </Button>
               </form>
             </DialogContent>
@@ -205,34 +257,40 @@ export default function Dashboard() {
           {/* Pilot List */}
           <div className="lg:col-span-1 space-y-4">
              <h2 className="text-lg font-bold text-gray-400 uppercase tracking-wider text-xs mb-4">Active Pilots</h2>
-             {pilots.map(pilot => (
-               <div 
-                 key={pilot.id}
-                 onClick={() => setActivePilotId(pilot.id)}
-                 className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                   activePilotId === pilot.id 
-                     ? "bg-primary/10 border-primary" 
-                     : "bg-white/5 border-white/10 hover:border-white/20"
-                 }`}
-               >
-                 <div className="flex justify-between items-start mb-2">
-                   <h3 className="font-bold text-white">{pilot.name}</h3>
-                   <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                     pilot.status === "COMPLETED" 
-                       ? "bg-green-500/10 text-green-500 border-green-500/20" 
-                       : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                   }`}>
-                     {pilot.status}
-                   </span>
+             {pilotsLoading ? (
+               <div className="text-gray-500">Loading pilots...</div>
+             ) : pilots.length === 0 ? (
+               <div className="text-gray-500 text-sm">No pilots yet. Create your first one!</div>
+             ) : (
+               pilots.map((pilot: Pilot) => (
+                 <div 
+                   key={pilot.id}
+                   onClick={() => setActivePilotId(pilot.id)}
+                   className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                     activePilotId === pilot.id 
+                       ? "bg-primary/10 border-primary" 
+                       : "bg-white/5 border-white/10 hover:border-white/20"
+                   }`}
+                 >
+                   <div className="flex justify-between items-start mb-2">
+                     <h3 className="font-bold text-white">{pilot.name}</h3>
+                     <span className={`text-xs px-2 py-0.5 rounded-full border ${
+                       pilot.status === "COMPLETED" 
+                         ? "bg-green-500/10 text-green-500 border-green-500/20" 
+                         : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                     }`}>
+                       {pilot.status}
+                     </span>
+                   </div>
+                   <div className="text-sm text-gray-400 mb-3">
+                     {pilot.orgName} • {pilot.type}
+                   </div>
+                   <div className="text-xs text-gray-500 truncate">
+                     {pilot.primaryObjective}
+                   </div>
                  </div>
-                 <div className="text-sm text-gray-400 mb-3">
-                   {pilot.orgName} • {pilot.type}
-                 </div>
-                 <div className="text-xs text-gray-500 truncate">
-                   {pilot.primaryObjective}
-                 </div>
-               </div>
-             ))}
+               ))
+             )}
           </div>
 
           {/* Details / Simulation Area */}
@@ -250,10 +308,10 @@ export default function Dashboard() {
                   {activePilot.status !== "COMPLETED" && (
                     <Button 
                       onClick={() => handleRunSimulation(activePilot.id)}
-                      disabled={isSimulating}
+                      disabled={runSimulationMutation.isPending}
                       className="bg-secondary text-black hover:bg-secondary/90 font-bold"
                     >
-                      {isSimulating ? "Simulating..." : (
+                      {runSimulationMutation.isPending ? "Simulating..." : (
                         <>
                           <Play size={16} className="mr-2" /> Run Qi Simulation
                         </>
@@ -281,12 +339,12 @@ export default function Dashboard() {
                   </Card>
                 </div>
 
-                {activePilot.simulationResult ? (
+                {activePilotSimulation || activePilot.status === "COMPLETED" ? (
                   <div className="mt-8">
                      <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                        <CheckCircle2 className="text-green-500" /> Simulation Results
                      </h3>
-                     <SimulationChart result={activePilot.simulationResult} />
+                     {activePilotSimulation && <SimulationChart result={activePilotSimulation} />}
                   </div>
                 ) : (
                   <div className="h-[300px] border border-dashed border-white/10 rounded-xl flex items-center justify-center text-gray-500 flex-col gap-4">

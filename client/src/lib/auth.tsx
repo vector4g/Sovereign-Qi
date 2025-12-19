@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useLocation } from "wouter";
+import { authApi, setSessionId, getSessionId } from "./api";
 
 interface AuthContextType {
   user: string | null;
-  login: (email: string) => void;
-  logout: () => void;
+  login: (email: string) => Promise<void>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -16,22 +17,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    // Check local storage on mount
-    const storedUser = localStorage.getItem("sovereign_qi_user");
-    if (storedUser) {
-      setUser(storedUser);
+    // Check if we have a valid session on mount
+    const sessionId = getSessionId();
+    if (sessionId) {
+      authApi.me()
+        .then((data) => {
+          setUser(data.email);
+        })
+        .catch(() => {
+          // Session invalid, clear it
+          setSessionId(null);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
-  const login = (email: string) => {
-    localStorage.setItem("sovereign_qi_user", email);
-    setUser(email);
+  const login = async (email: string) => {
+    const data = await authApi.login(email);
+    setUser(data.email);
     setLocation("/dashboard");
   };
 
-  const logout = () => {
-    localStorage.removeItem("sovereign_qi_user");
+  const logout = async () => {
+    await authApi.logout();
     setUser(null);
     setLocation("/");
   };

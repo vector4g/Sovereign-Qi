@@ -9,12 +9,22 @@ import heroBg from "@assets/generated_images/abstract_digital_twin_data_flow.png
 
 export default function Login() {
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
-      login(email);
+    if (!email.trim()) return;
+    
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      await login(email);
+    } catch (err: any) {
+      setError(err.message || "Login failed");
+      setIsLoading(false);
     }
   };
 
@@ -58,10 +68,22 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-black/20 border-white/10 text-white placeholder:text-gray-600 focus-visible:ring-primary"
                   required
+                  disabled={isLoading}
                 />
+                {error && (
+                  <p className="text-red-400 text-xs">{error}</p>
+                )}
               </div>
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white group">
-                Access Terminal <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+              <Button 
+                type="submit" 
+                className="w-full bg-primary hover:bg-primary/90 text-white group"
+                disabled={isLoading}
+              >
+                {isLoading ? "Authenticating..." : (
+                  <>
+                    Access Terminal <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
