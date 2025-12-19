@@ -3,9 +3,9 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertPilotSchema } from "@shared/schema";
 import { randomBytes } from "crypto";
-import { generateCouncilAdvice } from "./agents";
+import { generateCouncilAdviceWithFallback } from "./lib/agents";
+import { runQiSimulation } from "./lib/simulator";
 
-// Session middleware
 function requireAuth(req: any, res: any, next: any) {
   const sessionId = req.headers["x-session-id"];
   if (!sessionId) {
@@ -28,7 +28,6 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   
-  // Email-only authentication
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email } = req.body;
@@ -37,7 +36,7 @@ export async function registerRoutes(
       }
 
       const sessionId = randomBytes(32).toString("hex");
-      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
       await storage.createSession({
         id: sessionId,
@@ -69,7 +68,6 @@ export async function registerRoutes(
     res.json({ email: req.userEmail });
   });
 
-  // Pilot endpoints - GDPR-aligned, purpose-limited
   app.post("/api/pilots", requireAuth, async (req: any, res) => {
     try {
       const validatedData = insertPilotSchema.parse({
@@ -111,7 +109,6 @@ export async function registerRoutes(
     }
   });
 
-  // Council Advice endpoint - multi-agent governance review
   app.post("/api/pilots/:id/advise", requireAuth, async (req: any, res) => {
     try {
       const pilot = await storage.getPilot(req.params.id);
@@ -122,13 +119,12 @@ export async function registerRoutes(
         return res.status(403).json({ error: "Access denied" });
       }
 
-      // Simulate multi-agent deliberation delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
-
-      const advice = await generateCouncilAdvice({
+      const advice = await generateCouncilAdviceWithFallback({
         primaryObjective: pilot.primaryObjective,
         majorityLogicDesc: pilot.majorityLogicDesc,
         qiLogicDesc: pilot.qiLogicDesc,
+        communityVoices: req.body.communityVoices,
+        harms: req.body.harms,
       });
 
       res.json({ pilotId: pilot.id, advice });
@@ -138,7 +134,6 @@ export async function registerRoutes(
     }
   });
 
-  // Simulation endpoint - generates A/B comparison
   app.post("/api/pilots/:id/run", requireAuth, async (req: any, res) => {
     try {
       const pilot = await storage.getPilot(req.params.id);
@@ -149,36 +144,29 @@ export async function registerRoutes(
         return res.status(403).json({ error: "Access denied" });
       }
 
-      // Simulate processing delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const result = await runQiSimulation({
+        id: pilot.id,
+        name: pilot.name,
+        primaryObjective: pilot.primaryObjective,
+        majorityLogicDesc: pilot.majorityLogicDesc,
+        qiLogicDesc: pilot.qiLogicDesc,
+        orgName: pilot.orgName,
+        region: pilot.region,
+      });
 
-      // Generate simulation results
-      const simulation = await storage.createSimulation({
+      await storage.createSimulation({
         pilotId: pilot.id,
-        scenarioAInnovation: "1.0",
-        scenarioABurnout: "0.8",
-        scenarioALiability: "0.7",
-        scenarioBInnovation: "1.4",
-        scenarioBBurnout: "0.3",
-        scenarioBLiability: "0.1",
+        scenarioAInnovation: result.scenarioA.innovationIndex.toString(),
+        scenarioABurnout: result.scenarioA.burnoutIndex.toString(),
+        scenarioALiability: result.scenarioA.liabilityIndex.toString(),
+        scenarioBInnovation: result.scenarioB.innovationIndex.toString(),
+        scenarioBBurnout: result.scenarioB.burnoutIndex.toString(),
+        scenarioBLiability: result.scenarioB.liabilityIndex.toString(),
       });
 
       await storage.updatePilotStatus(pilot.id, "COMPLETED");
 
-      res.json({
-        scenarioA: {
-          label: "Majority Logic",
-          innovationIndex: parseFloat(simulation.scenarioAInnovation),
-          burnoutIndex: parseFloat(simulation.scenarioABurnout),
-          liabilityIndex: parseFloat(simulation.scenarioALiability),
-        },
-        scenarioB: {
-          label: "Qi Logic",
-          innovationIndex: parseFloat(simulation.scenarioBInnovation),
-          burnoutIndex: parseFloat(simulation.scenarioBBurnout),
-          liabilityIndex: parseFloat(simulation.scenarioBLiability),
-        },
-      });
+      res.json(result);
     } catch (error) {
       console.error("Run simulation error:", error);
       res.status(500).json({ error: "Simulation failed" });
