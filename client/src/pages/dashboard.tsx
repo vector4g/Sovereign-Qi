@@ -132,6 +132,13 @@ export default function Dashboard() {
             <DialogContent className="bg-[#0f172a] border-white/10 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Configure New Pilot</DialogTitle>
+                <div className="mt-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md text-xs text-blue-200">
+                  <p className="font-semibold mb-1">Data Usage & Privacy</p>
+                  <p>
+                    We collect this data solely to configure your digital twin pilot and coordinate its execution—never for broad identity logging or unrelated marketing. 
+                    Our intake process is designed for strict data minimization, capturing only the essential parameters required to model your simulation.
+                  </p>
+                </div>
               </DialogHeader>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
                 <div className="grid grid-cols-2 gap-4">
