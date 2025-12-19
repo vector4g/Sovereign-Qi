@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Plus, Play, LayoutDashboard, Activity, CheckCircle2, AlertCircle, Globe, LogOut } from "lucide-react";
+import { Plus, Play, LayoutDashboard, Activity, CheckCircle2, AlertCircle, Globe, LogOut, Users, ShieldCheck, AlertTriangle, Sparkles } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
@@ -43,6 +43,14 @@ interface SimulationResult {
   };
 }
 
+interface CouncilAdvice {
+  qiPolicySummary: string;
+  requiredChanges: string[];
+  riskFlags: string[];
+  curbCutBenefits: string[];
+  status: "APPROVE" | "REVISE" | "BLOCK";
+}
+
 export default function Dashboard() {
   const { user, logout, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
@@ -50,6 +58,7 @@ export default function Dashboard() {
   const queryClient = useQueryClient();
   const [activePilotId, setActivePilotId] = useState<string | null>(null);
   const [simulationResults, setSimulationResults] = useState<Record<string, SimulationResult>>({});
+  const [councilAdvice, setCouncilAdvice] = useState<Record<string, CouncilAdvice>>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -82,7 +91,7 @@ export default function Dashboard() {
       queryClient.invalidateQueries({ queryKey: ["pilots"] });
       toast({
         title: "Pilot Project Created",
-        description: "Ready for simulation configuration.",
+        description: "Ready for Council review and simulation.",
       });
       form.reset();
       setIsDialogOpen(false);
@@ -90,6 +99,24 @@ export default function Dashboard() {
     onError: (error: Error) => {
       toast({
         title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const councilAdviceMutation = useMutation({
+    mutationFn: pilotsApi.getCouncilAdvice,
+    onSuccess: (data, pilotId) => {
+      setCouncilAdvice(prev => ({ ...prev, [pilotId]: data.advice }));
+      toast({
+        title: "Council Deliberation Complete",
+        description: `Status: ${data.advice.status}. Review the governance guidance below.`,
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Council Deliberation Failed",
         description: error.message,
         variant: "destructive",
       });
@@ -119,12 +146,17 @@ export default function Dashboard() {
     createPilotMutation.mutate(data);
   };
 
+  const handleRequestAdvice = async (id: string) => {
+    councilAdviceMutation.mutate(id);
+  };
+
   const handleRunSimulation = async (id: string) => {
     runSimulationMutation.mutate(id);
   };
 
   const activePilot = pilots.find((p: Pilot) => p.id === activePilotId);
   const activePilotSimulation = activePilotId ? simulationResults[activePilotId] : null;
+  const activePilotAdvice = activePilotId ? councilAdvice[activePilotId] : null;
 
   if (authLoading || !user) {
     return null;
@@ -135,9 +167,9 @@ export default function Dashboard() {
       {/* Sidebar */}
       <aside className="w-full md:w-64 border-r border-white/10 bg-black/40 p-6 flex flex-col gap-6">
         <Link href="/">
-          <a className="text-2xl font-display font-bold tracking-tighter hover:opacity-80 transition-opacity">
+          <span className="text-2xl font-display font-bold tracking-tighter hover:opacity-80 transition-opacity cursor-pointer">
             SOVEREIGN <span className="text-primary">QI</span>
-          </a>
+          </span>
         </Link>
         
         <nav className="flex flex-col gap-2">
@@ -173,7 +205,7 @@ export default function Dashboard() {
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-white gap-2">
+              <Button className="bg-primary hover:bg-primary/90 text-white gap-2" data-testid="button-new-pilot">
                 <Plus size={18} /> New Pilot
               </Button>
             </DialogTrigger>
@@ -183,7 +215,7 @@ export default function Dashboard() {
                 <div className="mt-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md text-xs text-blue-200">
                   <p className="font-semibold mb-1">Data Usage & Privacy</p>
                   <p>
-                    We use this information only to configure and run your Sovereign Qi digital‑twin pilot and to follow up with you about that specific project. We collect only the minimum details needed to scope the simulation, and we do not reuse this data for unrelated analytics or marketing without your explicit consent.
+                    We use this information only to configure and run your Sovereign Qi digital-twin pilot and to follow up with you about that specific project. We collect only the minimum details needed to scope the simulation, and we do not reuse this data for unrelated analytics or marketing without your explicit consent.
                   </p>
                 </div>
               </DialogHeader>
@@ -191,12 +223,12 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Pilot Name</Label>
-                    <Input {...form.register("name")} placeholder="e.g. Neo-Tokyo Transit" className="bg-black/20 border-white/10" required />
+                    <Input {...form.register("name")} placeholder="e.g. Neo-Tokyo Transit" className="bg-black/20 border-white/10" required data-testid="input-pilot-name" />
                   </div>
                   <div className="space-y-2">
                     <Label>Type</Label>
                     <Select onValueChange={(v: any) => form.setValue("type", v)} defaultValue="ENTERPRISE">
-                      <SelectTrigger className="bg-black/20 border-white/10">
+                      <SelectTrigger className="bg-black/20 border-white/10" data-testid="select-pilot-type">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -208,17 +240,17 @@ export default function Dashboard() {
                   </div>
                   <div className="space-y-2">
                     <Label>Organization</Label>
-                    <Input {...form.register("orgName")} placeholder="e.g. Tokyo Metro Govt" className="bg-black/20 border-white/10" required />
+                    <Input {...form.register("orgName")} placeholder="e.g. Tokyo Metro Govt" className="bg-black/20 border-white/10" required data-testid="input-org-name" />
                   </div>
                   <div className="space-y-2">
                     <Label>Region</Label>
-                    <Input {...form.register("region")} placeholder="e.g. APAC" className="bg-black/20 border-white/10" required />
+                    <Input {...form.register("region")} placeholder="e.g. APAC" className="bg-black/20 border-white/10" required data-testid="input-region" />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
                   <Label>Primary Objective</Label>
-                  <Input {...form.register("primaryObjective")} placeholder="e.g. Reduce burnout, Lower liability" className="bg-black/20 border-white/10" required />
+                  <Input {...form.register("primaryObjective")} placeholder="e.g. Reduce burnout, Lower liability" className="bg-black/20 border-white/10" required data-testid="input-objective" />
                 </div>
 
                 <div className="space-y-2">
@@ -228,6 +260,7 @@ export default function Dashboard() {
                     placeholder="How does the system work today? e.g. Efficiency first, optimize for throughput."
                     className="bg-black/20 border-white/10 min-h-[80px]" 
                     required
+                    data-testid="textarea-majority-logic"
                   />
                 </div>
 
@@ -238,6 +271,7 @@ export default function Dashboard() {
                     placeholder="What would Qi Logic look like? e.g. Dignity first, optimize for personal space."
                     className="bg-primary/5 border-primary/20 min-h-[80px]" 
                     required
+                    data-testid="textarea-qi-logic"
                   />
                 </div>
 
@@ -245,6 +279,7 @@ export default function Dashboard() {
                   type="submit" 
                   className="w-full bg-white text-black hover:bg-gray-200"
                   disabled={createPilotMutation.isPending}
+                  data-testid="button-submit-pilot"
                 >
                   {createPilotMutation.isPending ? "Creating..." : "Initialize Pilot"}
                 </Button>
@@ -266,6 +301,7 @@ export default function Dashboard() {
                  <div 
                    key={pilot.id}
                    onClick={() => setActivePilotId(pilot.id)}
+                   data-testid={`card-pilot-${pilot.id}`}
                    className={`p-4 rounded-lg border cursor-pointer transition-all ${
                      activePilotId === pilot.id 
                        ? "bg-primary/10 border-primary" 
@@ -283,7 +319,7 @@ export default function Dashboard() {
                      </span>
                    </div>
                    <div className="text-sm text-gray-400 mb-3">
-                     {pilot.orgName} • {pilot.type}
+                     {pilot.orgName} - {pilot.type}
                    </div>
                    <div className="text-xs text-gray-500 truncate">
                      {pilot.primaryObjective}
@@ -305,19 +341,37 @@ export default function Dashboard() {
                       <span className="flex items-center gap-1"><AlertCircle size={14} /> {activePilot.primaryObjective}</span>
                     </div>
                   </div>
-                  {activePilot.status !== "COMPLETED" && (
-                    <Button 
-                      onClick={() => handleRunSimulation(activePilot.id)}
-                      disabled={runSimulationMutation.isPending}
-                      className="bg-secondary text-black hover:bg-secondary/90 font-bold"
-                    >
-                      {runSimulationMutation.isPending ? "Simulating..." : (
-                        <>
-                          <Play size={16} className="mr-2" /> Run Qi Simulation
-                        </>
-                      )}
-                    </Button>
-                  )}
+                  <div className="flex gap-2">
+                    {!activePilotAdvice && (
+                      <Button 
+                        onClick={() => handleRequestAdvice(activePilot.id)}
+                        disabled={councilAdviceMutation.isPending}
+                        variant="outline"
+                        className="border-primary/50 text-primary hover:bg-primary/10"
+                        data-testid="button-request-advice"
+                      >
+                        {councilAdviceMutation.isPending ? "Deliberating..." : (
+                          <>
+                            <Users size={16} className="mr-2" /> Council Review
+                          </>
+                        )}
+                      </Button>
+                    )}
+                    {activePilot.status !== "COMPLETED" && (
+                      <Button 
+                        onClick={() => handleRunSimulation(activePilot.id)}
+                        disabled={runSimulationMutation.isPending}
+                        className="bg-secondary text-black hover:bg-secondary/90 font-bold"
+                        data-testid="button-run-simulation"
+                      >
+                        {runSimulationMutation.isPending ? "Simulating..." : (
+                          <>
+                            <Play size={16} className="mr-2" /> Run Qi Simulation
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -339,6 +393,89 @@ export default function Dashboard() {
                   </Card>
                 </div>
 
+                {/* Council Advice Section */}
+                {activePilotAdvice && (
+                  <div className="mt-6 space-y-4 animate-in fade-in-50 duration-500">
+                    <h3 className="text-xl font-bold flex items-center gap-2">
+                      <Users className="text-primary" /> Council Governance Review
+                      <span className={`ml-2 text-xs px-2 py-1 rounded-full ${
+                        activePilotAdvice.status === "APPROVE" ? "bg-green-500/20 text-green-400" :
+                        activePilotAdvice.status === "REVISE" ? "bg-yellow-500/20 text-yellow-400" :
+                        "bg-red-500/20 text-red-400"
+                      }`}>
+                        {activePilotAdvice.status}
+                      </span>
+                    </h3>
+                    
+                    <Card className="bg-primary/5 border-primary/20">
+                      <CardHeader>
+                        <CardTitle className="text-sm text-primary uppercase flex items-center gap-2">
+                          <ShieldCheck size={16} /> Qi Policy Summary
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="text-sm text-gray-300">
+                        {activePilotAdvice.qiPolicySummary}
+                      </CardContent>
+                    </Card>
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <Card className="bg-white/5 border-white/10">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-xs text-yellow-400 uppercase flex items-center gap-2">
+                            <AlertTriangle size={14} /> Required Changes
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="text-xs text-gray-400 space-y-2">
+                            {activePilotAdvice.requiredChanges.map((change, i) => (
+                              <li key={i} className="flex gap-2">
+                                <span className="text-yellow-500">-</span>
+                                {change}
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-white/5 border-white/10">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-xs text-red-400 uppercase flex items-center gap-2">
+                            <AlertCircle size={14} /> Risk Flags
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="text-xs text-gray-400 space-y-2">
+                            {activePilotAdvice.riskFlags.map((flag, i) => (
+                              <li key={i} className="flex gap-2">
+                                <span className="text-red-500">!</span>
+                                {flag}
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-green-500/5 border-green-500/20">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-xs text-green-400 uppercase flex items-center gap-2">
+                            <Sparkles size={14} /> Curb-Cut Benefits
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="text-xs text-gray-400 space-y-2">
+                            {activePilotAdvice.curbCutBenefits.map((benefit, i) => (
+                              <li key={i} className="flex gap-2">
+                                <span className="text-green-500">+</span>
+                                {benefit}
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                )}
+
                 {activePilotSimulation || activePilot.status === "COMPLETED" ? (
                   <div className="mt-8">
                      <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
@@ -347,7 +484,7 @@ export default function Dashboard() {
                      {activePilotSimulation && <SimulationChart result={activePilotSimulation} />}
                   </div>
                 ) : (
-                  <div className="h-[300px] border border-dashed border-white/10 rounded-xl flex items-center justify-center text-gray-500 flex-col gap-4">
+                  <div className="h-[200px] border border-dashed border-white/10 rounded-xl flex items-center justify-center text-gray-500 flex-col gap-4">
                     <Activity size={48} className="opacity-20" />
                     <p>Ready to run Omniverse simulation.</p>
                   </div>

@@ -91,4 +91,10 @@ export const pilotsApi = {
       method: "POST",
     });
   },
+
+  async getCouncilAdvice(id: string) {
+    return fetchWithAuth(`${API_BASE}/pilots/${id}/advise`, {
+      method: "POST",
+    });
+  },
 };

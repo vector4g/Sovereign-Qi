@@ -1,0 +1,176 @@
+Here are the concrete “stubbed” pieces you can drop into your Replit app so everything runs end‑to‑end while you wire real APIs later.[1]
+
+---
+
+## 1. Agent orchestration stubs
+
+Create `lib/agents.ts`:
+
+```ts
+// lib/agents.ts
+
+export interface CouncilAdvice {
+  qiPolicySummary: string;
+  requiredChanges: string[];
+  riskFlags: string[];
+  curbCutBenefits: string[];
+  status: "APPROVE" | "REVISE" | "BLOCK";
+}
+
+// In future, swap these with real calls to Hume / OpenAI / Anthropic / Cohere / Hermes / NIMs.
+export async function generateQiPolicySummary(input: {
+  primaryObjective: string;
+  majorityLogicDesc: string;
+  qiLogicDesc: string;
+  harms?: string;
+  communityVoices?: string;
+}): Promise<string> {
+  return (
+    `For this pilot, Sovereign Qi recommends centering dignity and accessibility as first-class constraints. ` +
+    `Shift from majority-rule decision making to policies that explicitly protect those most at risk, ` +
+    `using synthetic personas and zero-knowledge access to avoid surveillance while still improving outcomes.`
+  );
+}
+
+export async function generateCouncilAdvice(input: {
+  primaryObjective: string;
+  majorityLogicDesc: string;
+  qiLogicDesc: string;
+  harms?: string;
+  communityVoices?: string;
+}): Promise<CouncilAdvice> {
+  const baseSummary = await generateQiPolicySummary(input);
+
+  return {
+    qiPolicySummary: baseSummary,
+    requiredChanges: [
+      "Make accessibility and psychological safety explicit success metrics alongside efficiency.",
+      "Remove any data collection that is not strictly necessary for the simulation objective.",
+      "Document how queer, disabled, and neurodivergent stakeholders were included in defining Qi Logic."
+    ],
+    riskFlags: [
+      "Potential over-reliance on monitoring language that could slip back into surveillance.",
+      "Insufficient clarity on how dissenting voices will be protected in the governance process."
+    ],
+    curbCutBenefits: [
+      "Design for queer and neurodivergent safety improves clarity and predictability for everyone.",
+      "Anti-harassment detection tuned on anti-trans dog-whistles also catches subtle school and workplace bullying.",
+      "Healthcare bias checks built for trans patients improve care pathways for all edge-case diagnostics."
+    ],
+    status: "REVISE"
+  };
+}
+```
+
+***
+
+## 2. Stubbed Council advice API route
+
+Example for a Next.js App Router route at `app/api/pilots/[id]/advise/route.ts`:
+
+```ts
+// app/api/pilots/[id]/advise/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { generateCouncilAdvice } from "@/lib/agents";
+// TODO: add auth guard
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const pilotId = params.id;
+
+  const pilot = await prisma.pilotProject.findUnique({
+    where: { id: pilotId }
+  });
+
+  if (!pilot) {
+    return NextResponse.json({ error: "Pilot not found" }, { status: 404 });
+  }
+
+  const advice = await generateCouncilAdvice({
+    primaryObjective: pilot.primaryObjective,
+    majorityLogicDesc: pilot.majorityLogicDesc,
+    qiLogicDesc: pilot.qiLogicDesc,
+    harms: (pilot as any).harms ?? "",
+    communityVoices: (pilot as any).communityVoices ?? ""
+  });
+
+  // If you have a SimulationRun model, you could create one here and store advice.councilNotes.
+  // For now, just return the advice.
+  return NextResponse.json({ pilotId, advice });
+}
+```
+
+If you’re not on Prisma yet, replace the `prisma` call with your in‑memory store.
+
+---
+
+## 3. Stubbed simulation run API route
+
+If you haven’t already, here’s the mocked `run` endpoint at `app/api/pilots/[id]/run/route.ts`:
+
+```ts
+// app/api/pilots/[id]/run/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+// TODO: add auth guard
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const pilot = await prisma.pilotProject.findUnique({
+    where: { id: params.id }
+  });
+
+  if (!pilot) {
+    return NextResponse.json({ error: "Pilot not found" }, { status: 404 });
+  }
+
+  // Simulate a bit of latency to feel like an Omniverse/NIMs call.
+  await new Promise(res => setTimeout(res, 1200));
+
+  const result = {
+    scenarioA: {
+      label: "Majority Logic",
+      innovationIndex: 1.0,
+      burnoutIndex: 0.8,
+      liabilityIndex: 0.7
+    },
+    scenarioB: {
+      label: "Qi Logic",
+      innovationIndex: 1.4, // +40%
+      burnoutIndex: 0.3,
+      liabilityIndex: 0.1   // -~85–90%
+    }
+  };
+
+  return NextResponse.json({ pilotId: pilot.id, result });
+}
+```
+
+***
+
+## 4. Frontend call pattern (React)
+
+In your Dashboard component, you can wire buttons like:
+
+```ts
+async function requestCouncilAdvice(pilotId: string) {
+  const res = await fetch(`/api/pilots/${pilotId}/advise`, { method: "POST" });
+  const json = await res.json();
+  setCouncilAdvice(prev => ({ ...prev, [pilotId]: json.advice }));
+}
+
+async function runSimulation(pilotId: string) {
+  const res = await fetch(`/api/pilots/${pilotId}/run`, { method: "POST" });
+  const json = await res.json();
+  setSimulationResults(prev => ({ ...prev, [pilotId]: json.result }));
+}
+```
+
+These stubs let the app behave like a real multi‑agent, Council‑governed system today, while keeping all external calls in one place (`lib/agents.ts`) so you can later plug in Hume, OpenAI, Cohere, Hermes, Anthropic, and NVIDIA NIMs without refactoring your UI.[1]
+
+[1](https://www.perplexity.ai/search/this-is-the-magnum-opus-you-ar-aMIm0gvhQvyAsAWJlUUy.w?sm=d)

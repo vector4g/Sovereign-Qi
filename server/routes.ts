@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertPilotSchema } from "@shared/schema";
 import { randomBytes } from "crypto";
+import { generateCouncilAdvice } from "./agents";
 
 // Session middleware
 function requireAuth(req: any, res: any, next: any) {
@@ -107,6 +108,33 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Get pilot error:", error);
       res.status(500).json({ error: "Failed to fetch pilot" });
+    }
+  });
+
+  // Council Advice endpoint - multi-agent governance review
+  app.post("/api/pilots/:id/advise", requireAuth, async (req: any, res) => {
+    try {
+      const pilot = await storage.getPilot(req.params.id);
+      if (!pilot) {
+        return res.status(404).json({ error: "Pilot not found" });
+      }
+      if (pilot.ownerEmail !== req.userEmail) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      // Simulate multi-agent deliberation delay
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      const advice = await generateCouncilAdvice({
+        primaryObjective: pilot.primaryObjective,
+        majorityLogicDesc: pilot.majorityLogicDesc,
+        qiLogicDesc: pilot.qiLogicDesc,
+      });
+
+      res.json({ pilotId: pilot.id, advice });
+    } catch (error) {
+      console.error("Council advice error:", error);
+      res.status(500).json({ error: "Council deliberation failed" });
     }
   });
 
