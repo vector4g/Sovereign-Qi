@@ -150,27 +150,32 @@ export default function Home() {
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-8 text-white">
             Zero-Knowledge Leadership
           </h2>
-          <p className="text-xl text-gray-400 mb-12">
-            The Qi Wallet uses DIDs and Zero-Knowledge Proofs to verify "has the right" without revealing "who you are". 
-            Doors open, services unlock, and systems verify permission—without ever logging your identity.
+          <p className="text-xl text-gray-400 mb-12 max-w-3xl mx-auto">
+            The Qi Wallet empowers you to prove your rights without exposing your identity. 
+            Using Decentralized Identifiers (DIDs) and Zero-Knowledge Proofs, a system can ask "Do you have permission?" and receive a cryptographic "Yes"—without ever needing to know who you are.
           </p>
-          <div className="glass-panel p-8 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-transparent">
-             <div className="font-mono text-left space-y-2 text-sm text-gray-300">
-               <div className="flex justify-between border-b border-white/10 pb-2">
-                 <span>ACCESS_REQUEST:</span>
-                 <span className="text-green-400">GRANTED</span>
+          <div className="glass-panel p-8 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-transparent max-w-2xl mx-auto">
+             <div className="font-mono text-left space-y-4 text-sm text-gray-300">
+               <div className="border-b border-white/10 pb-4 mb-4">
+                 <h3 className="text-white font-bold mb-2 flex items-center gap-2"><Shield size={16} className="text-primary"/> THE SAFE OFFICE EXAMPLE</h3>
+                 <p className="text-gray-400 text-xs leading-relaxed">
+                   Traditional systems log: <span className="text-red-400">"Levi entered at 8:02 AM."</span><br/>
+                   Qi Systems verify: <span className="text-green-400">"Someone with permission entered."</span>
+                 </p>
                </div>
-               <div className="flex justify-between border-b border-white/10 pb-2">
-                 <span>VERIFIER:</span>
-                 <span>OFFICE_MAIN_DOOR_L4</span>
-               </div>
-               <div className="flex justify-between border-b border-white/10 pb-2">
-                 <span>PROOF:</span>
-                 <span className="text-primary truncate max-w-[200px]">zk-snark-0x892...</span>
-               </div>
-               <div className="flex justify-between pt-2">
-                 <span>IDENTITY_REVEALED:</span>
-                 <span className="text-red-400">FALSE</span>
+               <div className="space-y-2">
+                 <div className="flex justify-between">
+                   <span>DOOR_QUERY:</span>
+                   <span className="text-secondary">HAS_VALID_ACCESS_TOKEN?</span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span>WALLET_RESPONSE:</span>
+                   <span className="text-primary">PROOF_VALIDATED (True)</span>
+                 </div>
+                 <div className="flex justify-between pt-2 border-t border-white/5">
+                   <span>IDENTITY_LOGGED:</span>
+                   <span className="text-gray-500">NULL (Anonymity Preserved)</span>
+                 </div>
                </div>
              </div>
           </div>
