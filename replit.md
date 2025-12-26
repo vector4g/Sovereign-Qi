@@ -49,12 +49,13 @@ Preferred communication style: Simple, everyday language.
 ### Morpheus Governance Signal Integration
 - **Purpose**: Detect dog whistles, coded language, and surveillance patterns in organizational communications
 - **Schema**: `governanceSignals` table with 7 categories: dog_whistle, identity_targeting, surveillance_concern, policy_subversion, queer_coded_hostility, ableist_language, racial_microaggression
+- **Canonical orgId**: Pilots have auto-generated `orgId` normalized from `orgName` (lowercase, underscores). Signals must use this canonical orgId for matching.
 - **API Endpoints**:
-  - `POST /api/signals` - Ingest signals from GPU pipeline (requires pilot ownership in org)
-  - `GET /api/signals/org/:orgId` - Retrieve signals for org (requires pilot ownership)
+  - `POST /api/signals` - Ingest signals from GPU pipeline (requires pilot ownership with matching orgId)
+  - `GET /api/signals/org/:orgId` - Retrieve signals for org (requires pilot ownership with matching orgId)
 - **Council Integration**: Signals are aggregated by category and injected into Claude/OpenAI prompts with safety caveats ("treat as early warning, not accusation")
-- **Authorization**: Signal access requires user owns at least one pilot with matching orgName
-- **Note for Production**: Consider adding canonical orgId field to pilots and enforcing org verification to prevent spoofing
+- **Authorization**: Signal access requires user owns at least one pilot with matching canonical orgId
+- **Note for Production**: Consider enforcing org verification at registration to prevent spoofing
 
 ### Build System
 - **Client Build**: Vite for development and production builds
