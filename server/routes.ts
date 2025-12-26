@@ -127,10 +127,45 @@ export async function registerRoutes(
         harms: req.body.harms,
       });
 
-      res.json({ pilotId: pilot.id, advice });
+      const sanitizeArray = (arr: string[], maxItems: number = 5, maxLen: number = 200) =>
+        arr.slice(0, maxItems).map((s) => s.slice(0, maxLen));
+
+      const logEntry = await storage.createCouncilDecision({
+        pilotId: pilot.id,
+        status: advice.status,
+        adviceSummary: advice.qiPolicySummary.slice(0, 500),
+        requiredChanges: sanitizeArray(advice.requiredChanges),
+        riskFlags: sanitizeArray(advice.riskFlags),
+        curbCutBenefits: sanitizeArray(advice.curbCutBenefits),
+      });
+
+      res.json({ 
+        pilotId: pilot.id, 
+        advice,
+        loggedDecisionId: logEntry.id,
+        loggedAt: logEntry.createdAt,
+      });
     } catch (error) {
       console.error("Council advice error:", error);
       res.status(500).json({ error: "Council deliberation failed" });
+    }
+  });
+
+  app.get("/api/pilots/:id/council-log", requireAuth, async (req: any, res) => {
+    try {
+      const pilot = await storage.getPilot(req.params.id);
+      if (!pilot) {
+        return res.status(404).json({ error: "Pilot not found" });
+      }
+      if (pilot.ownerEmail !== req.userEmail) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      const entries = await storage.getCouncilDecisionsByPilot(req.params.id);
+      res.json({ pilotId: pilot.id, entries });
+    } catch (error) {
+      console.error("Council log error:", error);
+      res.status(500).json({ error: "Failed to fetch council log" });
     }
   });
 

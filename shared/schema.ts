@@ -95,3 +95,25 @@ export type Conversation = typeof conversations.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
+
+// Council decision log - persistent governance trail
+export const councilStatusEnum = pgEnum("council_status", ["APPROVE", "REVISE", "BLOCK"]);
+
+export const councilDecisions = pgTable("council_decisions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  pilotId: varchar("pilot_id").notNull().references(() => pilots.id, { onDelete: "cascade" }),
+  status: councilStatusEnum("status").notNull(),
+  adviceSummary: text("advice_summary").notNull(),
+  requiredChanges: text("required_changes").array().notNull(),
+  riskFlags: text("risk_flags").array().notNull(),
+  curbCutBenefits: text("curb_cut_benefits").array().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCouncilDecisionSchema = createInsertSchema(councilDecisions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type CouncilDecision = typeof councilDecisions.$inferSelect;
+export type InsertCouncilDecision = z.infer<typeof insertCouncilDecisionSchema>;

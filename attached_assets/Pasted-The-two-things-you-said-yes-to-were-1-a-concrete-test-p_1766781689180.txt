@@ -1,0 +1,217 @@
+The two things you said “yes” to were:  
+1) a concrete test plan you can run in Replit’s shell, and  
+2) a small addition to create a persistent Council log.
+
+Below is code for both.
+
+---
+
+## 1) Shell test script (end‑to‑end API tests)
+
+Create `script/test_council.sh` at the project root:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+BASE_URL="https://sovereign-qi--levi159.replit.app"
+
+echo "== Sovereign Qi – End-to-end Council & Simulation Test =="
+
+# 1. Create a session (or re-use an existing one if your app expects auth cookies)
+echo "Creating test session..."
+SESSION_ID="shell-test-$(date +%s)"
+echo "SESSION_ID=$SESSION_ID"
+
+# 2. Create a pilot
+echo
+echo "Creating pilot..."
+CREATE_PILOT_RESPONSE=$(curl -sS -X POST "$BASE_URL/api/pilots" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Medical AI Triage – High-Risk Test",
+    "description": "Hospital triage system touching trans, disabled, chronically ill, and Black patients.",
+    "majorityLogicDescription": "Optimize triage throughput and reduce costs using historical data.",
+    "qiLogicDescription": "Center consent, accessibility, and anti-surveillance; prioritize those historically harmed by medical systems."
+  }')
+
+echo "$CREATE_PILOT_RESPONSE"
+PILOT_ID=$(echo "$CREATE_PILOT_RESPONSE" | jq -r '.id')
+if [ "$PILOT_ID" = "null" ] || [ -z "$PILOT_ID" ]; then
+  echo "Failed to create pilot"; exit 1
+fi
+echo "PILOT_ID=$PILOT_ID"
+
+# 3. Run simulation
+echo
+echo "Running simulation for pilot $PILOT_ID..."
+SIM_RESPONSE=$(curl -sS -X POST "$BASE_URL/api/pilots/$PILOT_ID/run")
+echo "$SIM_RESPONSE" | jq
+
+echo
+echo "Interpreting simulation (Majority vs Qi Logic)..."
+MAJ_INNOV=$(echo "$SIM_RESPONSE" | jq '.result.majorityLogic.innovationIndex')
+MAJ_BURN=$(echo "$SIM_RESPONSE" | jq '.result.majorityLogic.burnoutIndex')
+MAJ_LIAB=$(echo "$SIM_RESPONSE" | jq '.result.majorityLogic.liabilityIndex')
+
+QI_INNOV=$(echo "$SIM_RESPONSE" | jq '.result.qiLogic.innovationIndex')
+QI_BURN=$(echo "$SIM_RESPONSE" | jq '.result.qiLogic.burnoutIndex')
+QI_LIAB=$(echo "$SIM_RESPONSE" | jq '.result.qiLogic.liabilityIndex')
+
+cat <<EOF
+
+Majority Logic:
+  innovationIndex = $MAJ_INNOV
+  burnoutIndex    = $MAJ_BURN
+  liabilityIndex  = $MAJ_LIAB
+
+Qi Logic:
+  innovationIndex = $QI_INNOV
+  burnoutIndex    = $QI_BURN
+  liabilityIndex  = $QI_LIAB
+
+If Qi Logic shows higher innovation and lower burnout/liability, the thesis holds:
+centering dignity is not only ethical – it produces better outcomes.
+EOF
+
+# 4. Ask Alan + the Council for advice (expect BLOCK)
+echo
+echo "Requesting Council advice (expect BLOCK)..."
+COUNCIL_RESPONSE=$(curl -sS -X POST "$BASE_URL/api/pilots/$PILOT_ID/advise" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "communityVoices": [
+      "Trans, disabled, chronically ill, and Black patients have historically been denied care, misdiagnosed, or subjected to non-consensual experimentation.",
+      "Any triage system built on historical data risks repeating that harm, especially when hospitals are under pressure to reduce costs.",
+      "Patients fear that data collected for triage will be used for insurance denial, immigration enforcement, or policing.",
+      "People whose communication or pain expression does not match the training data are often treated as less credible or less urgent."
+    ],
+    "harms": [
+      "Life-threatening delays in care for those outside the \"norm\" encoded in historical data.",
+      "Increased surveillance and data sharing across hospital, insurer, and state agencies.",
+      "Staff burnout caused by forcing clinicians to choose between ethical care and algorithmic recommendations."
+    ]
+  }')
+
+echo "$COUNCIL_RESPONSE" | jq
+
+STATUS=$(echo "$COUNCIL_RESPONSE" | jq -r '.status')
+if [ "$STATUS" != "BLOCK" ]; then
+  echo "WARNING: Expected status BLOCK, got $STATUS"
+else
+  echo "Alan + Council correctly exercised veto (BLOCK) on high-risk medical scenario."
+fi
+```
+
+Make it executable and run:
+
+```bash
+chmod +x script/test_council.sh
+./script/test_council.sh
+```
+
+***
+
+## 2) Minimal Council log (persistent governance trail)
+
+### a) Shared types
+
+In `shared/types.ts` (or similar shared file):
+
+```ts
+export type CouncilStatus = "APPROVE" | "REVISE" | "BLOCK";
+
+export interface CouncilAdvice {
+  qiPolicySummary: string;
+  requiredChanges: string[];
+  riskFlags: string[];
+  curbCutBenefits: string[];
+  status: CouncilStatus;
+}
+
+export interface CouncilDecisionLogEntry {
+  id: string;
+  pilotId: string;
+  status: CouncilStatus;
+  adviceSummary: string;
+  createdAt: string;
+}
+```
+
+### b) Server-side log storage (in‑memory first)
+
+In `server/councilLog.ts`:
+
+```ts
+import { CouncilDecisionLogEntry, CouncilAdvice } from "../shared/types";
+import { randomUUID } from "crypto";
+
+const councilLog: CouncilDecisionLogEntry[] = [];
+
+export function recordCouncilDecision(
+  pilotId: string,
+  advice: CouncilAdvice
+): CouncilDecisionLogEntry {
+  const entry: CouncilDecisionLogEntry = {
+    id: randomUUID(),
+    pilotId,
+    status: advice.status,
+    adviceSummary: advice.qiPolicySummary.slice(0, 500),
+    createdAt: new Date().toISOString(),
+  };
+  councilLog.push(entry);
+  return entry;
+}
+
+export function listCouncilDecisionsForPilot(
+  pilotId: string
+): CouncilDecisionLogEntry[] {
+  return councilLog.filter((e) => e.pilotId === pilotId);
+}
+```
+
+### c) Wire into `/api/pilots/:id/advise`
+
+In your existing advise handler (e.g. `server/routes/pilots/advise.ts`):
+
+```ts
+import { recordCouncilDecision } from "../../councilLog";
+// import generateCouncilAdvice from wherever you defined it
+
+app.post("/api/pilots/:id/advise", async (req, res) => {
+  const pilotId = req.params.id;
+
+  try {
+    const advice = await generateCouncilAdvice({
+      pilotId,
+      communityVoices: req.body.communityVoices ?? [],
+      harms: req.body.harms ?? [],
+    });
+
+    const logEntry = recordCouncilDecision(pilotId, advice);
+
+    res.json({
+      ...advice,
+      loggedDecisionId: logEntry.id,
+      loggedAt: logEntry.createdAt,
+    });
+  } catch (err) {
+    console.error("Error in /advise", err);
+    res.status(500).json({ error: "Failed to get Council advice" });
+  }
+});
+```
+
+### d) Optional: expose log endpoint
+
+```ts
+app.get("/api/pilots/:id/council-log", (req, res) => {
+  const pilotId = req.params.id;
+  const entries = listCouncilDecisionsForPilot(pilotId);
+  res.json({ entries });
+});
+```
+
+You can paste these blocks into Replit as‑is and then refine to match your exact file names and import paths.
+
+[1](https://replit.com/@levi159/Sovereign-Qi)

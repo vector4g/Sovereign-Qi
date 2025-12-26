@@ -5,9 +5,12 @@ import {
   type InsertSession,
   type Simulation,
   type InsertSimulation,
+  type CouncilDecision,
+  type InsertCouncilDecision,
   pilots,
   sessions,
-  simulations
+  simulations,
+  councilDecisions
 } from "@shared/schema";
 import { db } from "../db";
 import { eq, and, desc } from "drizzle-orm";
@@ -27,6 +30,10 @@ export interface IStorage {
   // Simulation results
   createSimulation(simulation: InsertSimulation): Promise<Simulation>;
   getSimulationByPilot(pilotId: string): Promise<Simulation | undefined>;
+  
+  // Council decision log - governance trail
+  createCouncilDecision(decision: InsertCouncilDecision): Promise<CouncilDecision>;
+  getCouncilDecisionsByPilot(pilotId: string): Promise<CouncilDecision[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -92,6 +99,20 @@ export class DatabaseStorage implements IStorage {
       .where(eq(simulations.pilotId, pilotId))
       .limit(1);
     return simulation;
+  }
+
+  // Council Decisions - Governance Trail
+  async createCouncilDecision(decision: InsertCouncilDecision): Promise<CouncilDecision> {
+    const [result] = await db.insert(councilDecisions).values(decision).returning();
+    return result;
+  }
+
+  async getCouncilDecisionsByPilot(pilotId: string): Promise<CouncilDecision[]> {
+    return await db
+      .select()
+      .from(councilDecisions)
+      .where(eq(councilDecisions.pilotId, pilotId))
+      .orderBy(desc(councilDecisions.createdAt));
   }
 }
 
