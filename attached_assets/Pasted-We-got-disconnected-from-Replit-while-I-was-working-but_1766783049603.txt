@@ -1,0 +1,294 @@
+We got disconnected from Replit while I was working, but I can still walk you through getting everything operational there. I’ll focus on three things:
+
+1. Make sure the current Sovereign Qi build runs cleanly on Replit  
+2. Wire in the Morpheus/“governance signal” integration that was being set up  
+3. Confirm Alan + Council actually use those signals in advice
+
+Below is a concrete checklist you can follow directly in Replit.
+
+***
+
+## 1. Verify the app runs in Replit
+
+In the Replit shell:
+
+```bash
+npm install           # if not already done
+npm run db:push       # sync Prisma/schema to your production DB
+npm run dev           # or whatever your dev/start script is
+```
+
+Then open the Replit webview (or the `https://sovereign-qi.<...>.replit.app` URL) and:
+
+- Log in / create a pilot
+- Run a simulation
+- Request Council advice
+
+If those three steps work without 5xx errors, your baseline app is operational.
+
+If you see failures:
+
+- 500 on `/api/pilots/:id/run`: check environment variables for your OpenAI/NIM keys.
+- 500 on `/api/pilots/:id/advise`: check Anthropic/OpenAI keys and that JSON parsing for Council advice is guarded with try/catch.
+
+***
+
+## 2. Data structures for Morpheus “governance signals”
+
+In your shared types file (e.g., `shared/types.ts`), add:
+
+```ts
+export interface GovernanceSignal {
+  id: string;
+  source: "slack" | "email" | "ticketing" | "other";
+  channel?: string;
+  externalId?: string;          // e.g. Slack message ID
+  timestamp: string;            // ISO
+  textSummary: string;          // redacted text or short summary
+  labels: string[];             // e.g. ["dog_whistle", "policy_subversion"]
+  scores: Record<string, number>; // label -> confidence
+  meta?: Record<string, unknown>;
+}
+
+export interface CouncilAdvice {
+  qiPolicySummary: string;
+  requiredChanges: string[];
+  riskFlags: string[];
+  curbCutBenefits: string[];
+  status: "APPROVE" | "REVISE" | "BLOCK";
+  // NEW: what Morpheus/governance signals Alan saw
+  consideredSignals?: GovernanceSignal[];
+}
+```
+
+This lets the front‑end and back‑end share the same shape.
+
+***
+
+## 3. API endpoint to ingest Morpheus signals
+
+Create a small authenticated endpoint (you can restrict this to internal/API key use) that receives Morpheus‑enriched events (e.g., from a Kafka consumer or a simple HTTP forwarder).
+
+Example `POST /api/orgs/:orgId/governance-signals`:
+
+```ts
+// server/routes/governanceSignals.ts
+
+import type { Request, Response } from "express";
+import { GovernanceSignal } from "../../shared/types";
+import { db } from "../db"; // however you access your DB
+
+export async function postGovernanceSignals(req: Request, res: Response) {
+  const orgId = req.params.orgId;
+  const signals = req.body?.signals as GovernanceSignal[] | undefined;
+
+  if (!signals || !Array.isArray(signals)) {
+    return res.status(400).json({ error: "signals[] required" });
+  }
+
+  // Basic validation + truncation for safety
+  const cleaned = signals.map((s) => ({
+    ...s,
+    textSummary: String(s.textSummary ?? "").slice(0, 500),
+  }));
+
+  // Persist in your DB – pseudo‑code, adapt to your ORM:
+  await db.governanceSignal.createMany({
+    data: cleaned.map((s) => ({
+      orgId,
+      source: s.source,
+      channel: s.channel ?? null,
+      externalId: s.externalId ?? null,
+      timestamp: new Date(s.timestamp),
+      textSummary: s.textSummary,
+      labels: s.labels,
+      scores: s.scores,
+      meta: s.meta ?? {},
+    })),
+  });
+
+  res.json({ stored: cleaned.length });
+}
+```
+
+Then register this route in your main router:
+
+```ts
+app.post("/api/orgs/:orgId/governance-signals", postGovernanceSignals);
+```
+
+DB schema sketch (Prisma‑style):
+
+```prisma
+model GovernanceSignal {
+  id          String   @id @default(cuid())
+  orgId       String
+  source      String
+  channel     String?
+  externalId  String?
+  timestamp   DateTime
+  textSummary String
+  labels      Json
+  scores      Json
+  meta        Json
+  createdAt   DateTime @default(now())
+}
+```
+
+***
+
+## 4. Surfacing signals into Alan’s Council advice
+
+Your advise handler probably looks like:
+
+```ts
+app.post("/api/pilots/:id/advise", async (req, res) => {
+  const pilotId = req.params.id;
+  // ...
+  const advice = await generateCouncilAdvice({
+    pilot,
+    communityVoices: req.body.communityVoices ?? [],
+    harms: req.body.harms ?? [],
+  });
+  res.json(advice);
+});
+```
+
+Extend it to pull recent signals and pass them into `generateCouncilAdvice`:
+
+```ts
+app.post("/api/pilots/:id/advise", async (req, res) => {
+  const pilotId = req.params.id;
+  const pilot = await db.pilot.findUnique({ where: { id: pilotId } });
+  if (!pilot) return res.status(404).json({ error: "Pilot not found" });
+
+  // Fetch recent governance signals for this org (last 30 days, for example)
+  const rawSignals = await db.governanceSignal.findMany({
+    where: { orgId: pilot.orgId, timestamp: { gte: new Date(Date.now() - 30 * 24 * 3600 * 1000) } },
+    orderBy: { timestamp: "desc" },
+    take: 50,
+  });
+
+  const governanceSignals: GovernanceSignal[] = rawSignals.map((s) => ({
+    id: s.id,
+    source: s.source as any,
+    channel: s.channel ?? undefined,
+    externalId: s.externalId ?? undefined,
+    timestamp: s.timestamp.toISOString(),
+    textSummary: s.textSummary,
+    labels: s.labels as string[],
+    scores: s.scores as Record<string, number>,
+    meta: s.meta as Record<string, unknown>,
+  }));
+
+  const advice = await generateCouncilAdvice({
+    pilot,
+    communityVoices: req.body.communityVoices ?? [],
+    harms: req.body.harms ?? [],
+    governanceSignals,
+  });
+
+  res.json(advice);
+});
+```
+
+Update your `AgentInput` type and `generateCouncilAdvice` function to accept `governanceSignals`.
+
+***
+
+## 5. Prompting Alan to use the signals (dog whistles, subversion)
+
+Inside your Council system prompt (where Alan is defined), add a section like:
+
+> You also receive **governanceSignals**: a list of recent organizational signals from tools like Slack that have been pre‑classified by a separate model.  
+> Each signal may include labels such as “dog_whistle”, “identity_targeting”, “policy_subversion”, or “surveillance_washing” and associated scores.  
+> Treat these signals as early warnings, not absolute truth. Look for:  
+> – patterns over time,  
+> – how they intersect with community testimony, and  
+> – whether policies or pilots are likely to be weaponized against queer, trans, racialized, disabled, or otherwise marginalized workers.  
+> 
+> You MUST:
+> – explicitly comment on any pattern of dog whistles or policy‑subversion signals that relate to this pilot,  
+> – prefer structural interventions (policy changes, leadership accountability, transparency) over targeting individuals,  
+> – block or demand major revision of any pilot that would amplify these harms or enable surveillance‑based control.
+
+And in the user content you send into Alan, include a compact summary, for example:
+
+```ts
+const signalSummaryText = summarizeSignalsForPrompt(governanceSignals);
+
+const userContent = [
+  {
+    role: "user",
+    content: [
+      {
+        type: "text",
+        text:
+`Context:
+- Pilot: ${pilot.name}
+- Majority Logic: ${pilot.majorityLogicDescription}
+- Qi Logic: ${pilot.qiLogicDescription}
+
+Recent governance signals (from Slack etc.):
+${signalSummaryText}
+
+Community voices:
+${communityVoices.join("\n")}
+
+Harms described:
+${harms.join("\n")}
+`
+      }
+    ]
+  }
+];
+```
+
+Where `summarizeSignalsForPrompt` could:
+
+- Aggregate counts per label (e.g., “18 messages flagged as dog_whistle: queer-coded in #eng over 14 days”).
+- Include 2–3 short, anonymized examples.
+
+***
+
+## 6. Quick operational test on Replit
+
+Once the code changes are in and deployed on Replit:
+
+1. Hit your new signals endpoint manually to seed data:
+
+```bash
+curl -X POST "https://<your-app>.replit.app/api/orgs/<ORG_ID>/governance-signals" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "signals": [
+      {
+        "id": "test-1",
+        "source": "slack",
+        "channel": "#eng",
+        "externalId": "slack-msg-123",
+        "timestamp": "2025-12-26T20:00:00.000Z",
+        "textSummary": "Manager uses coded language to question queer employees commitment.",
+        "labels": ["dog_whistle", "identity_targeting"],
+        "scores": { "dog_whistle": 0.92, "identity_targeting": 0.88 },
+        "meta": { "example": true }
+      }
+    ]
+  }'
+```
+
+2. In the UI, create a pilot for that org and request Council advice.
+3. Check that the advice JSON includes `consideredSignals` and that Alan’s text explicitly references patterns like “dog-whistle signals in internal communications”.
+
+***
+
+## 7. What you’ll have once this is all operational
+
+On Replit, once these pieces are in place, Sovereign Qi will:
+
+- Run reliably with your existing simulation and Council flows.
+- Accept Morpheus‑style enriched events (dog whistles, policy subversion, surveillance‑washing) via an HTTP endpoint.
+- Store those signals, tie them to orgs/pilots, and surface them to Alan.
+- Have Alan explicitly use these signals when deciding `APPROVE/REVISE/BLOCK`, in line with your harm‑magnification and “no path of least resistance” principles.
+
+If you paste me any error logs or your existing `routes`/`agents` pieces, I can adapt these snippets exactly to your current file layout and help you resolve any Replit‑specific issues.
