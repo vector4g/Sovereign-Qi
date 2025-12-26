@@ -88,3 +88,22 @@ Preferred communication style: Simple, everyday language.
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL` - Anthropic API base URL
 - `AI_INTEGRATIONS_OPENAI_API_KEY` - OpenAI API key
 - `AI_INTEGRATIONS_OPENAI_BASE_URL` - OpenAI API base URL
+
+## Testing
+
+### Stress Test Suite
+Run comprehensive stress tests with:
+```bash
+./scripts/stress_test.sh http://localhost:5000
+```
+
+Tests include:
+- Basic connectivity and authentication
+- Parallel pilot creation (5 concurrent)
+- Simulation execution on all pilots
+- Morpheus governance signal injection (5 categories)
+- Council advice with large payloads and signal integration
+- Error handling (malformed JSON, missing fields)
+- Authorization protection
+- Concurrent Council requests
+- Council decision log retrieval
