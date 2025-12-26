@@ -1,0 +1,58 @@
+Sovereign Qi’s NIM calls can run entirely on NVIDIA infrastructure, and you can keep using TypeScript there because NIM exposes an OpenAI‑compatible HTTP API that is language‑agnostic.[1][2][3]
+
+## Where NIM actually runs
+
+- NIMs are packaged as GPU‑optimized containers (microservices) that you deploy on NVIDIA‑powered cloud, data center, or workstations; you then talk to them over `/v1/chat/completions` and related endpoints.[4][5][1]
+- Whether you hit `https://integrate.api.nvidia.com/v1` or your own on‑prem NIM deployment, the contract is OpenAI‑compatible REST, so your existing TypeScript backend is a perfectly valid client.[2][3][6]
+
+## What language you use for NIM integration
+
+- On your side (Sovereign Qi), you’re just making HTTP calls, so TypeScript/Node is ideal for:  
+  - Calling NIM via OpenAI‑compatible clients (or a thin `fetch` wrapper).[4][2]
+  - Handling streaming, JSON validation, CouncilAdvice typing, and governance logs.[7][8]
+- On NVIDIA’s side, NIM is implemented in their own stack (C++, Python, Triton, etc.), but that’s abstracted away; you don’t write NIM internals, only consume the API.[3][1][4]
+
+## Exploring Morpheus for safety / telemetry
+
+- Morpheus is a GPU‑accelerated cybersecurity AI framework for inspecting logs, network traffic, and telemetry in real time, built on RAPIDS, Triton, and deep‑learning frameworks.[9][10]
+- You could:  
+  - Mirror Sovereign Qi logs/events into a Morpheus pipeline to detect anomalous access, misuse, or potential abuse of simulations.[10][11]
+  - Let Morpheus flag suspicious patterns, then feed those signals back into Alan/Council as “infrastructure‑level harm” inputs.
+
+## Isaac + Omniverse: how they fit
+
+- Isaac Sim and Isaac Lab run primarily in Python/C++ on top of Omniverse (OpenUSD‑based), and expose extensible APIs for robotics/digital‑twin simulation.[12][13][14]
+- For you, they are interesting when:  
+  - You want high‑fidelity 3D or robotics‑style simulations (e.g., physical spaces, crowd flows) to complement Sovereign Qi’s governance simulations.[15][12]
+  - Omniverse can host 3D digital twins that your TypeScript backend queries or controls via HTTP/gRPC, while the heavy sim code stays in Python/C++ extensions.[14][16][12]
+
+## Recommended split for your stack
+
+- Keep Sovereign Qi as a TypeScript‑first app that:  
+  - Calls NIM LLMs via OpenAI‑compatible endpoints for Council and simulation reasoning.[1][2][3]
+  - Optionally sends logs/telemetry to Morpheus and/or receives alerts back.[9][10]
+- When you explore Isaac/Omniverse, treat them as separate physical‑AI sims (Python/C++), integrated at the API layer, not as replacements for your TS governance backend.[16][12][14]
+
+[1](https://docs.nvidia.com/nim/large-language-models/latest/introduction.html)
+[2](https://ai-sdk.dev/providers/openai-compatible-providers/nim)
+[3](https://docs.nvidia.com/nim/large-language-models/latest/api-reference.html)
+[4](https://docs.api.nvidia.com/nim/docs/overview)
+[5](https://github.com/NVIDIA-AI-Blueprints/bring-llms-to-nim)
+[6](https://build.nvidia.com/models)
+[7](https://p72.vc/perspectives/typescript-popular-enterprise-ready-and-an-ideal-option-for-ai-application-development/)
+[8](https://visiononedge.com/2025/06/09/typescript-replacing-python-in-multiagent-systems.html)
+[9](https://platform.softwareone.com/product/nvidia-morpheus/PCP-9333-1596)
+[10](https://docs.nvidia.com/morpheus/index.html)
+[11](https://developers.redhat.com/articles/2021/10/18/sensitive-information-detection-using-nvidia-morpheus-ai-framework)
+[12](https://developer.nvidia.com/isaac/sim)
+[13](https://github.com/isaac-sim/IsaacSim)
+[14](https://docs.omniverse.nvidia.com/isaacsim/latest/manual_isaac_extensions.html)
+[15](https://www.marvik.ai/blog/exploring-nvidia-isaac-gr00t)
+[16](https://www.nvidia.com/en-us/omniverse/)
+[17](https://replit.com/@levi159/Sovereign-Qi)
+[18](https://forums.developer.nvidia.com/t/openai-compatibility-of-messages-content-field/334488)
+[19](https://pub.towardsai.net/an-introduction-to-using-nvidias-nim-api-da653041b212)
+[20](https://developer.nvidia.com/morpheus-cybersecurity)
+[21](https://www.youtube.com/watch?v=-eN_FnFrLM4)
+[22](https://www.reddit.com/r/LLMDevs/comments/1i40eyf/does_nvidia_offer_a_free_llm_api_like_openai_or/)
+[23](https://docs.nvidia.com/nim/vision-language-models/latest/api-reference.html)

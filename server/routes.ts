@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertPilotSchema } from "@shared/schema";
+import { insertPilotSchema, insertGovernanceSignalSchema } from "@shared/schema";
 import { randomBytes } from "crypto";
 import { generateCouncilAdviceWithFallback } from "./lib/agents";
 import { runQiSimulation } from "./lib/simulator";
@@ -119,12 +119,28 @@ export async function registerRoutes(
         return res.status(403).json({ error: "Access denied" });
       }
 
+      // Fetch Morpheus governance signals for this pilot's org
+      const rawSignals = await storage.getGovernanceSignalsByOrg(pilot.orgName);
+      const signalsByCategory = rawSignals.reduce((acc, s) => {
+        if (!acc[s.category]) {
+          acc[s.category] = { category: s.category, count: 0, examples: [] };
+        }
+        acc[s.category].count += parseInt(s.patternCount || "1", 10);
+        if (acc[s.category].examples.length < 3) {
+          acc[s.category].examples.push(s.summary.slice(0, 100));
+        }
+        return acc;
+      }, {} as Record<string, { category: string; count: number; examples: string[] }>);
+      
+      const governanceSignals = Object.values(signalsByCategory);
+
       const advice = await generateCouncilAdviceWithFallback({
         primaryObjective: pilot.primaryObjective,
         majorityLogicDesc: pilot.majorityLogicDesc,
         qiLogicDesc: pilot.qiLogicDesc,
         communityVoices: req.body.communityVoices,
         harms: req.body.harms,
+        governanceSignals: governanceSignals.length > 0 ? governanceSignals : undefined,
       });
 
       const sanitizeArray = (arr: string[], maxItems: number = 5, maxLen: number = 200) =>
@@ -205,6 +221,61 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Run simulation error:", error);
       res.status(500).json({ error: "Simulation failed" });
+    }
+  });
+
+  // Morpheus Governance Signals - Ingest from GPU pipeline
+  app.post("/api/signals", requireAuth, async (req: any, res) => {
+    try {
+      const validatedData = insertGovernanceSignalSchema.parse(req.body);
+      
+      // Authorization: user must own at least one pilot in this org to ingest signals
+      const userPilots = await storage.getPilotsByOwner(req.userEmail);
+      const hasOrgAccess = userPilots.some(p => p.orgName === validatedData.orgId);
+      if (!hasOrgAccess) {
+        return res.status(403).json({ error: "Access denied - no pilots in this organization" });
+      }
+
+      const signal = await storage.createGovernanceSignal(validatedData);
+      res.status(201).json(signal);
+    } catch (error: any) {
+      console.error("Create signal error:", error);
+      res.status(400).json({ error: error.message || "Invalid signal data" });
+    }
+  });
+
+  app.get("/api/signals/org/:orgId", requireAuth, async (req: any, res) => {
+    try {
+      // Authorization: user must own at least one pilot in this org
+      const userPilots = await storage.getPilotsByOwner(req.userEmail);
+      const hasOrgAccess = userPilots.some(p => p.orgName === req.params.orgId);
+      if (!hasOrgAccess) {
+        return res.status(403).json({ error: "Access denied - no pilots in this organization" });
+      }
+
+      const signals = await storage.getGovernanceSignalsByOrg(req.params.orgId);
+      res.json({ orgId: req.params.orgId, signals });
+    } catch (error) {
+      console.error("Get org signals error:", error);
+      res.status(500).json({ error: "Failed to fetch signals" });
+    }
+  });
+
+  app.get("/api/pilots/:id/signals", requireAuth, async (req: any, res) => {
+    try {
+      const pilot = await storage.getPilot(req.params.id);
+      if (!pilot) {
+        return res.status(404).json({ error: "Pilot not found" });
+      }
+      if (pilot.ownerEmail !== req.userEmail) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      const signals = await storage.getGovernanceSignalsByPilot(req.params.id);
+      res.json({ pilotId: pilot.id, signals });
+    } catch (error) {
+      console.error("Get pilot signals error:", error);
+      res.status(500).json({ error: "Failed to fetch signals" });
     }
   });
 

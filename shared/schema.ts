@@ -117,3 +117,35 @@ export const insertCouncilDecisionSchema = createInsertSchema(councilDecisions).
 
 export type CouncilDecision = typeof councilDecisions.$inferSelect;
 export type InsertCouncilDecision = z.infer<typeof insertCouncilDecisionSchema>;
+
+// Governance signals from Morpheus pipeline - dog whistle detection
+export const signalCategoryEnum = pgEnum("signal_category", [
+  "dog_whistle",
+  "identity_targeting", 
+  "surveillance_concern",
+  "policy_subversion",
+  "queer_coded_hostility",
+  "ableist_language",
+  "racial_microaggression"
+]);
+
+export const governanceSignals = pgTable("governance_signals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  orgId: text("org_id").notNull(),
+  pilotId: varchar("pilot_id").references(() => pilots.id, { onDelete: "set null" }),
+  sourceChannel: text("source_channel"),
+  category: signalCategoryEnum("category").notNull(),
+  score: text("score").notNull(),
+  summary: text("summary").notNull(),
+  patternCount: text("pattern_count").default("1"),
+  timeWindow: text("time_window"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertGovernanceSignalSchema = createInsertSchema(governanceSignals).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type GovernanceSignal = typeof governanceSignals.$inferSelect;
+export type InsertGovernanceSignal = z.infer<typeof insertGovernanceSignalSchema>;

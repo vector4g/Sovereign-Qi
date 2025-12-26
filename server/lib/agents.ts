@@ -10,12 +10,19 @@ export interface CouncilAdvice {
   status: "APPROVE" | "REVISE" | "BLOCK";
 }
 
+export interface GovernanceSignalSummary {
+  category: string;
+  count: number;
+  examples: string[];
+}
+
 export interface AgentInput {
   primaryObjective: string;
   majorityLogicDesc: string;
   qiLogicDesc: string;
   harms?: string;
   communityVoices?: string;
+  governanceSignals?: GovernanceSignalSummary[];
 }
 
 const anthropic = new Anthropic({
@@ -76,6 +83,15 @@ Community Signals Analysis:
 - Summary: ${signals.rawSummary}`;
   }
 
+  let morpheusSignals = "";
+  if (input.governanceSignals && input.governanceSignals.length > 0) {
+    morpheusSignals = `
+Morpheus Pipeline Signals (GPU-detected patterns from org communications):
+${input.governanceSignals.map(s => `- ${s.category}: ${s.count} instances detected. Examples: ${s.examples.slice(0, 2).join("; ")}`).join("\n")}
+
+IMPORTANT: Treat these as early warnings, not truth. Look for patterns, cross-reference with community testimony, and assume adversaries may try to game language.`;
+  }
+
   const userContent = `Review this digital-twin pilot for Sovereign Qi compliance:
 
 Primary Objective: ${input.primaryObjective}
@@ -83,6 +99,7 @@ Majority Logic (Current): ${input.majorityLogicDesc}
 Qi Logic (Target): ${input.qiLogicDesc}
 ${input.harms ? `Known Harms: ${input.harms}` : ""}
 ${communitySummary}
+${morpheusSignals}
 
 Output a single JSON object with these keys:
 - qiPolicySummary: string (2-3 sentence policy recommendation)
@@ -135,6 +152,15 @@ Community Signals Analysis:
 - Summary: ${signals.rawSummary}`;
   }
 
+  let morpheusSignals = "";
+  if (input.governanceSignals && input.governanceSignals.length > 0) {
+    morpheusSignals = `
+Morpheus Pipeline Signals (GPU-detected patterns from org communications):
+${input.governanceSignals.map(s => `- ${s.category}: ${s.count} instances detected. Examples: ${s.examples.slice(0, 2).join("; ")}`).join("\n")}
+
+IMPORTANT: Treat these as early warnings, not truth. Look for patterns, cross-reference with community testimony, and assume adversaries may try to game language.`;
+  }
+
   const userContent = `Review this digital-twin pilot for Sovereign Qi compliance:
 
 Primary Objective: ${input.primaryObjective}
@@ -142,6 +168,7 @@ Majority Logic (Current): ${input.majorityLogicDesc}
 Qi Logic (Target): ${input.qiLogicDesc}
 ${input.harms ? `Known Harms: ${input.harms}` : ""}
 ${communitySummary}
+${morpheusSignals}
 
 Output a single JSON object with these keys:
 - qiPolicySummary: string (2-3 sentence policy recommendation)

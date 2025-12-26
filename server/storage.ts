@@ -7,10 +7,13 @@ import {
   type InsertSimulation,
   type CouncilDecision,
   type InsertCouncilDecision,
+  type GovernanceSignal,
+  type InsertGovernanceSignal,
   pilots,
   sessions,
   simulations,
-  councilDecisions
+  councilDecisions,
+  governanceSignals
 } from "@shared/schema";
 import { db } from "../db";
 import { eq, and, desc } from "drizzle-orm";
@@ -34,6 +37,11 @@ export interface IStorage {
   // Council decision log - governance trail
   createCouncilDecision(decision: InsertCouncilDecision): Promise<CouncilDecision>;
   getCouncilDecisionsByPilot(pilotId: string): Promise<CouncilDecision[]>;
+  
+  // Governance signals from Morpheus pipeline
+  createGovernanceSignal(signal: InsertGovernanceSignal): Promise<GovernanceSignal>;
+  getGovernanceSignalsByOrg(orgId: string): Promise<GovernanceSignal[]>;
+  getGovernanceSignalsByPilot(pilotId: string): Promise<GovernanceSignal[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -113,6 +121,28 @@ export class DatabaseStorage implements IStorage {
       .from(councilDecisions)
       .where(eq(councilDecisions.pilotId, pilotId))
       .orderBy(desc(councilDecisions.createdAt));
+  }
+
+  // Governance Signals - Morpheus Pipeline Integration
+  async createGovernanceSignal(signal: InsertGovernanceSignal): Promise<GovernanceSignal> {
+    const [result] = await db.insert(governanceSignals).values(signal).returning();
+    return result;
+  }
+
+  async getGovernanceSignalsByOrg(orgId: string): Promise<GovernanceSignal[]> {
+    return await db
+      .select()
+      .from(governanceSignals)
+      .where(eq(governanceSignals.orgId, orgId))
+      .orderBy(desc(governanceSignals.createdAt));
+  }
+
+  async getGovernanceSignalsByPilot(pilotId: string): Promise<GovernanceSignal[]> {
+    return await db
+      .select()
+      .from(governanceSignals)
+      .where(eq(governanceSignals.pilotId, pilotId))
+      .orderBy(desc(governanceSignals.createdAt));
   }
 }
 
