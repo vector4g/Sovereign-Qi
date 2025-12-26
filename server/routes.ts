@@ -6,6 +6,14 @@ import { randomBytes } from "crypto";
 import { generateCouncilAdviceWithFallback } from "./lib/agents";
 import { runQiSimulation } from "./lib/simulator";
 
+// Generate canonical orgId from org name for consistent Morpheus signal matching
+function generateOrgId(orgName: string): string {
+  return orgName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+}
+
 function requireAuth(req: any, res: any, next: any) {
   const sessionId = req.headers["x-session-id"];
   if (!sessionId) {
@@ -70,9 +78,12 @@ export async function registerRoutes(
 
   app.post("/api/pilots", requireAuth, async (req: any, res) => {
     try {
+      // Auto-generate canonical orgId from orgName for Morpheus signal matching
+      const orgId = generateOrgId(req.body.orgName || "");
       const validatedData = insertPilotSchema.parse({
         ...req.body,
         ownerEmail: req.userEmail,
+        orgId,
       });
 
       const pilot = await storage.createPilot(validatedData);
@@ -119,8 +130,8 @@ export async function registerRoutes(
         return res.status(403).json({ error: "Access denied" });
       }
 
-      // Fetch Morpheus governance signals for this pilot's org
-      const rawSignals = await storage.getGovernanceSignalsByOrg(pilot.orgName);
+      // Fetch Morpheus governance signals for this pilot's org using canonical orgId
+      const rawSignals = await storage.getGovernanceSignalsByOrg(pilot.orgId);
       const signalsByCategory = rawSignals.reduce((acc, s) => {
         if (!acc[s.category]) {
           acc[s.category] = { category: s.category, count: 0, examples: [] };
@@ -229,9 +240,9 @@ export async function registerRoutes(
     try {
       const validatedData = insertGovernanceSignalSchema.parse(req.body);
       
-      // Authorization: user must own at least one pilot in this org to ingest signals
+      // Authorization: user must own at least one pilot with matching canonical orgId
       const userPilots = await storage.getPilotsByOwner(req.userEmail);
-      const hasOrgAccess = userPilots.some(p => p.orgName === validatedData.orgId);
+      const hasOrgAccess = userPilots.some(p => p.orgId === validatedData.orgId);
       if (!hasOrgAccess) {
         return res.status(403).json({ error: "Access denied - no pilots in this organization" });
       }
@@ -246,9 +257,9 @@ export async function registerRoutes(
 
   app.get("/api/signals/org/:orgId", requireAuth, async (req: any, res) => {
     try {
-      // Authorization: user must own at least one pilot in this org
+      // Authorization: user must own at least one pilot with matching canonical orgId
       const userPilots = await storage.getPilotsByOwner(req.userEmail);
-      const hasOrgAccess = userPilots.some(p => p.orgName === req.params.orgId);
+      const hasOrgAccess = userPilots.some(p => p.orgId === req.params.orgId);
       if (!hasOrgAccess) {
         return res.status(403).json({ error: "Access denied - no pilots in this organization" });
       }

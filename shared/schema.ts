@@ -24,7 +24,8 @@ export const pilots = pgTable("pilots", {
   ownerEmail: text("owner_email").notNull(), // Email session identifier
   name: text("name").notNull(),
   type: pilotTypeEnum("type").notNull(),
-  orgName: text("org_name").notNull(),
+  orgId: text("org_id").notNull().default(""), // Canonical org identifier for Morpheus signal matching
+  orgName: text("org_name").notNull(), // Display name
   region: text("region").notNull(),
   primaryObjective: text("primary_objective").notNull(),
   majorityLogicDesc: text("majority_logic_desc").notNull(),
