@@ -4,7 +4,7 @@
 export interface LLMCall {
   id: string;
   timestamp: Date;
-  provider: "openai" | "anthropic" | "cohere" | "hume" | "hermes" | "nvidia" | "mistral" | "gemini";
+  provider: "openai" | "anthropic" | "cohere" | "hume" | "hermes" | "nvidia" | "mistral" | "gemini" | "alan" | "llama";
   model: string;
   endpoint: string;
   latencyMs: number;

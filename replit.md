@@ -37,31 +37,42 @@ Preferred communication style: Simple, everyday language.
   - `simulations` - Simulation result storage
   - `conversations`/`messages` - Chat history for AI interactions
 
-### AI Integration Layer
-- **Alan (Primary Council)**: Anthropic Claude (claude-sonnet-4-5) - Named after Alan Turing, the "Cultural Codebreaker" decrypts coded threats against vulnerable communities. Detects dog-whistles, identity-targeting patterns, and surveillance mechanisms disguised as policy.
-- **Secondary AI**: OpenAI GPT-4o for policy summaries and image generation
-- **Cohere**: Signal reranking and semantic search for Morpheus pipeline prioritization
+### AI Integration Layer - 7-Agent Council
+
+**CULTURAL SPECIALIST (VETO POWER):**
+- **Alan (Hermes-based)**: Named after Alan Turing, the "Cultural Codebreaker" with VETO authority. Decrypts coded threats against vulnerable communities. Detects dog-whistles, identity-targeting patterns, and surveillance mechanisms disguised as policy. Alan's BLOCK overrides all other votes regardless of consensus.
+
+**ADVISORY AGENTS (Context providers, non-voting):**
 - **Hume AI**: Emotional intelligence analysis for community testimony (distress detection)
-- **Hermes (Nous Research)**: Neutral-aligned policy reasoning without corporate censorship
-- **Mistral AI**: Fast European AI for policy analysis with GDPR-conscious deployment
-- **Gemini AI**: Google's Gemini 2.5 Flash for fast policy analysis via Replit AI Integrations
-- **Pattern**: Multi-model fallback chain OR multi-agent deliberation
+- **Cohere**: Policy RAG for current context retrieval and signal reranking
+
+**VOTING AGENTS:**
+- **Claude**: Anthropic Claude (claude-sonnet-4-5) - General policy analysis
+- **OpenAI**: GPT-4o for policy summaries
+- **Gemini**: Google's Gemini 2.5 Flash for fast policy analysis
+- **Mistral**: European AI for GDPR-conscious policy analysis
+- **Llama**: Meta Llama via Groq/Together for open-source reasoning
+
+- **Pattern**: Multi-model fallback chain OR 7-agent multi-agent deliberation
   - Fallback: Claude → OpenAI → Gemini → Mistral → Hermes → Static fallback
-  - Deliberation: All 5 agents vote in parallel, then cross-review and synthesize consensus
+  - Deliberation: Advisory prep → 6 voting agents + Alan in parallel → Cross-review → Alan veto review → Consensus synthesis
   - All integrations work in degraded mode when API keys absent
+
 - **Multi-Agent Deliberation** (POST /api/pilots/:id/deliberate):
-  - Round 1: All 5 agents (Claude, OpenAI, Gemini, Mistral, Hermes) vote in parallel via Promise.allSettled()
-  - Round 2: Each agent reviews others' votes, can affirm/challenge/add nuances
-  - Synthesis: Merge all insights, use most cautious status (BLOCK > REVISE > APPROVE)
-  - Modes: `?mode=full` (5 agents + 2 rounds) or `?mode=quick` (3 agents, 1 round)
-  - Response includes: consensusLevel (unanimous/majority/plurality/single), statusVotes, challenges
+  - Phase 1: Advisory agents (Hume, Cohere) gather emotional + policy context
+  - Phase 2: Alan + 5 voting agents vote in parallel with advisory context
+  - Phase 3: Claude, OpenAI, Gemini cross-review all votes
+  - Phase 4: Alan veto review - can escalate to BLOCK after seeing all votes
+  - Phase 5: Consensus synthesis - Alan's BLOCK overrides all other votes
+  - Modes: `?mode=full` (7 agents + all phases) or `?mode=quick` (Alan + 3 agents + advisory)
+  - Response includes: consensusLevel (unanimous/majority/plurality/single/veto), statusVotes, vetoTriggered, codedThreatsDetected, advisoryContext
+
 - **Key Features**:
-  - Council advice generation with structured output (APPROVE/REVISE/BLOCK)
+  - Alan's VETO power - protects vulnerable communities regardless of majority vote
+  - Emotional intelligence from Hume integrated into deliberation
+  - Policy RAG from Cohere provides current context
   - Multi-agent deliberation with consensus synthesis
-  - Community voice summarization for accessibility constraints
-  - Emotional urgency triage for anonymous testimonies
-  - Governance signal reranking by relevance to specific harms
-  - Simulation metrics generation (innovation, burnout, liability indices)
+  - Coded threat detection (dog whistles, surveillance patterns)
   - Deliberation observability tracking (GET /api/observability/deliberations)
 
 ### Morpheus Governance Signal Integration
@@ -110,12 +121,15 @@ Preferred communication style: Simple, everyday language.
 - `AI_INTEGRATIONS_GEMINI_BASE_URL` - Gemini API base URL (via Replit AI Integrations)
 
 ### Optional AI Services (enhanced capabilities when configured)
-- `COHERE_API_KEY` - Cohere API for signal reranking and embeddings
+- `COHERE_API_KEY` - Cohere API for policy RAG, signal reranking, and embeddings
 - `HUME_API_KEY` - Hume AI for emotional intelligence in testimony analysis
-- `LAMBDA_API_KEY` - Lambda Labs API for Hermes neutral-aligned reasoning
-- `NOUS_API_KEY` - Nous Research API for Hermes (alternative to Lambda)
+- `LAMBDA_API_KEY` - Lambda Labs API for Alan (Cultural Codebreaker) and Hermes
+- `NOUS_API_KEY` - Nous Research API for Alan/Hermes (alternative to Lambda)
 - `HERMES_MODEL` - Hermes model override (default: hermes-3-llama-3.1-405b)
-- `MISTRAL_API_KEY` - Mistral AI for fast European policy analysis
+- `GROQ_API_KEY` - Groq API for Llama agent
+- `TOGETHER_API_KEY` - Together AI for Llama agent (alternative to Groq)
+- `LLAMA_MODEL` - Llama model override (default: llama-3.1-70b-versatile)
+- `MISTRAL_API_KEY` - Mistral AI for European policy analysis
 - `MISTRAL_MODEL` - Mistral model override (default: mistral-large-latest)
 
 ## Testing

@@ -281,6 +281,14 @@ export async function registerRoutes(
           failedAgents: result.failedAgents,
           consensusLevel: result.consensusLevel,
           statusVotes: result.statusVotes,
+          vetoTriggered: result.vetoTriggered,
+          vetoReason: result.vetoReason,
+          codedThreatsDetected: result.codedThreatsDetected?.slice(0, 10),
+          advisoryContext: {
+            emotionalDistress: result.advisoryContext?.emotional?.distressLevel,
+            emotionalDominant: result.advisoryContext?.emotional?.dominantEmotion,
+            policyRefsCount: result.advisoryContext?.policyReferences?.length || 0,
+          },
           challenges: result.challenges.map(c => ({
             challenger: c.challenger,
             target: c.target,
