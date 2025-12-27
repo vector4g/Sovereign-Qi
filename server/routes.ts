@@ -5,6 +5,9 @@ import { insertPilotSchema, insertGovernanceSignalSchema } from "@shared/schema"
 import { randomBytes } from "crypto";
 import { generateCouncilAdviceWithFallback } from "./lib/agents";
 import { runQiSimulation } from "./lib/simulator";
+import { pilotRateLimit, councilRateLimit, signalRateLimit, getRateLimitStats } from "./lib/rateLimit";
+import { createSanitizationMiddleware } from "./lib/sanitize";
+import { llmObservability } from "./lib/observability";
 
 // Generate canonical orgId from org name for consistent Morpheus signal matching
 function generateOrgId(orgName: string): string {
@@ -35,6 +38,22 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  
+  // Apply sanitization middleware globally for LLM output safety
+  app.use(createSanitizationMiddleware());
+  
+  // Observability endpoints
+  app.get("/api/observability/llm", requireAuth, (req, res) => {
+    const sinceMs = parseInt(req.query.since as string) || 3600000;
+    res.json({
+      metrics: llmObservability.getMetrics(sinceMs),
+      recentCalls: llmObservability.getRecentCalls(20),
+    });
+  });
+
+  app.get("/api/observability/rate-limits", requireAuth, (req, res) => {
+    res.json(getRateLimitStats());
+  });
   
   app.post("/api/auth/login", async (req, res) => {
     try {
@@ -76,7 +95,7 @@ export async function registerRoutes(
     res.json({ email: req.userEmail });
   });
 
-  app.post("/api/pilots", requireAuth, async (req: any, res) => {
+  app.post("/api/pilots", requireAuth, pilotRateLimit, async (req: any, res) => {
     try {
       // Auto-generate canonical orgId from orgName for Morpheus signal matching
       const orgId = generateOrgId(req.body.orgName || "");
@@ -94,7 +113,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/pilots", requireAuth, async (req: any, res) => {
+  app.get("/api/pilots", requireAuth, pilotRateLimit, async (req: any, res) => {
     try {
       const pilots = await storage.getPilotsByOwner(req.userEmail);
       res.json(pilots);
@@ -104,7 +123,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/pilots/:id", requireAuth, async (req: any, res) => {
+  app.get("/api/pilots/:id", requireAuth, pilotRateLimit, async (req: any, res) => {
     try {
       const pilot = await storage.getPilot(req.params.id);
       if (!pilot) {
@@ -120,7 +139,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/pilots/:id/advise", requireAuth, async (req: any, res) => {
+  app.post("/api/pilots/:id/advise", requireAuth, councilRateLimit, async (req: any, res) => {
     try {
       const pilot = await storage.getPilot(req.params.id);
       if (!pilot) {
@@ -236,7 +255,7 @@ export async function registerRoutes(
   });
 
   // Morpheus Governance Signals - Ingest from GPU pipeline
-  app.post("/api/signals", requireAuth, async (req: any, res) => {
+  app.post("/api/signals", requireAuth, signalRateLimit, async (req: any, res) => {
     try {
       const validatedData = insertGovernanceSignalSchema.parse(req.body);
       
@@ -255,7 +274,7 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/signals/org/:orgId", requireAuth, async (req: any, res) => {
+  app.get("/api/signals/org/:orgId", requireAuth, signalRateLimit, async (req: any, res) => {
     try {
       // Authorization: user must own at least one pilot with matching canonical orgId
       const userPilots = await storage.getPilotsByOwner(req.userEmail);

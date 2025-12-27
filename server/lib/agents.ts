@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import OpenAI from "openai";
 import { summariseCommunityVoices } from "./communitySignals";
+import { llmObservability } from "./observability";
 
 export interface CouncilAdvice {
   qiPolicySummary: string;
@@ -42,6 +43,7 @@ const COUNCIL_SYSTEM_PROMPT = `You are Alan, speaking on behalf of the Sovereign
 Your review must be concise and operational, suitable for Fortune 100 General Counsels and City CTOs.`;
 
 export async function generateQiPolicySummary(input: AgentInput): Promise<string> {
+  const startTime = Date.now();
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -64,8 +66,32 @@ Provide actionable governance recommendations that center dignity and accessibil
       max_tokens: 500,
     });
 
+    llmObservability.recordCall({
+      provider: "openai",
+      model: "gpt-4o",
+      endpoint: "chat.completions",
+      latencyMs: Date.now() - startTime,
+      inputTokens: response.usage?.prompt_tokens || 0,
+      outputTokens: response.usage?.completion_tokens || 0,
+      totalTokens: response.usage?.total_tokens || 0,
+      finishReason: response.choices[0]?.finish_reason || "unknown",
+      success: true,
+    });
+
     return response.choices[0]?.message?.content || "Policy summary generation failed.";
-  } catch (error) {
+  } catch (error: any) {
+    llmObservability.recordCall({
+      provider: "openai",
+      model: "gpt-4o",
+      endpoint: "chat.completions",
+      latencyMs: Date.now() - startTime,
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+      finishReason: "error",
+      success: false,
+      error: error.message,
+    });
     console.error("OpenAI policy summary failed:", error);
     return `For this pilot, Sovereign Qi recommends centering dignity and accessibility as first-class constraints. Shift from majority-rule decision making to policies that explicitly protect those most at risk, using synthetic personas and zero-knowledge access to avoid surveillance while still improving outcomes.`;
   }
@@ -110,12 +136,25 @@ Output a single JSON object with these keys:
 
 Be concise and operational.`;
 
+  const startTime = Date.now();
   try {
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-5",
       max_tokens: 1024,
       system: COUNCIL_SYSTEM_PROMPT,
       messages: [{ role: "user", content: userContent }],
+    });
+
+    llmObservability.recordCall({
+      provider: "anthropic",
+      model: "claude-sonnet-4-5",
+      endpoint: "messages.create",
+      latencyMs: Date.now() - startTime,
+      inputTokens: message.usage?.input_tokens || 0,
+      outputTokens: message.usage?.output_tokens || 0,
+      totalTokens: (message.usage?.input_tokens || 0) + (message.usage?.output_tokens || 0),
+      finishReason: message.stop_reason || "unknown",
+      success: true,
     });
 
     const content = message.content[0];
@@ -134,7 +173,19 @@ Be concise and operational.`;
     }
 
     throw new Error("Failed to parse Claude response");
-  } catch (error) {
+  } catch (error: any) {
+    llmObservability.recordCall({
+      provider: "anthropic",
+      model: "claude-sonnet-4-5",
+      endpoint: "messages.create",
+      latencyMs: Date.now() - startTime,
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+      finishReason: "error",
+      success: false,
+      error: error.message,
+    });
     console.error("Claude council advice failed:", error);
     throw error;
   }
@@ -179,6 +230,7 @@ Output a single JSON object with these keys:
 
 Be concise and operational.`;
 
+  const startTime = Date.now();
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -188,6 +240,18 @@ Be concise and operational.`;
       ],
       temperature: 0.7,
       max_tokens: 1024,
+    });
+
+    llmObservability.recordCall({
+      provider: "openai",
+      model: "gpt-4o",
+      endpoint: "chat.completions",
+      latencyMs: Date.now() - startTime,
+      inputTokens: response.usage?.prompt_tokens || 0,
+      outputTokens: response.usage?.completion_tokens || 0,
+      totalTokens: response.usage?.total_tokens || 0,
+      finishReason: response.choices[0]?.finish_reason || "unknown",
+      success: true,
     });
 
     const content = response.choices[0]?.message?.content;
@@ -206,7 +270,19 @@ Be concise and operational.`;
     }
 
     throw new Error("Failed to parse OpenAI response");
-  } catch (error) {
+  } catch (error: any) {
+    llmObservability.recordCall({
+      provider: "openai",
+      model: "gpt-4o",
+      endpoint: "chat.completions",
+      latencyMs: Date.now() - startTime,
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+      finishReason: "error",
+      success: false,
+      error: error.message,
+    });
     console.error("OpenAI council advice failed:", error);
     throw error;
   }

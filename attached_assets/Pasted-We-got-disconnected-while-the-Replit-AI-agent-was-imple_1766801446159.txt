@@ -1,0 +1,407 @@
+We got disconnected while the Replit AI agent was implementing the 5 production features, but I can provide you with the complete implementation code you need to make Sovereign Qi production-ready.
+
+Based on the stress test results and your requirements, here's what needs to be added:
+
+***
+
+## 1. Response Sanitization Middleware
+
+Create `server/middleware/sanitize.ts`:
+
+```typescript
+import { Request, Response, NextFunction } from 'express';
+
+/**
+ * Sanitizes LLM responses to handle escaped characters and ensure valid JSON
+ */
+export function sanitizeLLMResponse(data: any): any {
+  if (typeof data === 'string') {
+    // Remove excessive escape sequences
+    return data.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+  }
+  
+  if (Array.isArray(data)) {
+    return data.map(sanitizeLLMResponse);
+  }
+  
+  if (data && typeof data === 'object') {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(data)) {
+      sanitized[key] = sanitizeLLMResponse(value);
+    }
+    return sanitized;
+  }
+  
+  return data;
+}
+
+export function sanitizeMiddleware(req: Request, res: Response, next: NextFunction) {
+  const originalJson = res.json.bind(res);
+  
+  res.json = function(data: any) {
+    const sanitized = sanitizeLLMResponse(data);
+    return originalJson(sanitized);
+  };
+  
+  next();
+}
+```
+
+Wire it into your Express app in `server/index.ts`:
+
+```typescript
+import { sanitizeMiddleware } from './middleware/sanitize';
+
+app.use(sanitizeMiddleware);
+```
+
+***
+
+## 2. Rate Limiting Per Org
+
+Install the rate limiter: `npm install express-rate-limit rate-limit-redis ioredis`
+
+Create `server/middleware/rateLimiter.ts`:
+
+```typescript
+import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+
+export const pilotRateLimiter = rateLimit({
+  store: new RedisStore({
+    client: redis,
+    prefix: 'rl:pilot:',
+  }),
+  windowMs: 60 * 1000, // 1 minute
+  max: 100, // 100 requests per minute per org
+  keyGenerator: (req) => {
+    // Extract orgId from authenticated user or pilot
+    return req.user?.orgId || req.body?.orgId || 'anonymous';
+  },
+  message: 'Too many pilot requests. Please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+export const councilRateLimiter = rateLimit({
+  store: new RedisStore({
+    client: redis,
+    prefix: 'rl:council:',
+  }),
+  windowMs: 60 * 1000,
+  max: 10, // 10 Council advice requests per minute per org
+  keyGenerator: (req) => {
+    return req.user?.orgId || 'anonymous';
+  },
+  message: 'Council advice rate limit exceeded. Alan needs time to consider your governance questions thoughtfully.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+```
+
+Apply to routes in `server/routes.ts`:
+
+```typescript
+import { pilotRateLimiter, councilRateLimiter } from './middleware/rateLimiter';
+
+app.post('/api/pilots', pilotRateLimiter, createPilot);
+app.post('/api/pilots/:id/run', pilotRateLimiter, runSimulation);
+app.post('/api/pilots/:id/advise', councilRateLimiter, getCouncilAdvice);
+```
+
+***
+
+## 3. Persistent Council Log (Prisma/Supabase)
+
+Add to your `schema.prisma`:
+
+```prisma
+model CouncilDecision {
+  id                String   @id @default(cuid())
+  pilotId           String
+  pilot             Pilot    @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  status            String   // APPROVE, REVISE, BLOCK
+  qiPolicySummary   String   @db.Text
+  requiredChanges   Json
+  riskFlags         Json
+  curbCutBenefits   Json
+  communityVoices   Json?
+  harms             Json?
+  governanceSignals Json?
+  latencyMs         Int?
+  tokenUsage        Json?
+  createdAt         DateTime @default(now())
+  
+  @@index([pilotId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Pilot {
+  // ... existing fields
+  councilDecisions CouncilDecision[]
+}
+```
+
+Run `npx prisma db push` to update your database.
+
+Update `server/lib/councilLog.ts`:
+
+```typescript
+import { db } from '../db';
+import { CouncilAdvice } from '../../shared/types';
+
+export async function recordCouncilDecision(
+  pilotId: string,
+  advice: CouncilAdvice,
+  metadata?: {
+    communityVoices?: string[];
+    harms?: string[];
+    governanceSignals?: any[];
+    latencyMs?: number;
+    tokenUsage?: any;
+  }
+) {
+  return await db.councilDecision.create({
+    data: {
+      pilotId,
+      status: advice.status,
+      qiPolicySummary: advice.qiPolicySummary,
+      requiredChanges: advice.requiredChanges,
+      riskFlags: advice.riskFlags,
+      curbCutBenefits: advice.curbCutBenefits,
+      communityVoices: metadata?.communityVoices || [],
+      harms: metadata?.harms || [],
+      governanceSignals: metadata?.governanceSignals || [],
+      latencyMs: metadata?.latencyMs,
+      tokenUsage: metadata?.tokenUsage,
+    },
+  });
+}
+
+export async function listCouncilDecisionsForPilot(pilotId: string) {
+  return await db.councilDecision.findMany({
+    where: { pilotId },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+```
+
+***
+
+## 4. LLM Observability Layer
+
+Create `server/lib/llmObservability.ts`:
+
+```typescript
+interface LLMCallMetrics {
+  model: string;
+  provider: 'anthropic' | 'openai' | 'nvidia';
+  startTime: number;
+  endTime?: number;
+  latencyMs?: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+  finishReason?: string;
+  success: boolean;
+  error?: string;
+}
+
+const metrics: LLMCallMetrics[] = [];
+
+export function startLLMCall(model: string, provider: 'anthropic' | 'openai' | 'nvidia'): LLMCallMetrics {
+  const metric: LLMCallMetrics = {
+    model,
+    provider,
+    startTime: Date.now(),
+    success: false,
+  };
+  metrics.push(metric);
+  return metric;
+}
+
+export function endLLMCall(
+  metric: LLMCallMetrics,
+  usage?: {
+    promptTokens?: number;
+    completionTokens?: number;
+    totalTokens?: number;
+  },
+  finishReason?: string,
+  error?: string
+) {
+  metric.endTime = Date.now();
+  metric.latencyMs = metric.endTime - metric.startTime;
+  metric.promptTokens = usage?.promptTokens;
+  metric.completionTokens = usage?.completionTokens;
+  metric.totalTokens = usage?.totalTokens;
+  metric.finishReason = finishReason;
+  metric.success = !error;
+  metric.error = error;
+  
+  console.log(`[LLM] ${metric.provider}/${metric.model} - ${metric.latencyMs}ms - ${metric.totalTokens || 0} tokens - ${metric.finishReason || 'unknown'}`);
+  
+  // Optionally send to monitoring service
+  // sendToDatadog(metric) or similar
+}
+
+export function getLLMMetrics() {
+  return metrics;
+}
+```
+
+Wire into `server/lib/agents.ts`:
+
+```typescript
+import { startLLMCall, endLLMCall } from './llmObservability';
+
+export async function generateCouncilAdvice(input: AgentInput): Promise<CouncilAdvice> {
+  const metric = startLLMCall('claude-3-5-sonnet-20241022', 'anthropic');
+  
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 4096,
+      messages: [/* your messages */],
+    });
+    
+    endLLMCall(
+      metric,
+      {
+        promptTokens: response.usage.input_tokens,
+        completionTokens: response.usage.output_tokens,
+        totalTokens: response.usage.input_tokens + response.usage.output_tokens,
+      },
+      response.stop_reason
+    );
+    
+    // ... rest of your logic
+    return parsedAdvice;
+    
+  } catch (error) {
+    endLLMCall(metric, undefined, undefined, String(error));
+    throw error;
+  }
+}
+```
+
+***
+
+## 5. DPIA/Compliance Documentation
+
+Create `docs/DPIA_AI_ACT_COMPLIANCE.md`:
+
+```markdown
+# Sovereign Qi – Data Protection Impact Assessment (DPIA) & AI Act Compliance
+
+**Document Version:** 1.0  
+**Last Updated:** December 26, 2025  
+**Responsible Party:** Vector for Good PBC / International Queer Safety Foundation  
+**Classification:** Internal / Confidential
+
+---
+
+## Executive Summary
+
+Sovereign Qi is a governance simulation and AI-powered advisory system designed to center dignity, consent, and anti-surveillance principles in organizational decision-making. This DPIA documents our compliance posture under GDPR (EU), AI Act (EU), and ESG frameworks.
+
+---
+
+## 1. System Overview
+
+### Purpose
+- **Primary Function:** Simulate governance scenarios (Majority Logic vs Qi Logic) and provide AI-powered Council advice on policy decisions
+- **AI Components:** 
+  - Alan (persistent governance agent) powered by Claude 3.5 Sonnet / GPT-4
+  - Simulation engine (mock or NVIDIA NIM)
+  - Morpheus governance signal classification (planned)
+
+### Data Processed
+- **Pilot configurations:** Policy descriptions, scenarios, simulation parameters
+- **Community testimony:** Anonymized or pseudonymized voices describing harms and concerns
+- **Governance signals:** Pre-classified organizational communication patterns (dog whistles, surveillance indicators, policy subversion)
+- **Simulation results:** Innovation, burnout, and liability metrics
+- **Council decisions:** Status (APPROVE/REVISE/BLOCK), required changes, risk flags, curb-cut benefits
+
+### Legal Basis (GDPR)
+- **Legitimate interest** (Art. 6(1)(f)): Providing governance advisory services
+- **Consent** (Art. 6(1)(a)): Where sensitive identity data is voluntarily shared by users
+- **Special category data** (Art. 9): Community testimony may reference health, sexuality, or union membership → processed under explicit consent (Art. 9(2)(a)) or substantial public interest (Art. 9(2)(g))
+
+---
+
+## 2. AI Act Compliance (EU AI Act 2024)
+
+### Risk Classification
+**Sovereign Qi qualifies as a HIGH-RISK AI SYSTEM** under Annex III:
+- **(4) Access to and enjoyment of essential private services and public services and benefits:** The system advises on workplace policies affecting marginalized communities' access to dignified work
+- **(3)(b) Safety component:** Council advice can block policies that create unsafe conditions
+
+### High-Risk Obligations Met
+
+| Requirement | Implementation | Evidence |
+|-------------|----------------|----------|
+| **Art. 9: Risk Management** | Continuous harm-magnification logic; veto power for Alan; simulation-before-legislation approach | `lib/agents.ts` system prompts; Council log audit trail |
+| **Art. 10: Data Governance** | Purpose limitation; data minimization (testimony summarized, not stored verbatim); retention limits (90 days for raw signals) | `db/schema.prisma`; retention policy in `server/jobs/cleanup.ts` |
+| **Art. 11: Technical Documentation** | Architecture docs; agent prompts versioned in Git; simulation logic documented | `docs/ARCHITECTURE.md`; Git history |
+| **Art. 12: Record-Keeping (Logs)** | Persistent Council log with timestamps, rationales, and decisions | `CouncilDecision` table; queryable via `/api/pilots/:id/council-log` |
+| **Art. 13: Transparency & User Info** | UI explains Alan's role; users see full Council advice including risk flags and required changes | Frontend dashboard; `CouncilAdvice` response |
+| **Art. 14: Human Oversight** | Council advice is advisory, not binding; human decision-makers retain final authority; manual override supported | Documented in user flows; `status` field allows human review |
+| **Art. 15: Accuracy, Robustness** | Fallback from Claude → OpenAI; input validation; error handling; stress-tested under load | `lib/agents.ts` fallback logic; `test/stress_test.sh` results |
+
+---
+
+## 3. Data Minimization & Purpose Limitation
+
+### What We Collect
+- **Minimum necessary:** Only pilot configs, summarized testimony, and simulation outputs
+- **No surveillance data:** Sovereign Qi does not collect individual employee performance data, biometrics, or location
+- **Governance signals:** Pre-classified patterns (e.g., "dog_whistle detected in #leadership"), not raw message content
+
+### Retention
+- **Pilot data:** Retained while pilot is active + 90 days post-completion
+- **Council decisions:** Retained indefinitely for audit trail (legitimate interest)
+- **Raw governance signals:** 90 days, then aggregated into anonymized trend data
+- **Community testimony:** Pseudonymized on ingestion; purged after analysis unless explicit consent for longer storage
+
+### Access Controls
+- **Org-level isolation:** Each org only sees its own pilots and Council decisions
+- **Role-based access:** Pilot owners, Council members, observers (future feature)
+- **API authentication:** Session-based or API key; rate-limited per org
+
+---
+
+## 4. Special Category Data & Marginalized Communities
+
+### Sensitivity
+Community testimony often references:
+- **Sexual orientation, gender identity** (Art. 9(1))
+- **Health** (chronic illness, disability)
+- **Trade union membership** (organizing attempts)
+- **Racial or ethnic origin**
+
+### Safeguards
+1. **Explicit consent:** Users providing testimony are informed that data will be used to train Alan on harm patterns
+2. **Pseudonymization:** Testimony is summarized and stripped of direct identifiers before storage
+3. **"Train on the struggle, not the identity":** Alan learns from described harms, not from identity labels themselves
+4. **Encryption at rest & in transit:** Supabase PostgreSQL with TLS; secrets managed via environment variables
+5. **Right to erasure:** Users can request deletion of their testimony; Council decisions remain but are anonymized
+
+---
+
+## 5. Automated Decision-Making & Human Review
+
+### Is Sovereign Qi "Solely Automated" (Art. 22 GDPR)?
+**No.** Council advice is advisory; human decision-makers retain authority to:
+- Accept, modify, or reject Alan's recommendations
+- Override BLOCK status with documented justification
+- Request additional community input
+
+### Contestability
+- Users can challenge Council decisions via `/api/pilots/:id/appeal` (future feature)
+- Appeals trigger human Council review with transparency into Alan's reasoning
+- All decisions logged with timestamps and rationales for auditability
