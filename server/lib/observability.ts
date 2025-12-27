@@ -4,7 +4,7 @@
 export interface LLMCall {
   id: string;
   timestamp: Date;
-  provider: "openai" | "anthropic" | "cohere" | "hume" | "hermes" | "nvidia" | "mistral";
+  provider: "openai" | "anthropic" | "cohere" | "hume" | "hermes" | "nvidia" | "mistral" | "gemini";
   model: string;
   endpoint: string;
   latencyMs: number;
@@ -120,7 +120,7 @@ export const llmObservability = new LLMObservability();
 
 // Wrapper for timing LLM calls
 export async function withObservability<T>(
-  provider: "openai" | "anthropic" | "cohere" | "hume" | "hermes" | "nvidia",
+  provider: "openai" | "anthropic" | "cohere" | "hume" | "hermes" | "nvidia" | "mistral" | "gemini",
   model: string,
   endpoint: string,
   fn: () => Promise<{ result: T; usage?: { inputTokens: number; outputTokens: number }; finishReason?: string }>

@@ -44,8 +44,9 @@ Preferred communication style: Simple, everyday language.
 - **Hume AI**: Emotional intelligence analysis for community testimony (distress detection)
 - **Hermes (Nous Research)**: Neutral-aligned policy reasoning without corporate censorship
 - **Mistral AI**: Fast European AI for policy analysis with GDPR-conscious deployment
+- **Gemini AI**: Google's Gemini 2.5 Flash for fast policy analysis via Replit AI Integrations
 - **Pattern**: Multi-model fallback chain with graceful degradation
-  - Council: Claude → OpenAI → Mistral → Hermes → Static fallback
+  - Council: Claude → OpenAI → Gemini → Mistral → Hermes → Static fallback
   - All integrations work in degraded mode when API keys absent
 - **Key Features**:
   - Council advice generation with structured output (APPROVE/REVISE/BLOCK)
@@ -96,6 +97,8 @@ Preferred communication style: Simple, everyday language.
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL` - Anthropic API base URL
 - `AI_INTEGRATIONS_OPENAI_API_KEY` - OpenAI API key
 - `AI_INTEGRATIONS_OPENAI_BASE_URL` - OpenAI API base URL
+- `AI_INTEGRATIONS_GEMINI_API_KEY` - Gemini API key (via Replit AI Integrations)
+- `AI_INTEGRATIONS_GEMINI_BASE_URL` - Gemini API base URL (via Replit AI Integrations)
 
 ### Optional AI Services (enhanced capabilities when configured)
 - `COHERE_API_KEY` - Cohere API for signal reranking and embeddings
