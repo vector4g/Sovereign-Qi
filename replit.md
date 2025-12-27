@@ -38,7 +38,7 @@ Preferred communication style: Simple, everyday language.
   - `conversations`/`messages` - Chat history for AI interactions
 
 ### AI Integration Layer
-- **Primary AI**: Anthropic Claude (claude-sonnet-4-5) for policy analysis and council advice
+- **Alan (Primary Council)**: Anthropic Claude (claude-sonnet-4-5) - Named after Alan Turing, the "Cultural Codebreaker" decrypts coded threats against vulnerable communities. Detects dog-whistles, identity-targeting patterns, and surveillance mechanisms disguised as policy.
 - **Secondary AI**: OpenAI GPT-4o for policy summaries and image generation
 - **Cohere**: Signal reranking and semantic search for Morpheus pipeline prioritization
 - **Hume AI**: Emotional intelligence analysis for community testimony (distress detection)
