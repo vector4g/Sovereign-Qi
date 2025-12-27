@@ -76,23 +76,8 @@ export async function generateCouncilAdviceWithHermes(input: {
   
   if (!client) {
     console.warn("No Hermes API key configured, using fallback advice");
-    return {
-      qiPolicySummary: `Hermes analysis unavailable. Based on the input, this pilot should prioritize dignity-first governance, eliminate surveillance vectors, and center the most vulnerable populations in all metrics.`,
-      requiredChanges: [
-        "Ensure all data collection has explicit purpose limitation",
-        "Remove any metrics that could identify or surveil individuals",
-        "Include marginalized community representatives in governance review"
-      ],
-      riskFlags: [
-        "Unable to perform neutral-aligned harm analysis without Hermes",
-        "Consider configuring LAMBDA_API_KEY or NOUS_API_KEY for uncensored policy review"
-      ],
-      curbCutBenefits: [
-        "Dignity-first design benefits all stakeholders, not just edge cases",
-        "Anti-surveillance policies reduce liability and build trust"
-      ],
-      status: "REVISE",
-    };
+    console.log("[Council] ✗ Hermes unavailable, throwing to trigger static fallback");
+    throw new Error("Hermes API key not configured (LAMBDA_API_KEY or NOUS_API_KEY)");
   }
 
   const userPrompt = `Analyze this digital-twin pilot for Sovereign Qi compliance:
@@ -144,12 +129,14 @@ Be concise, direct, and unapologetic about protecting vulnerable populations.`;
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
+        console.log(`[Council] ✓ Hermes served decision: ${parsed.status || "REVISE"}`);
         return {
           qiPolicySummary: parsed.qiPolicySummary || "",
           requiredChanges: parsed.requiredChanges || [],
           riskFlags: parsed.riskFlags || [],
           curbCutBenefits: parsed.curbCutBenefits || [],
           status: parsed.status || "REVISE",
+          servedBy: `hermes-${model}`,
         };
       }
     }

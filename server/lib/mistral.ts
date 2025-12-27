@@ -60,23 +60,8 @@ export async function generateCouncilAdviceWithMistral(input: {
   
   if (!client) {
     console.warn("No Mistral API key configured, using fallback advice");
-    return {
-      qiPolicySummary: `Mistral analysis unavailable. Based on the input, this pilot should prioritize dignity-first governance with European privacy standards and center vulnerable populations in all metrics.`,
-      requiredChanges: [
-        "Ensure GDPR-compliant data handling",
-        "Remove any metrics that could identify or surveil individuals",
-        "Include marginalized community representatives in governance review"
-      ],
-      riskFlags: [
-        "Unable to perform Mistral analysis without API key",
-        "Consider configuring MISTRAL_API_KEY for European AI capabilities"
-      ],
-      curbCutBenefits: [
-        "Dignity-first design benefits all stakeholders, not just edge cases",
-        "Privacy-by-design reduces liability and builds trust"
-      ],
-      status: "REVISE",
-    };
+    console.log("[Council] ✗ Mistral unavailable, throwing to trigger next fallback");
+    throw new Error("MISTRAL_API_KEY not configured");
   }
 
   const userPrompt = `Analyze this digital-twin pilot for Sovereign Qi compliance:
@@ -134,21 +119,25 @@ Respond with valid JSON:
     
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
+      console.log(`[Council] ✓ Mistral served decision: ${parsed.status || "REVISE"}`);
       return {
         qiPolicySummary: parsed.qiPolicySummary || "",
         requiredChanges: parsed.requiredChanges || [],
         riskFlags: parsed.riskFlags || [],
         curbCutBenefits: parsed.curbCutBenefits || [],
         status: parsed.status || "REVISE",
+        servedBy: `mistral-${model}`,
       };
     }
 
+    console.log("[Council] ✓ Mistral served decision: REVISE (unparsed)");
     return {
       qiPolicySummary: content,
       requiredChanges: [],
       riskFlags: ["Could not parse structured response"],
       curbCutBenefits: [],
       status: "REVISE",
+      servedBy: `mistral-${model}-unparsed`,
     };
   } catch (error) {
     const latencyMs = Date.now() - startTime;

@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import OpenAI from "openai";
+import { z } from "zod";
 import { summariseCommunityVoices } from "./communitySignals";
 import { llmObservability } from "./observability";
 import { generateCouncilAdviceWithMistral } from "./mistral";
@@ -11,6 +12,24 @@ export interface CouncilAdvice {
   riskFlags: string[];
   curbCutBenefits: string[];
   status: "APPROVE" | "REVISE" | "BLOCK";
+  servedBy?: string;
+}
+
+const CouncilAdviceSchema = z.object({
+  qiPolicySummary: z.string().min(1),
+  requiredChanges: z.array(z.string()),
+  riskFlags: z.array(z.string()),
+  curbCutBenefits: z.array(z.string()),
+  status: z.enum(["APPROVE", "REVISE", "BLOCK"]),
+});
+
+function validateCouncilAdvice(parsed: unknown, provider: string): CouncilAdvice {
+  const result = CouncilAdviceSchema.safeParse(parsed);
+  if (!result.success) {
+    console.error(`[Council] ${provider} response failed schema validation:`, result.error.issues);
+    throw new Error(`Schema validation failed for ${provider}: ${result.error.issues.map(i => i.message).join(", ")}`);
+  }
+  return { ...result.data, servedBy: provider };
 }
 
 export interface GovernanceSignalSummary {
@@ -174,13 +193,9 @@ Be concise and operational.`;
       const jsonMatch = content.text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        return {
-          qiPolicySummary: parsed.qiPolicySummary || "",
-          requiredChanges: parsed.requiredChanges || [],
-          riskFlags: parsed.riskFlags || [],
-          curbCutBenefits: parsed.curbCutBenefits || [],
-          status: parsed.status || "REVISE",
-        };
+        const validated = validateCouncilAdvice(parsed, "claude-sonnet-4-5");
+        console.log(`[Council] ✓ Claude (Alan) served decision: ${validated.status}`);
+        return validated;
       }
     }
 
@@ -271,13 +286,9 @@ Be concise and operational.`;
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        return {
-          qiPolicySummary: parsed.qiPolicySummary || "",
-          requiredChanges: parsed.requiredChanges || [],
-          riskFlags: parsed.riskFlags || [],
-          curbCutBenefits: parsed.curbCutBenefits || [],
-          status: parsed.status || "REVISE",
-        };
+        const validated = validateCouncilAdvice(parsed, "gpt-4o");
+        console.log(`[Council] ✓ OpenAI served decision: ${validated.status}`);
+        return validated;
       }
     }
 
@@ -342,6 +353,7 @@ export async function generateCouncilAdviceWithFallback(input: AgentInput): Prom
           return await generateCouncilAdviceWithHermes(hermesInput);
         } catch (hermesError) {
           console.error("[Council] All AI providers failed, using static fallback:", hermesError);
+          console.log("[Council] ✗ Static fallback served decision: REVISE");
           
           return {
             qiPolicySummary: `For this pilot, Sovereign Qi recommends centering dignity and accessibility as first-class constraints. Shift from majority-rule decision making to policies that explicitly protect those most at risk, using synthetic personas and zero-knowledge access to avoid surveillance while still improving outcomes.`,
@@ -361,6 +373,7 @@ export async function generateCouncilAdviceWithFallback(input: AgentInput): Prom
               "Healthcare bias checks built for trans patients improve care pathways for all edge-case diagnostics.",
             ],
             status: "REVISE",
+            servedBy: "static-fallback",
           };
         }
       }
