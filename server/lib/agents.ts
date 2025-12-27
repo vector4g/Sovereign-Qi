@@ -2,6 +2,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import OpenAI from "openai";
 import { summariseCommunityVoices } from "./communitySignals";
 import { llmObservability } from "./observability";
+import { generateCouncilAdviceWithMistral } from "./mistral";
+import { generateCouncilAdviceWithHermes } from "./hermes";
 
 export interface CouncilAdvice {
   qiPolicySummary: string;
@@ -288,33 +290,70 @@ Be concise and operational.`;
   }
 }
 
+/**
+ * Council advice with full fallback chain:
+ * Claude (Alan) → OpenAI → Mistral → Hermes → Static fallback
+ * 
+ * Each provider is tried in sequence. On failure (transport, timeout, or parse error),
+ * we move to the next provider. Only after all providers fail do we return the static fallback.
+ */
 export async function generateCouncilAdviceWithFallback(input: AgentInput): Promise<CouncilAdvice> {
+  const hermesInput = {
+    primaryObjective: input.primaryObjective,
+    majorityLogicDesc: input.majorityLogicDesc,
+    qiLogicDesc: input.qiLogicDesc,
+    harms: input.harms,
+    communityVoices: input.communityVoices,
+    morpheusSignals: input.governanceSignals?.map(s => 
+      `${s.category}: ${s.count} instances (${s.examples.slice(0, 2).join("; ")})`
+    ).join("\n"),
+  };
+
   try {
+    console.log("[Council] Attempting Claude (Alan)...");
     return await generateCouncilAdviceWithClaude(input);
   } catch (claudeError) {
-    console.warn("Claude failed, falling back to OpenAI:", claudeError);
+    console.warn("[Council] Claude failed, falling back to OpenAI:", claudeError);
+    
     try {
+      console.log("[Council] Attempting OpenAI...");
       return await generateCouncilAdvice(input);
     } catch (openaiError) {
-      console.error("Both AI providers failed:", openaiError);
-      return {
-        qiPolicySummary: `For this pilot, Sovereign Qi recommends centering dignity and accessibility as first-class constraints. Shift from majority-rule decision making to policies that explicitly protect those most at risk, using synthetic personas and zero-knowledge access to avoid surveillance while still improving outcomes.`,
-        requiredChanges: [
-          "Make accessibility and psychological safety explicit success metrics alongside efficiency.",
-          "Remove any data collection that is not strictly necessary for the simulation objective.",
-          "Document how queer, disabled, and neurodivergent stakeholders were included in defining Qi Logic.",
-        ],
-        riskFlags: [
-          "Potential over-reliance on monitoring language that could slip back into surveillance.",
-          "Insufficient clarity on how dissenting voices will be protected in the governance process.",
-        ],
-        curbCutBenefits: [
-          "Design for queer and neurodivergent safety improves clarity and predictability for everyone.",
-          "Anti-harassment detection tuned on anti-trans dog-whistles also catches subtle school and workplace bullying.",
-          "Healthcare bias checks built for trans patients improve care pathways for all edge-case diagnostics.",
-        ],
-        status: "REVISE",
-      };
+      console.warn("[Council] OpenAI failed, falling back to Mistral:", openaiError);
+      
+      try {
+        console.log("[Council] Attempting Mistral...");
+        return await generateCouncilAdviceWithMistral(hermesInput);
+      } catch (mistralError) {
+        console.warn("[Council] Mistral failed, falling back to Hermes:", mistralError);
+        
+        try {
+          console.log("[Council] Attempting Hermes...");
+          return await generateCouncilAdviceWithHermes(hermesInput);
+        } catch (hermesError) {
+          console.error("[Council] All AI providers failed, using static fallback:", hermesError);
+          
+          return {
+            qiPolicySummary: `For this pilot, Sovereign Qi recommends centering dignity and accessibility as first-class constraints. Shift from majority-rule decision making to policies that explicitly protect those most at risk, using synthetic personas and zero-knowledge access to avoid surveillance while still improving outcomes.`,
+            requiredChanges: [
+              "Make accessibility and psychological safety explicit success metrics alongside efficiency.",
+              "Remove any data collection that is not strictly necessary for the simulation objective.",
+              "Document how queer, disabled, and neurodivergent stakeholders were included in defining Qi Logic.",
+            ],
+            riskFlags: [
+              "Potential over-reliance on monitoring language that could slip back into surveillance.",
+              "Insufficient clarity on how dissenting voices will be protected in the governance process.",
+              "All AI providers unavailable - this is a static fallback response.",
+            ],
+            curbCutBenefits: [
+              "Design for queer and neurodivergent safety improves clarity and predictability for everyone.",
+              "Anti-harassment detection tuned on anti-trans dog-whistles also catches subtle school and workplace bullying.",
+              "Healthcare bias checks built for trans patients improve care pathways for all edge-case diagnostics.",
+            ],
+            status: "REVISE",
+          };
+        }
+      }
     }
   }
 }
