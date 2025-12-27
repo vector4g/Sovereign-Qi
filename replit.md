@@ -40,10 +40,17 @@ Preferred communication style: Simple, everyday language.
 ### AI Integration Layer
 - **Primary AI**: Anthropic Claude (claude-sonnet-4-5) for policy analysis and council advice
 - **Secondary AI**: OpenAI GPT-4o for policy summaries and image generation
-- **Pattern**: Multi-model fallback - tries OpenAI first, falls back to Anthropic
+- **Cohere**: Signal reranking and semantic search for Morpheus pipeline prioritization
+- **Hume AI**: Emotional intelligence analysis for community testimony (distress detection)
+- **Hermes (Nous Research)**: Neutral-aligned policy reasoning without corporate censorship
+- **Pattern**: Multi-model fallback chain with graceful degradation
+  - Council: Claude → OpenAI → Hermes → Static fallback
+  - All integrations work in degraded mode when API keys absent
 - **Key Features**:
   - Council advice generation with structured output (APPROVE/REVISE/BLOCK)
   - Community voice summarization for accessibility constraints
+  - Emotional urgency triage for anonymous testimonies
+  - Governance signal reranking by relevance to specific harms
   - Simulation metrics generation (innovation, burnout, liability indices)
 
 ### Morpheus Governance Signal Integration
@@ -88,6 +95,13 @@ Preferred communication style: Simple, everyday language.
 - `AI_INTEGRATIONS_ANTHROPIC_BASE_URL` - Anthropic API base URL
 - `AI_INTEGRATIONS_OPENAI_API_KEY` - OpenAI API key
 - `AI_INTEGRATIONS_OPENAI_BASE_URL` - OpenAI API base URL
+
+### Optional AI Services (enhanced capabilities when configured)
+- `COHERE_API_KEY` - Cohere API for signal reranking and embeddings
+- `HUME_API_KEY` - Hume AI for emotional intelligence in testimony analysis
+- `LAMBDA_API_KEY` - Lambda Labs API for Hermes neutral-aligned reasoning
+- `NOUS_API_KEY` - Nous Research API for Hermes (alternative to Lambda)
+- `HERMES_MODEL` - Hermes model override (default: hermes-3-llama-3.1-405b)
 
 ## Testing
 
