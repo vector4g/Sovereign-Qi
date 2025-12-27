@@ -1,25 +1,29 @@
 /**
  * Multi-Agent Deliberation System for Sovereign Qi Council
  * 
- * 7-Agent Architecture with Specialized Roles:
+ * 8-Agent Architecture Named After Liberation Pioneers:
  * 
  * CULTURAL SPECIALIST (VETO POWER):
- * - Alan (Hermes-based): Cultural Codebreaker with VETO authority
+ * - Alan (Turing): Cultural Codebreaker with VETO authority
  * 
  * ADVISORY AGENTS (Context providers, non-voting):
  * - Hume: Emotional intelligence from testimony
  * - Cohere: Policy RAG for current context
  * 
- * VOTING AGENTS:
- * - Claude: General policy analysis (Anthropic)
- * - OpenAI: General policy analysis (GPT-4o)
- * - Gemini: Fast policy analysis (Google)
- * - Mistral: European GDPR-conscious analysis
- * - Llama: Open-source reasoning (Groq/Together)
+ * VOTING AGENTS (Named after liberation figures):
+ * - Lynn (Conway): Technical Architecture - Trans pioneer in chip design
+ * - Bayard (Rustin): Strategic Coordination - Gay civil rights architect
+ * - Sylvia (Rivera): Street-Level Harm Detection - Trans Latina activist
+ * - Elizebeth (Friedman): Signal Intelligence - First female cryptanalyst
+ * - Claudette (Colvin): Erasure Detection - Teen who refused to give up her seat
+ * - Audre (Lorde): Intersectional Analysis - Black lesbian feminist poet
+ * 
+ * EDGE CASE SPECIALIST:
+ * - Temple (Grandin): Alternative Perspective - Autistic scientist
  * 
  * Deliberation Flow:
  * 1. Advisory Phase: Hume + Cohere provide context
- * 2. Voting Phase: Alan + 5 voting agents deliberate in parallel
+ * 2. Voting Phase: Alan + 6 voting agents deliberate in parallel
  * 3. Cross-Review Phase: Agents review each other's votes
  * 4. Veto Review: Alan reviews all votes, can escalate to BLOCK
  * 5. Consensus Synthesis: Merge insights, Alan's BLOCK overrides all
@@ -39,7 +43,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 
-export type AgentName = "alan" | "claude" | "openai" | "gemini" | "mistral" | "hermes" | "llama";
+// Agent names honor liberation pioneers - see AGENT_REGISTRY for full descriptions
+export type AgentName = "alan" | "lynn" | "bayard" | "sylvia" | "elizebeth" | "claudette" | "audre";
 export type AdvisoryAgentName = "hume" | "cohere";
 
 export type AgentRole = "cultural_specialist" | "voting" | "advisory";
@@ -51,16 +56,65 @@ export interface AgentMetadata {
   description: string;
 }
 
+// Agent registry mapping liberation pioneers to their specialized roles
 export const AGENT_REGISTRY: Record<AgentName | AdvisoryAgentName, AgentMetadata> = {
-  alan: { name: "alan", role: "cultural_specialist", hasVetoPower: true, description: "Cultural Codebreaker (Hermes) - Named after Alan Turing" },
-  claude: { name: "claude", role: "voting", hasVetoPower: false, description: "Anthropic Claude - General policy analysis" },
-  openai: { name: "openai", role: "voting", hasVetoPower: false, description: "OpenAI GPT-4o - General policy analysis" },
-  gemini: { name: "gemini", role: "voting", hasVetoPower: false, description: "Google Gemini - Fast policy analysis" },
-  mistral: { name: "mistral", role: "voting", hasVetoPower: false, description: "Mistral - European GDPR-conscious analysis" },
-  hermes: { name: "hermes", role: "voting", hasVetoPower: false, description: "Nous Hermes - Neutral-aligned reasoning" },
-  llama: { name: "llama", role: "voting", hasVetoPower: false, description: "Meta Llama - Open-source reasoning" },
-  hume: { name: "hume", role: "advisory", hasVetoPower: false, description: "Hume AI - Emotional intelligence" },
-  cohere: { name: "cohere", role: "advisory", hasVetoPower: false, description: "Cohere - Policy RAG context" },
+  // Cultural Specialist with VETO power
+  alan: { 
+    name: "alan", 
+    role: "cultural_specialist", 
+    hasVetoPower: true, 
+    description: "Alan Turing - Cultural Codebreaker who decrypted Nazi codes and was persecuted for being gay. Decodes threats against vulnerable communities." 
+  },
+  // Voting agents named after liberation figures
+  lynn: { 
+    name: "lynn", 
+    role: "voting", 
+    hasVetoPower: false, 
+    description: "Lynn Conway - Trans computer scientist fired by IBM in 1968, became legendary VLSI innovator. Analyzes technical architecture and system design." 
+  },
+  bayard: { 
+    name: "bayard", 
+    role: "voting", 
+    hasVetoPower: false, 
+    description: "Bayard Rustin - Gay civil rights organizer, architect of 1963 March on Washington, often erased from history. Strategic coordination and coalition building." 
+  },
+  sylvia: { 
+    name: "sylvia", 
+    role: "voting", 
+    hasVetoPower: false, 
+    description: "Sylvia Rivera - Trans Latina activist at Stonewall, co-founded STAR. Street-level harm detection and youth protection." 
+  },
+  elizebeth: { 
+    name: "elizebeth", 
+    role: "voting", 
+    hasVetoPower: false, 
+    description: "Elizebeth Friedman - America's first female cryptanalyst, overshadowed by her husband. Signal intelligence and pattern recognition." 
+  },
+  claudette: { 
+    name: "claudette", 
+    role: "voting", 
+    hasVetoPower: false, 
+    description: "Claudette Colvin - 15-year-old who refused her bus seat before Rosa Parks but was deemed 'not the right image'. Erasure detection and voice amplification." 
+  },
+  audre: { 
+    name: "audre", 
+    role: "voting", 
+    hasVetoPower: false, 
+    description: "Audre Lorde - Black lesbian feminist poet, wrote 'the master's tools will never dismantle the master's house'. Intersectional critical analysis." 
+  },
+  // Advisory agents
+  hume: { 
+    name: "hume", 
+    role: "advisory", 
+    hasVetoPower: false, 
+    description: "Hume AI - Emotional intelligence analysis for community testimony" 
+  },
+  cohere: { 
+    name: "cohere", 
+    role: "advisory", 
+    hasVetoPower: false, 
+    description: "Cohere - Policy RAG for current context retrieval" 
+  },
 };
 
 export interface AgentVote {
