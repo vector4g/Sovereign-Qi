@@ -41,22 +41,48 @@ You ARE:
 
 Output valid JSON. Be direct and uncompromising in protecting vulnerable communities.`;
 
-function getAlanClient(): OpenAI | null {
+interface AlanClientConfig {
+  client: OpenAI;
+  model: string;
+  provider: string;
+}
+
+function getAlanClient(): AlanClientConfig | null {
+  const nvidiaKey = process.env.NVIDIA_API_KEY;
   const lambdaKey = process.env.LAMBDA_API_KEY;
   const nousKey = process.env.NOUS_API_KEY;
 
+  if (nvidiaKey) {
+    return {
+      client: new OpenAI({
+        baseURL: "https://integrate.api.nvidia.com/v1",
+        apiKey: nvidiaKey,
+      }),
+      model: process.env.NVIDIA_LLAMA_MODEL || "meta/llama-3.1-70b-instruct",
+      provider: "nvidia",
+    };
+  }
+
   if (lambdaKey) {
-    return new OpenAI({
-      baseURL: "https://api.lambdalabs.com/v1",
-      apiKey: lambdaKey,
-    });
+    return {
+      client: new OpenAI({
+        baseURL: "https://api.lambdalabs.com/v1",
+        apiKey: lambdaKey,
+      }),
+      model: process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b",
+      provider: "lambda",
+    };
   }
 
   if (nousKey) {
-    return new OpenAI({
-      baseURL: "https://api.nousresearch.com/v1",
-      apiKey: nousKey,
-    });
+    return {
+      client: new OpenAI({
+        baseURL: "https://api.nousresearch.com/v1",
+        apiKey: nousKey,
+      }),
+      model: process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b",
+      provider: "nous",
+    };
   }
 
   return null;
@@ -84,10 +110,10 @@ export async function generateAlanAdvice(input: {
   emotionalContext?: string;
   policyContext?: string;
 }): Promise<AlanVote> {
-  const client = getAlanClient();
+  const config = getAlanClient();
   const startTime = Date.now();
   
-  if (!client) {
+  if (!config) {
     console.warn("[Alan] No API key configured, using fallback analysis");
     return getFallbackAlanVote(input, startTime);
   }
@@ -121,7 +147,7 @@ Output JSON with:
 
 Remember: You have VETO POWER. If vulnerable communities are at risk, BLOCK without hesitation.`;
 
-  const model = process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b";
+  const { client, model, provider } = config;
 
   try {
     const response = await client.chat.completions.create({
@@ -153,7 +179,7 @@ Remember: You have VETO POWER. If vulnerable communities are at risk, BLOCK with
         const parsed = JSON.parse(jsonMatch[0]);
         const vetoTriggered = parsed.status === "BLOCK";
         
-        console.log(`[Alan] ✓ Cultural Codebreaker decision: ${parsed.status}${vetoTriggered ? " (VETO TRIGGERED)" : ""}`);
+        console.log(`[Alan] ✓ Cultural Codebreaker (${provider}) decision: ${parsed.status}${vetoTriggered ? " (VETO TRIGGERED)" : ""}`);
         
         return {
           advice: {
@@ -162,7 +188,7 @@ Remember: You have VETO POWER. If vulnerable communities are at risk, BLOCK with
             riskFlags: parsed.riskFlags || [],
             curbCutBenefits: parsed.curbCutBenefits || [],
             status: parsed.status || "REVISE",
-            servedBy: `alan-${model}`,
+            servedBy: `alan-${provider}-${model}`,
           },
           vetoTriggered,
           vetoReason: parsed.vetoReason || undefined,
@@ -280,13 +306,13 @@ export async function alanVetoReview(
     return originalVote;
   }
 
-  const client = getAlanClient();
-  if (!client) {
+  const config = getAlanClient();
+  if (!config) {
     return originalVote;
   }
 
+  const { client, model, provider } = config;
   const startTime = Date.now();
-  const model = process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b";
 
   const voteSummary = allVotes.map(v => `${v.agent}: ${v.status} - ${v.summary}`).join("\n");
 

@@ -67,22 +67,48 @@ export interface WhatIfAnalysis {
   servedBy: string;
 }
 
-function getHermesClient(): OpenAI | null {
+interface WhatIfClientConfig {
+  client: OpenAI;
+  model: string;
+  provider: string;
+}
+
+function getHermesClient(): WhatIfClientConfig | null {
+  const nvidiaKey = process.env.NVIDIA_API_KEY;
   const lambdaKey = process.env.LAMBDA_API_KEY;
   const nousKey = process.env.NOUS_API_KEY;
 
+  if (nvidiaKey) {
+    return {
+      client: new OpenAI({
+        baseURL: "https://integrate.api.nvidia.com/v1",
+        apiKey: nvidiaKey,
+      }),
+      model: process.env.NVIDIA_LLAMA_MODEL || "meta/llama-3.1-70b-instruct",
+      provider: "nvidia",
+    };
+  }
+
   if (lambdaKey) {
-    return new OpenAI({
-      baseURL: "https://api.lambdalabs.com/v1",
-      apiKey: lambdaKey,
-    });
+    return {
+      client: new OpenAI({
+        baseURL: "https://api.lambdalabs.com/v1",
+        apiKey: lambdaKey,
+      }),
+      model: process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b",
+      provider: "lambda",
+    };
   }
 
   if (nousKey) {
-    return new OpenAI({
-      baseURL: "https://api.nousresearch.com/v1",
-      apiKey: nousKey,
-    });
+    return {
+      client: new OpenAI({
+        baseURL: "https://api.nousresearch.com/v1",
+        apiKey: nousKey,
+      }),
+      model: process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b",
+      provider: "nous",
+    };
   }
 
   return null;
@@ -98,12 +124,14 @@ export async function exploreWhatIfScenarios(input: {
   knownRisks?: string[];
   communityVoices?: string;
 }): Promise<WhatIfAnalysis> {
-  const client = getHermesClient();
+  const config = getHermesClient();
   
-  if (!client) {
-    console.warn("[WhatIf] No Hermes API key configured, using heuristic scenarios");
+  if (!config) {
+    console.warn("[WhatIf] No API key configured, using heuristic scenarios");
     return generateHeuristicScenarios(input);
   }
+
+  const { client, model, provider } = config;
 
   const userPrompt = `Explore "What If" scenarios for this policy:
 
@@ -130,7 +158,6 @@ Output JSON with:
 Generate 4-6 scenarios ranging from likely to unlikely. Be creative but grounded.`;
 
   const startTime = Date.now();
-  const model = process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b";
 
   try {
     const response = await client.chat.completions.create({
@@ -160,14 +187,14 @@ Generate 4-6 scenarios ranging from likely to unlikely. Be creative but grounded
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        console.log(`[WhatIf] ✓ Generated ${parsed.scenarios?.length || 0} scenarios`);
+        console.log(`[WhatIf] ✓ Generated ${parsed.scenarios?.length || 0} scenarios via ${provider}`);
         return {
           scenarios: parsed.scenarios || [],
           blindSpots: parsed.blindSpots || [],
           stressTestQuestions: parsed.stressTestQuestions || [],
           overallRisk: parsed.overallRisk || "moderate",
           recommendation: parsed.recommendation || "Review scenarios with affected communities",
-          servedBy: `hermes-whatif-${model}`,
+          servedBy: `whatif-${provider}-${model}`,
         };
       }
     }
@@ -202,7 +229,7 @@ export async function generateCommunityWhatIfs(
   scenarios: WhatIfScenario[];
   servedBy: string;
 }> {
-  const client = getHermesClient();
+  const config = getHermesClient();
 
   const communityContexts: Record<string, string> = {
     trans: "transgender, non-binary, and gender-diverse individuals who may face deadnaming, misgendering, outing, or bathroom/facility exclusion",
@@ -212,14 +239,16 @@ export async function generateCommunityWhatIfs(
     intersectional: "people holding multiple marginalized identities whose experiences compound and intersect in unique ways",
   };
 
-  if (!client) {
-    console.warn(`[WhatIf] No Hermes API key, generating heuristic ${community} scenarios`);
+  if (!config) {
+    console.warn(`[WhatIf] No API key, generating heuristic ${community} scenarios`);
     return {
       questions: generateHeuristicQuestions(policyDescription, community),
       scenarios: [],
       servedBy: "whatif-heuristic",
     };
   }
+
+  const { client, model, provider } = config;
 
   const userPrompt = `Generate "What If" questions specifically for ${communityContexts[community]}:
 
@@ -234,7 +263,6 @@ Output JSON with:
 - scenarios: Array of {scenario, affectedGroups, likelihood, severity, mitigations}`;
 
   const startTime = Date.now();
-  const model = process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b";
 
   try {
     const response = await client.chat.completions.create({
@@ -267,7 +295,7 @@ Output JSON with:
         return {
           questions: parsed.questions || [],
           scenarios: parsed.scenarios || [],
-          servedBy: `hermes-whatif-${community}-${model}`,
+          servedBy: `whatif-${provider}-${community}-${model}`,
         };
       }
     }
@@ -313,9 +341,9 @@ export async function exploreUnintendedConsequences(input: {
   recommendations: string[];
   servedBy: string;
 }> {
-  const client = getHermesClient();
+  const config = getHermesClient();
 
-  if (!client) {
+  if (!config) {
     return {
       consequences: [
         {
@@ -327,12 +355,14 @@ export async function exploreUnintendedConsequences(input: {
         },
       ],
       recommendations: [
-        "Configure LAMBDA_API_KEY or NOUS_API_KEY for comprehensive consequence analysis",
+        "Configure NVIDIA_API_KEY, LAMBDA_API_KEY, or NOUS_API_KEY for comprehensive consequence analysis",
         "Consult directly with affected stakeholders",
       ],
       servedBy: "whatif-heuristic",
     };
   }
+
+  const { client, model, provider } = config;
 
   const userPrompt = `Analyze unintended consequences of this policy change:
 
@@ -352,7 +382,6 @@ Output JSON with:
 - recommendations: string[]`;
 
   const startTime = Date.now();
-  const model = process.env.HERMES_MODEL || "hermes-3-llama-3.1-405b";
 
   try {
     const response = await client.chat.completions.create({
@@ -385,7 +414,7 @@ Output JSON with:
         return {
           consequences: parsed.consequences || [],
           recommendations: parsed.recommendations || [],
-          servedBy: `hermes-whatif-consequences-${model}`,
+          servedBy: `whatif-${provider}-consequences-${model}`,
         };
       }
     }

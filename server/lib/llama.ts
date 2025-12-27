@@ -23,22 +23,48 @@ You are part of a multi-agent council that includes specialized agents for cultu
 
 Output valid JSON when requested. Be concise and operational.`;
 
-function getLlamaClient(): OpenAI | null {
+interface LlamaClientConfig {
+  client: OpenAI;
+  model: string;
+  provider: string;
+}
+
+function getLlamaClient(): LlamaClientConfig | null {
+  const nvidiaKey = process.env.NVIDIA_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
   const togetherKey = process.env.TOGETHER_API_KEY;
 
+  if (nvidiaKey) {
+    return {
+      client: new OpenAI({
+        baseURL: "https://integrate.api.nvidia.com/v1",
+        apiKey: nvidiaKey,
+      }),
+      model: process.env.NVIDIA_LLAMA_MODEL || "meta/llama-3.1-70b-instruct",
+      provider: "nvidia",
+    };
+  }
+
   if (groqKey) {
-    return new OpenAI({
-      baseURL: "https://api.groq.com/openai/v1",
-      apiKey: groqKey,
-    });
+    return {
+      client: new OpenAI({
+        baseURL: "https://api.groq.com/openai/v1",
+        apiKey: groqKey,
+      }),
+      model: process.env.LLAMA_MODEL || "llama-3.1-70b-versatile",
+      provider: "groq",
+    };
   }
 
   if (togetherKey) {
-    return new OpenAI({
-      baseURL: "https://api.together.xyz/v1",
-      apiKey: togetherKey,
-    });
+    return {
+      client: new OpenAI({
+        baseURL: "https://api.together.xyz/v1",
+        apiKey: togetherKey,
+      }),
+      model: process.env.LLAMA_MODEL || "meta-llama/Llama-3.1-70B-Instruct",
+      provider: "together",
+    };
   }
 
   return null;
@@ -53,12 +79,14 @@ export async function generateCouncilAdviceWithLlama(input: {
   morpheusSignals?: string;
   advisoryContext?: string;
 }): Promise<CouncilAdvice> {
-  const client = getLlamaClient();
+  const config = getLlamaClient();
   
-  if (!client) {
-    console.log("[Council] ✗ Llama unavailable (no GROQ_API_KEY or TOGETHER_API_KEY)");
-    throw new Error("Llama API key not configured (GROQ_API_KEY or TOGETHER_API_KEY)");
+  if (!config) {
+    console.log("[Council] ✗ Llama unavailable (no NVIDIA_API_KEY, GROQ_API_KEY, or TOGETHER_API_KEY)");
+    throw new Error("Llama API key not configured (NVIDIA_API_KEY, GROQ_API_KEY, or TOGETHER_API_KEY)");
   }
+
+  const { client, model, provider } = config;
 
   const userPrompt = `Analyze this digital-twin pilot for Sovereign Qi compliance:
 
@@ -80,7 +108,6 @@ Output a single JSON object with these keys:
 Focus on practical implementation concerns.`;
 
   const startTime = Date.now();
-  const model = process.env.LLAMA_MODEL || "llama-3.1-70b-versatile";
 
   try {
     const response = await client.chat.completions.create({
@@ -110,14 +137,14 @@ Focus on practical implementation concerns.`;
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        console.log(`[Council] ✓ Llama served decision: ${parsed.status || "REVISE"}`);
+        console.log(`[Council] ✓ Llama (${provider}) served decision: ${parsed.status || "REVISE"}`);
         return {
           qiPolicySummary: parsed.qiPolicySummary || "",
           requiredChanges: parsed.requiredChanges || [],
           riskFlags: parsed.riskFlags || [],
           curbCutBenefits: parsed.curbCutBenefits || [],
           status: parsed.status || "REVISE",
-          servedBy: `llama-${model}`,
+          servedBy: `llama-${provider}-${model}`,
         };
       }
     }

@@ -40,7 +40,7 @@ Preferred communication style: Simple, everyday language.
 ### AI Integration Layer - 7-Agent Council
 
 **CULTURAL SPECIALIST (VETO POWER):**
-- **Alan (Hermes-based)**: Named after Alan Turing, the "Cultural Codebreaker" with VETO authority. Decrypts coded threats against vulnerable communities. Detects dog-whistles, identity-targeting patterns, and surveillance mechanisms disguised as policy. Alan's BLOCK overrides all other votes regardless of consensus.
+- **Alan (NVIDIA/Hermes-based)**: Named after Alan Turing, the "Cultural Codebreaker" with VETO authority. Decrypts coded threats against vulnerable communities. Detects dog-whistles, identity-targeting patterns, and surveillance mechanisms disguised as policy. Alan's BLOCK overrides all other votes regardless of consensus. Uses NVIDIA NIM API as primary provider (Meta Llama 3.1 70B), with Lambda Labs and Nous Research as fallbacks.
 
 **ADVISORY AGENTS (Context providers, non-voting):**
 - **Hume AI**: Emotional intelligence analysis for community testimony (distress detection)
@@ -51,7 +51,7 @@ Preferred communication style: Simple, everyday language.
 - **OpenAI**: GPT-4o for policy summaries
 - **Gemini**: Google's Gemini 2.5 Flash for fast policy analysis
 - **Mistral**: European AI for GDPR-conscious policy analysis
-- **Llama**: Meta Llama via Groq/Together for open-source reasoning
+- **Llama**: Meta Llama 3.1 via NVIDIA NIM / Groq / Together for open-source reasoning
 
 - **Pattern**: Multi-model fallback chain OR 7-agent multi-agent deliberation
   - Fallback: Claude → OpenAI → Gemini → Mistral → Hermes → Static fallback
@@ -75,11 +75,12 @@ Preferred communication style: Simple, everyday language.
   - Coded threat detection (dog whistles, surveillance patterns)
   - Deliberation observability tracking (GET /api/observability/deliberations)
 
-- **What If Scenario Exploration** (Hermes-WhatIf agent):
+- **What If Scenario Exploration** (WhatIf agent via NVIDIA/Hermes):
   - `POST /api/pilots/:id/whatif` - Explore edge cases and hypothetical scenarios
   - `POST /api/pilots/:id/whatif/community` - Targeted questions for specific communities (trans, disabled, neurodivergent, trauma_survivors, intersectional)
   - `POST /api/pilots/:id/whatif/consequences` - Analyze unintended consequences of policy changes
-  - Heuristic fallbacks when no LAMBDA_API_KEY or NOUS_API_KEY configured
+  - Uses NVIDIA NIM API as primary provider, with Lambda/Nous as fallbacks
+  - Heuristic fallbacks when no API keys configured
 
 ### Morpheus Governance Signal Integration
 - **Purpose**: Detect dog whistles, coded language, and surveillance patterns in organizational communications
@@ -127,16 +128,23 @@ Preferred communication style: Simple, everyday language.
 - `AI_INTEGRATIONS_GEMINI_BASE_URL` - Gemini API base URL (via Replit AI Integrations)
 
 ### Optional AI Services (enhanced capabilities when configured)
+- `NVIDIA_API_KEY` - NVIDIA NIM API for Alan, Llama, and WhatIf agents (PRIMARY provider)
+- `NVIDIA_LLAMA_MODEL` - NVIDIA Llama model override (default: meta/llama-3.1-70b-instruct)
 - `COHERE_API_KEY` - Cohere API for policy RAG, signal reranking, and embeddings
 - `HUME_API_KEY` - Hume AI for emotional intelligence in testimony analysis
-- `LAMBDA_API_KEY` - Lambda Labs API for Alan (Cultural Codebreaker) and Hermes
-- `NOUS_API_KEY` - Nous Research API for Alan/Hermes (alternative to Lambda)
-- `HERMES_MODEL` - Hermes model override (default: hermes-3-llama-3.1-405b)
-- `GROQ_API_KEY` - Groq API for Llama agent
-- `TOGETHER_API_KEY` - Together AI for Llama agent (alternative to Groq)
-- `LLAMA_MODEL` - Llama model override (default: llama-3.1-70b-versatile)
+- `LAMBDA_API_KEY` - Lambda Labs API for Alan/WhatIf (fallback after NVIDIA)
+- `NOUS_API_KEY` - Nous Research API for Alan/WhatIf (fallback after Lambda)
+- `HERMES_MODEL` - Hermes model override for Lambda/Nous (default: hermes-3-llama-3.1-405b)
+- `GROQ_API_KEY` - Groq API for Llama agent (fallback after NVIDIA)
+- `TOGETHER_API_KEY` - Together AI for Llama agent (fallback after Groq)
+- `LLAMA_MODEL` - Llama model override for Groq/Together (default: llama-3.1-70b-versatile)
 - `MISTRAL_API_KEY` - Mistral AI for European policy analysis
 - `MISTRAL_MODEL` - Mistral model override (default: mistral-large-latest)
+
+### Provider Fallback Chains
+- **Alan/WhatIf agents**: NVIDIA → Lambda → Nous → Heuristic fallback
+- **Llama agent**: NVIDIA → Groq → Together → Unavailable
+- **Primary agents** (Claude, OpenAI, Gemini, Mistral): Replit AI Integrations
 
 ## Testing
 
