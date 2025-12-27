@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertPilotSchema, insertGovernanceSignalSchema } from "@shared/schema";
+import { insertPilotSchema, insertGovernanceSignalSchema, insertAnonymousTestimonySchema } from "@shared/schema";
 import { randomBytes } from "crypto";
 import { generateCouncilAdviceWithFallback } from "./lib/agents";
 import { runQiSimulation } from "./lib/simulator";
@@ -306,6 +306,62 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Get pilot signals error:", error);
       res.status(500).json({ error: "Failed to fetch signals" });
+    }
+  });
+
+  // Anonymous Testimony - Zero-Knowledge Submission (NO AUTH REQUIRED)
+  // This endpoint intentionally does not log IP, user agent, or session
+  app.post("/api/testimony", async (req, res) => {
+    try {
+      const validatedData = insertAnonymousTestimonySchema.parse(req.body);
+      
+      // Validate testimony length for data minimization
+      if (validatedData.testimony.length > 2000) {
+        return res.status(400).json({ error: "Testimony exceeds 2000 character limit" });
+      }
+      
+      // Normalize orgId for consistent matching
+      const orgId = validatedData.orgId.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+      
+      const testimony = await storage.createAnonymousTestimony({
+        ...validatedData,
+        orgId,
+      });
+      
+      // Return only confirmation, not the full record (privacy)
+      res.status(201).json({ 
+        received: true,
+        message: "Your testimony has been recorded anonymously. Thank you for contributing to community safety."
+      });
+    } catch (error: any) {
+      console.error("Create testimony error:", error);
+      res.status(400).json({ error: "Invalid testimony data" });
+    }
+  });
+
+  // Get testimony for an org (requires auth and pilot ownership)
+  app.get("/api/testimony/org/:orgId", requireAuth, async (req: any, res) => {
+    try {
+      const userPilots = await storage.getPilotsByOwner(req.userEmail);
+      const hasOrgAccess = userPilots.some(p => p.orgId === req.params.orgId);
+      if (!hasOrgAccess) {
+        return res.status(403).json({ error: "Access denied - no pilots in this organization" });
+      }
+
+      const testimonies = await storage.getAnonymousTestimonyByOrg(req.params.orgId);
+      
+      // Return only essential fields (no IDs for extra privacy)
+      const sanitized = testimonies.map(t => ({
+        harmCategory: t.harmCategory,
+        testimony: t.testimony,
+        accessibilityNeeds: t.accessibilityNeeds,
+        submittedAt: t.submittedAt,
+      }));
+      
+      res.json({ orgId: req.params.orgId, count: sanitized.length, testimonies: sanitized });
+    } catch (error) {
+      console.error("Get org testimony error:", error);
+      res.status(500).json({ error: "Failed to fetch testimonies" });
     }
   });
 

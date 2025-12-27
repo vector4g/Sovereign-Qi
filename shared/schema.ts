@@ -150,3 +150,22 @@ export const insertGovernanceSignalSchema = createInsertSchema(governanceSignals
 
 export type GovernanceSignal = typeof governanceSignals.$inferSelect;
 export type InsertGovernanceSignal = z.infer<typeof insertGovernanceSignalSchema>;
+
+// Anonymous testimony - zero-knowledge submission (no auth required)
+export const anonymousTestimony = pgTable("anonymous_testimony", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  orgId: text("org_id").notNull(), // Which org this testimony relates to
+  harmCategory: text("harm_category").notNull(), // Type of harm experienced
+  testimony: text("testimony").notNull(), // The actual testimony (max 2000 chars)
+  accessibilityNeeds: text("accessibility_needs"), // Optional accessibility constraints
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+  // Zero-knowledge: no IP, no user agent, no session - only content
+});
+
+export const insertAnonymousTestimonySchema = createInsertSchema(anonymousTestimony).omit({
+  id: true,
+  submittedAt: true,
+});
+
+export type AnonymousTestimony = typeof anonymousTestimony.$inferSelect;
+export type InsertAnonymousTestimony = z.infer<typeof insertAnonymousTestimonySchema>;

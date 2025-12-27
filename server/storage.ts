@@ -9,11 +9,14 @@ import {
   type InsertCouncilDecision,
   type GovernanceSignal,
   type InsertGovernanceSignal,
+  type AnonymousTestimony,
+  type InsertAnonymousTestimony,
   pilots,
   sessions,
   simulations,
   councilDecisions,
-  governanceSignals
+  governanceSignals,
+  anonymousTestimony
 } from "@shared/schema";
 import { db } from "../db";
 import { eq, and, desc } from "drizzle-orm";
@@ -42,6 +45,10 @@ export interface IStorage {
   createGovernanceSignal(signal: InsertGovernanceSignal): Promise<GovernanceSignal>;
   getGovernanceSignalsByOrg(orgId: string): Promise<GovernanceSignal[]>;
   getGovernanceSignalsByPilot(pilotId: string): Promise<GovernanceSignal[]>;
+  
+  // Anonymous testimony - zero-knowledge
+  createAnonymousTestimony(testimony: InsertAnonymousTestimony): Promise<AnonymousTestimony>;
+  getAnonymousTestimonyByOrg(orgId: string): Promise<AnonymousTestimony[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -143,6 +150,20 @@ export class DatabaseStorage implements IStorage {
       .from(governanceSignals)
       .where(eq(governanceSignals.pilotId, pilotId))
       .orderBy(desc(governanceSignals.createdAt));
+  }
+
+  // Anonymous Testimony - Zero-Knowledge
+  async createAnonymousTestimony(testimony: InsertAnonymousTestimony): Promise<AnonymousTestimony> {
+    const [result] = await db.insert(anonymousTestimony).values(testimony).returning();
+    return result;
+  }
+
+  async getAnonymousTestimonyByOrg(orgId: string): Promise<AnonymousTestimony[]> {
+    return await db
+      .select()
+      .from(anonymousTestimony)
+      .where(eq(anonymousTestimony.orgId, orgId))
+      .orderBy(desc(anonymousTestimony.submittedAt));
   }
 }
 
