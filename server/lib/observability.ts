@@ -32,8 +32,39 @@ export interface LLMMetrics {
   errorTypes: Record<string, number>;
 }
 
+export interface DeliberationRecord {
+  id: string;
+  timestamp: Date;
+  participatingAgents: string[];
+  failedAgents: string[];
+  consensusLevel: "unanimous" | "majority" | "plurality" | "single";
+  finalStatus: "APPROVE" | "REVISE" | "BLOCK";
+  statusVotes: Record<"APPROVE" | "REVISE" | "BLOCK", string[]>;
+  totalLatencyMs: number;
+  totalInputTokens: number;
+  totalOutputTokens: number;
+  challengeCount: number;
+  affirmCount: number;
+  challengeTypeCount: number;
+  nuanceCount: number;
+}
+
+export interface DeliberationMetrics {
+  totalDeliberations: number;
+  avgParticipants: number;
+  consensusDistribution: Record<string, number>;
+  statusDistribution: Record<string, number>;
+  avgLatencyMs: number;
+  agentParticipationRate: Record<string, number>;
+  agentFailureRate: Record<string, number>;
+  avgChallenges: number;
+  avgAffirmations: number;
+  avgNuances: number;
+}
+
 class LLMObservability {
   private calls: LLMCall[] = [];
+  private deliberations: DeliberationRecord[] = [];
   private maxHistorySize = 1000;
 
   recordCall(call: Omit<LLMCall, "id" | "timestamp">): LLMCall {
@@ -113,6 +144,93 @@ class LLMObservability {
 
   clear() {
     this.calls = [];
+    this.deliberations = [];
+  }
+
+  recordDeliberation(record: Omit<DeliberationRecord, "id" | "timestamp">): DeliberationRecord {
+    const fullRecord: DeliberationRecord = {
+      ...record,
+      id: `delib-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      timestamp: new Date(),
+    };
+
+    this.deliberations.push(fullRecord);
+
+    if (this.deliberations.length > this.maxHistorySize) {
+      this.deliberations = this.deliberations.slice(-this.maxHistorySize);
+    }
+
+    console.log(`[Deliberation] ${record.participatingAgents.length} agents | ${record.consensusLevel} consensus | ${record.finalStatus} | ${record.totalLatencyMs}ms`);
+    console.log(`  Challenges: ${record.challengeCount} (affirm: ${record.affirmCount}, challenge: ${record.challengeTypeCount}, nuance: ${record.nuanceCount})`);
+
+    return fullRecord;
+  }
+
+  getDeliberationMetrics(sinceMs: number = 3600000): DeliberationMetrics {
+    const cutoff = Date.now() - sinceMs;
+    const recentDeliberations = this.deliberations.filter(d => d.timestamp.getTime() > cutoff);
+
+    const metrics: DeliberationMetrics = {
+      totalDeliberations: recentDeliberations.length,
+      avgParticipants: 0,
+      consensusDistribution: {},
+      statusDistribution: {},
+      avgLatencyMs: 0,
+      agentParticipationRate: {},
+      agentFailureRate: {},
+      avgChallenges: 0,
+      avgAffirmations: 0,
+      avgNuances: 0,
+    };
+
+    if (recentDeliberations.length === 0) return metrics;
+
+    let totalParticipants = 0;
+    let totalLatency = 0;
+    let totalChallenges = 0;
+    let totalAffirmations = 0;
+    let totalNuances = 0;
+    const agentParticipation: Record<string, number> = {};
+    const agentFailures: Record<string, number> = {};
+
+    for (const delib of recentDeliberations) {
+      totalParticipants += delib.participatingAgents.length;
+      totalLatency += delib.totalLatencyMs;
+      totalChallenges += delib.challengeCount;
+      totalAffirmations += delib.affirmCount;
+      totalNuances += delib.nuanceCount;
+
+      metrics.consensusDistribution[delib.consensusLevel] = 
+        (metrics.consensusDistribution[delib.consensusLevel] || 0) + 1;
+      metrics.statusDistribution[delib.finalStatus] = 
+        (metrics.statusDistribution[delib.finalStatus] || 0) + 1;
+
+      for (const agent of delib.participatingAgents) {
+        agentParticipation[agent] = (agentParticipation[agent] || 0) + 1;
+      }
+      for (const agent of delib.failedAgents) {
+        agentFailures[agent] = (agentFailures[agent] || 0) + 1;
+      }
+    }
+
+    metrics.avgParticipants = Math.round((totalParticipants / recentDeliberations.length) * 10) / 10;
+    metrics.avgLatencyMs = Math.round(totalLatency / recentDeliberations.length);
+    metrics.avgChallenges = Math.round((totalChallenges / recentDeliberations.length) * 10) / 10;
+    metrics.avgAffirmations = Math.round((totalAffirmations / recentDeliberations.length) * 10) / 10;
+    metrics.avgNuances = Math.round((totalNuances / recentDeliberations.length) * 10) / 10;
+
+    for (const [agent, count] of Object.entries(agentParticipation)) {
+      metrics.agentParticipationRate[agent] = Math.round((count / recentDeliberations.length) * 100);
+    }
+    for (const [agent, count] of Object.entries(agentFailures)) {
+      metrics.agentFailureRate[agent] = Math.round((count / recentDeliberations.length) * 100);
+    }
+
+    return metrics;
+  }
+
+  getRecentDeliberations(limit: number = 20): DeliberationRecord[] {
+    return this.deliberations.slice(-limit);
   }
 }
 

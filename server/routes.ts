@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertPilotSchema, insertGovernanceSignalSchema, insertAnonymousTestimonySchema } from "@shared/schema";
 import { randomBytes } from "crypto";
 import { generateCouncilAdviceWithFallback } from "./lib/agents";
+import { runMultiAgentDeliberation, runQuickDeliberation } from "./lib/deliberation";
 import { runQiSimulation } from "./lib/simulator";
 import { pilotRateLimit, councilRateLimit, signalRateLimit, getRateLimitStats } from "./lib/rateLimit";
 import { createSanitizationMiddleware } from "./lib/sanitize";
@@ -48,6 +49,14 @@ export async function registerRoutes(
     res.json({
       metrics: llmObservability.getMetrics(sinceMs),
       recentCalls: llmObservability.getRecentCalls(20),
+    });
+  });
+
+  app.get("/api/observability/deliberations", requireAuth, (req, res) => {
+    const sinceMs = parseInt(req.query.since as string) || 3600000;
+    res.json({
+      metrics: llmObservability.getDeliberationMetrics(sinceMs),
+      recentDeliberations: llmObservability.getRecentDeliberations(10),
     });
   });
 
@@ -212,6 +221,80 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Council log error:", error);
       res.status(500).json({ error: "Failed to fetch council log" });
+    }
+  });
+
+  app.post("/api/pilots/:id/deliberate", requireAuth, councilRateLimit, async (req: any, res) => {
+    try {
+      const pilot = await storage.getPilot(req.params.id);
+      if (!pilot) {
+        return res.status(404).json({ error: "Pilot not found" });
+      }
+      if (pilot.ownerEmail !== req.userEmail) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      const rawSignals = await storage.getGovernanceSignalsByOrg(pilot.orgId);
+      const signalsByCategory = rawSignals.reduce((acc, s) => {
+        if (!acc[s.category]) {
+          acc[s.category] = { category: s.category, count: 0, examples: [] };
+        }
+        acc[s.category].count += parseInt(s.patternCount || "1", 10);
+        if (acc[s.category].examples.length < 3) {
+          acc[s.category].examples.push(s.summary.slice(0, 100));
+        }
+        return acc;
+      }, {} as Record<string, { category: string; count: number; examples: string[] }>);
+      
+      const governanceSignals = Object.values(signalsByCategory);
+
+      const mode = req.query.mode === "quick" ? "quick" : "full";
+      const deliberationFn = mode === "quick" ? runQuickDeliberation : runMultiAgentDeliberation;
+
+      const result = await deliberationFn({
+        primaryObjective: pilot.primaryObjective,
+        majorityLogicDesc: pilot.majorityLogicDesc,
+        qiLogicDesc: pilot.qiLogicDesc,
+        communityVoices: req.body.communityVoices,
+        harms: req.body.harms,
+        governanceSignals: governanceSignals.length > 0 ? governanceSignals : undefined,
+      });
+
+      const sanitizeArray = (arr: string[], maxItems: number = 5, maxLen: number = 200) =>
+        arr.slice(0, maxItems).map((s) => s.slice(0, maxLen));
+
+      const logEntry = await storage.createCouncilDecision({
+        pilotId: pilot.id,
+        status: result.finalAdvice.status,
+        adviceSummary: result.finalAdvice.qiPolicySummary.slice(0, 500),
+        requiredChanges: sanitizeArray(result.finalAdvice.requiredChanges),
+        riskFlags: sanitizeArray(result.finalAdvice.riskFlags),
+        curbCutBenefits: sanitizeArray(result.finalAdvice.curbCutBenefits),
+      });
+
+      res.json({ 
+        pilotId: pilot.id, 
+        advice: result.finalAdvice,
+        deliberation: {
+          mode,
+          participatingAgents: result.participatingAgents,
+          failedAgents: result.failedAgents,
+          consensusLevel: result.consensusLevel,
+          statusVotes: result.statusVotes,
+          challenges: result.challenges.map(c => ({
+            challenger: c.challenger,
+            target: c.target,
+            type: c.type,
+            content: c.content.slice(0, 200),
+          })),
+          totalLatencyMs: result.totalLatencyMs,
+        },
+        loggedDecisionId: logEntry.id,
+        loggedAt: logEntry.createdAt,
+      });
+    } catch (error) {
+      console.error("Council deliberation error:", error);
+      res.status(500).json({ error: "Multi-agent deliberation failed" });
     }
   });
 

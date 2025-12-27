@@ -45,15 +45,24 @@ Preferred communication style: Simple, everyday language.
 - **Hermes (Nous Research)**: Neutral-aligned policy reasoning without corporate censorship
 - **Mistral AI**: Fast European AI for policy analysis with GDPR-conscious deployment
 - **Gemini AI**: Google's Gemini 2.5 Flash for fast policy analysis via Replit AI Integrations
-- **Pattern**: Multi-model fallback chain with graceful degradation
-  - Council: Claude → OpenAI → Gemini → Mistral → Hermes → Static fallback
+- **Pattern**: Multi-model fallback chain OR multi-agent deliberation
+  - Fallback: Claude → OpenAI → Gemini → Mistral → Hermes → Static fallback
+  - Deliberation: All 5 agents vote in parallel, then cross-review and synthesize consensus
   - All integrations work in degraded mode when API keys absent
+- **Multi-Agent Deliberation** (POST /api/pilots/:id/deliberate):
+  - Round 1: All 5 agents (Claude, OpenAI, Gemini, Mistral, Hermes) vote in parallel via Promise.allSettled()
+  - Round 2: Each agent reviews others' votes, can affirm/challenge/add nuances
+  - Synthesis: Merge all insights, use most cautious status (BLOCK > REVISE > APPROVE)
+  - Modes: `?mode=full` (5 agents + 2 rounds) or `?mode=quick` (3 agents, 1 round)
+  - Response includes: consensusLevel (unanimous/majority/plurality/single), statusVotes, challenges
 - **Key Features**:
   - Council advice generation with structured output (APPROVE/REVISE/BLOCK)
+  - Multi-agent deliberation with consensus synthesis
   - Community voice summarization for accessibility constraints
   - Emotional urgency triage for anonymous testimonies
   - Governance signal reranking by relevance to specific harms
   - Simulation metrics generation (innovation, burnout, liability indices)
+  - Deliberation observability tracking (GET /api/observability/deliberations)
 
 ### Morpheus Governance Signal Integration
 - **Purpose**: Detect dog whistles, coded language, and surveillance patterns in organizational communications
