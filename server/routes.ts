@@ -6,6 +6,7 @@ import { randomBytes } from "crypto";
 import { generateCouncilAdviceWithFallback } from "./lib/agents";
 import { runMultiAgentDeliberation, runQuickDeliberation } from "./lib/deliberation";
 import { runQiSimulation } from "./lib/simulator";
+import { exploreWhatIfScenarios, generateCommunityWhatIfs, exploreUnintendedConsequences } from "./lib/hermes-whatif";
 import { pilotRateLimit, councilRateLimit, signalRateLimit, getRateLimitStats } from "./lib/rateLimit";
 import { createSanitizationMiddleware } from "./lib/sanitize";
 import { llmObservability } from "./lib/observability";
@@ -303,6 +304,106 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Council deliberation error:", error);
       res.status(500).json({ error: "Multi-agent deliberation failed" });
+    }
+  });
+
+  // What If Scenario Exploration endpoints
+  app.post("/api/pilots/:id/whatif", requireAuth, councilRateLimit, async (req: any, res) => {
+    try {
+      const pilot = await storage.getPilot(req.params.id);
+      if (!pilot) {
+        return res.status(404).json({ error: "Pilot not found" });
+      }
+      if (pilot.ownerEmail !== req.userEmail) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      const result = await exploreWhatIfScenarios({
+        primaryObjective: pilot.primaryObjective,
+        policyDescription: `${pilot.majorityLogicDesc} → ${pilot.qiLogicDesc}`,
+        targetPopulation: req.body.targetPopulation,
+        knownRisks: req.body.knownRisks,
+        communityVoices: req.body.communityVoices,
+      });
+
+      res.json({
+        pilotId: pilot.id,
+        pilotName: pilot.name,
+        analysis: result,
+      });
+    } catch (error) {
+      console.error("What If analysis error:", error);
+      res.status(500).json({ error: "What If scenario exploration failed" });
+    }
+  });
+
+  app.post("/api/pilots/:id/whatif/community", requireAuth, councilRateLimit, async (req: any, res) => {
+    try {
+      const pilot = await storage.getPilot(req.params.id);
+      if (!pilot) {
+        return res.status(404).json({ error: "Pilot not found" });
+      }
+      if (pilot.ownerEmail !== req.userEmail) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      const community = req.body.community || "intersectional";
+      const validCommunities = ["trans", "disabled", "neurodivergent", "trauma_survivors", "intersectional"];
+      if (!validCommunities.includes(community)) {
+        return res.status(400).json({ 
+          error: `Invalid community. Must be one of: ${validCommunities.join(", ")}` 
+        });
+      }
+
+      const result = await generateCommunityWhatIfs(
+        `${pilot.primaryObjective}: ${pilot.majorityLogicDesc} → ${pilot.qiLogicDesc}`,
+        community
+      );
+
+      res.json({
+        pilotId: pilot.id,
+        community,
+        questions: result.questions,
+        scenarios: result.scenarios,
+        servedBy: result.servedBy,
+      });
+    } catch (error) {
+      console.error("Community What If error:", error);
+      res.status(500).json({ error: "Community scenario exploration failed" });
+    }
+  });
+
+  app.post("/api/pilots/:id/whatif/consequences", requireAuth, councilRateLimit, async (req: any, res) => {
+    try {
+      const pilot = await storage.getPilot(req.params.id);
+      if (!pilot) {
+        return res.status(404).json({ error: "Pilot not found" });
+      }
+      if (pilot.ownerEmail !== req.userEmail) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      if (!req.body.proposedChange) {
+        return res.status(400).json({ error: "proposedChange is required" });
+      }
+
+      const result = await exploreUnintendedConsequences({
+        currentPolicy: pilot.majorityLogicDesc,
+        proposedChange: req.body.proposedChange,
+        stakeholders: req.body.stakeholders || ["employees", "management", "customers"],
+      });
+
+      res.json({
+        pilotId: pilot.id,
+        currentPolicy: pilot.majorityLogicDesc,
+        proposedChange: req.body.proposedChange,
+        consequences: result.consequences,
+        recommendations: result.recommendations,
+        servedBy: result.servedBy,
+      });
+    } catch (error) {
+      console.error("Consequences analysis error:", error);
+      res.status(500).json({ error: "Unintended consequences analysis failed" });
     }
   });
 

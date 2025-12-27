@@ -75,6 +75,12 @@ Preferred communication style: Simple, everyday language.
   - Coded threat detection (dog whistles, surveillance patterns)
   - Deliberation observability tracking (GET /api/observability/deliberations)
 
+- **What If Scenario Exploration** (Hermes-WhatIf agent):
+  - `POST /api/pilots/:id/whatif` - Explore edge cases and hypothetical scenarios
+  - `POST /api/pilots/:id/whatif/community` - Targeted questions for specific communities (trans, disabled, neurodivergent, trauma_survivors, intersectional)
+  - `POST /api/pilots/:id/whatif/consequences` - Analyze unintended consequences of policy changes
+  - Heuristic fallbacks when no LAMBDA_API_KEY or NOUS_API_KEY configured
+
 ### Morpheus Governance Signal Integration
 - **Purpose**: Detect dog whistles, coded language, and surveillance patterns in organizational communications
 - **Schema**: `governanceSignals` table with 7 categories: dog_whistle, identity_targeting, surveillance_concern, policy_subversion, queer_coded_hostility, ableist_language, racial_microaggression
