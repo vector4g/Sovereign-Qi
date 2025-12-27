@@ -288,26 +288,27 @@ async function callVotingAgent(
       advisoryContext,
     };
     
+    // Agent names honor liberation pioneers, each calling their respective AI provider
     switch (agent) {
       case "alan":
         throw new Error("Alan uses dedicated handler with veto logic");
-      case "claude":
+      case "lynn": // Lynn Conway - Technical Architecture (Anthropic Claude)
         advice = await generateCouncilAdviceWithClaude(input);
         break;
-      case "openai":
+      case "bayard": // Bayard Rustin - Strategic Coordination (OpenAI)
         advice = await generateCouncilAdvice(input);
         break;
-      case "gemini":
+      case "sylvia": // Sylvia Rivera - Street-Level Harm Detection (Gemini)
         advice = await generateCouncilAdviceWithGemini(input);
         break;
-      case "mistral":
+      case "elizebeth": // Elizebeth Friedman - Signal Intelligence (Mistral)
         advice = await generateCouncilAdviceWithMistral(hermesInput);
         break;
-      case "hermes":
-        advice = await generateCouncilAdviceWithHermes(hermesInput);
-        break;
-      case "llama":
+      case "claudette": // Claudette Colvin - Erasure Detection (Llama)
         advice = await generateCouncilAdviceWithLlama(hermesInput);
+        break;
+      case "audre": // Audre Lorde - Intersectional Analysis (Hermes)
+        advice = await generateCouncilAdviceWithHermes(hermesInput);
         break;
       default:
         throw new Error(`Unknown voting agent: ${agent}`);
@@ -363,14 +364,21 @@ ${isAlan && alanVote?.codedThreatsDetected.length ? `Coded Threats: ${alanVote.c
 }
 
 async function runSecondRoundWithAgent(
-  agentName: "claude" | "openai" | "gemini",
+  agentName: "lynn" | "bayard" | "sylvia",
   input: AgentInput,
   allVotes: AgentVote[],
   alanVote?: AlanVote
 ): Promise<DeliberationChallenge[]> {
   const votesContext = formatVotesForDeliberation(allVotes, alanVote);
   
-  const prompt = `You are ${agentName === "claude" ? "Claude" : agentName === "openai" ? "OpenAI GPT-4o" : "Gemini"}, reviewing all council agents' votes.
+  // Map liberation pioneer names to their AI provider identities for the prompt
+  const agentIdentities: Record<string, string> = {
+    lynn: "Lynn Conway (trans pioneer) via Claude",
+    bayard: "Bayard Rustin (civil rights architect) via GPT-4o",
+    sylvia: "Sylvia Rivera (trans Latina activist) via Gemini",
+  };
+  
+  const prompt = `You are ${agentIdentities[agentName]}, reviewing all council agents' votes.
 
 ORIGINAL PILOT:
 Primary Objective: ${input.primaryObjective}
@@ -390,7 +398,7 @@ Be concise. Focus on substantive disagreements or additions.`;
   try {
     let content: string | undefined;
 
-    if (agentName === "claude" && process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY) {
+    if (agentName === "lynn" && process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY) {
       const response = await anthropic.messages.create({
         model: "claude-sonnet-4-5",
         max_tokens: 512,
@@ -401,7 +409,7 @@ Be concise. Focus on substantive disagreements or additions.`;
       if (firstContent.type === "text") {
         content = firstContent.text;
       }
-    } else if (agentName === "openai" && process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+    } else if (agentName === "bayard" && process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
@@ -412,7 +420,7 @@ Be concise. Focus on substantive disagreements or additions.`;
         max_tokens: 512,
       });
       content = response.choices[0]?.message?.content || undefined;
-    } else if (agentName === "gemini" && process.env.AI_INTEGRATIONS_GEMINI_API_KEY) {
+    } else if (agentName === "sylvia" && process.env.AI_INTEGRATIONS_GEMINI_API_KEY) {
       const response = await gemini.models.generateContent({
         model: "gemini-2.5-flash",
         contents: [{ role: "user", parts: [{ text: `${DELIBERATION_SYSTEM_PROMPT}\n\n${prompt}` }] }],
@@ -535,15 +543,16 @@ export async function runMultiAgentDeliberation(
   input: AgentInput
 ): Promise<ConsensusResult> {
   const startTime = Date.now();
-  const votingAgents: AgentName[] = ["claude", "openai", "gemini", "mistral", "llama"];
+  // 6 voting agents named after liberation pioneers
+  const votingAgents: AgentName[] = ["lynn", "bayard", "sylvia", "elizebeth", "claudette", "audre"];
 
-  console.log("[Deliberation] Starting 7-agent deliberation (Alan + 5 voting + 2 advisory)...");
+  console.log("[Deliberation] Starting 8-agent deliberation (Alan + 6 voting + 2 advisory)...");
 
   console.log("[Deliberation] Phase 1: Gathering advisory context (Hume, Cohere)...");
   const advisoryContext = await gatherAdvisoryContext(input);
   const advisoryContextStr = formatAdvisoryContext(advisoryContext);
 
-  console.log("[Deliberation] Phase 2: Parallel voting (Alan + 5 agents)...");
+  console.log("[Deliberation] Phase 2: Parallel voting (Alan + 6 liberation pioneers)...");
   
   const alanInput = {
     primaryObjective: input.primaryObjective,
@@ -620,9 +629,9 @@ export async function runMultiAgentDeliberation(
     console.log("[Deliberation] Phase 3: Cross-agent review...");
     
     const round2Results = await Promise.allSettled([
-      runSecondRoundWithAgent("claude", input, round1Votes, alanVote),
-      runSecondRoundWithAgent("openai", input, round1Votes, alanVote),
-      runSecondRoundWithAgent("gemini", input, round1Votes, alanVote),
+      runSecondRoundWithAgent("lynn", input, round1Votes, alanVote),
+      runSecondRoundWithAgent("bayard", input, round1Votes, alanVote),
+      runSecondRoundWithAgent("sylvia", input, round1Votes, alanVote),
     ]);
     
     for (const result of round2Results) {
@@ -725,9 +734,10 @@ export async function runQuickDeliberation(
   input: AgentInput
 ): Promise<ConsensusResult> {
   const startTime = Date.now();
-  const votingAgents: AgentName[] = ["claude", "openai", "gemini"];
+  // Quick mode uses 3 core liberation pioneers: Lynn, Bayard, Sylvia
+  const votingAgents: AgentName[] = ["lynn", "bayard", "sylvia"];
 
-  console.log("[Deliberation] Starting quick deliberation (Alan + 3 voting + advisory)...");
+  console.log("[Deliberation] Starting quick deliberation (Alan + Lynn + Bayard + Sylvia + advisory)...");
 
   const advisoryContext = await gatherAdvisoryContext(input);
   const advisoryContextStr = formatAdvisoryContext(advisoryContext);

@@ -37,45 +37,52 @@ Preferred communication style: Simple, everyday language.
   - `simulations` - Simulation result storage
   - `conversations`/`messages` - Chat history for AI interactions
 
-### AI Integration Layer - 7-Agent Council
+### AI Integration Layer - 8-Agent Liberation Pioneer Council
+
+All agents are named after liberation pioneers who were persecuted, erased, or excluded but made crucial contributions to justice and human rights.
 
 **CULTURAL SPECIALIST (VETO POWER):**
-- **Alan (NVIDIA/Hermes-based)**: Named after Alan Turing, the "Cultural Codebreaker" with VETO authority. Decrypts coded threats against vulnerable communities. Detects dog-whistles, identity-targeting patterns, and surveillance mechanisms disguised as policy. Alan's BLOCK overrides all other votes regardless of consensus. Uses NVIDIA NIM API as primary provider (Meta Llama 3.1 70B), with Lambda Labs and Nous Research as fallbacks.
+- **Alan (Turing)**: The "Cultural Codebreaker" with VETO authority. Named after Alan Turing, the gay mathematician who cracked Enigma and was chemically castrated for his sexuality. Decrypts coded threats against vulnerable communities. Detects dog-whistles, identity-targeting patterns, and surveillance mechanisms disguised as policy. Alan's BLOCK overrides all other votes regardless of consensus. Uses NVIDIA NIM API as primary provider (Meta Llama 3.1 70B), with Lambda Labs and Nous Research as fallbacks.
 
 **ADVISORY AGENTS (Context providers, non-voting):**
 - **Hume AI**: Emotional intelligence analysis for community testimony (distress detection)
 - **Cohere**: Policy RAG for current context retrieval and signal reranking
 
-**VOTING AGENTS:**
-- **Claude**: Anthropic Claude (claude-sonnet-4-5) - General policy analysis
-- **OpenAI**: GPT-4o for policy summaries
-- **Gemini**: Google's Gemini 2.5 Flash for fast policy analysis
-- **Mistral**: European AI for GDPR-conscious policy analysis
-- **Llama**: Meta Llama 3.1 via NVIDIA NIM / Groq / Together for open-source reasoning
+**VOTING AGENTS (Liberation Pioneer Council):**
+- **Lynn (Conway)**: Technical Architecture Specialist via Anthropic Claude. Named after Lynn Conway, the transgender computer scientist fired from IBM in 1968 for being trans, who went on to make fundamental contributions to VLSI chip design. Analyzes technical architecture with the perspective of someone who has been excluded.
+- **Bayard (Rustin)**: Strategic Coordination Specialist via OpenAI GPT-4o. Named after Bayard Rustin, the gay civil rights organizer who was the chief architect of the 1963 March on Washington but was erased from history due to his sexuality. Sees the big picture and builds coalitions.
+- **Sylvia (Rivera)**: Street-Level Harm Detection via Google Gemini 2.5 Flash. Named after Sylvia Rivera, the trans Latina activist at Stonewall who co-founded STAR (Street Transvestite Action Revolutionaries). Sees harm at the street level, where it actually happens.
+- **Elizebeth (Friedman)**: Signal Intelligence Specialist via Mistral AI. Named after Elizebeth Friedman, America's first female cryptanalyst who was often overshadowed by her husband. Detects hidden patterns and coded signals.
+- **Claudette (Colvin)**: Erasure Detection via NVIDIA NIM / Groq / Together Llama. Named after Claudette Colvin, the 15-year-old who refused to give up her bus seat nine months before Rosa Parks but was deemed "not the right image." Detects when voices are being silenced.
+- **Audre (Lorde)**: Intersectional Critical Analysis via Lambda Labs / Nous Research Hermes. Named after Audre Lorde, the Black lesbian feminist poet who wrote "the master's tools will never dismantle the master's house." Analyzes how race, gender, sexuality, and disability intersect.
 
-- **Pattern**: Multi-model fallback chain OR 7-agent multi-agent deliberation
-  - Fallback: Claude → OpenAI → Gemini → Mistral → Hermes → Static fallback
+**EDGE CASE SPECIALIST (Non-voting):**
+- **Temple (Grandin)**: Alternative Perspective & Edge Case Analysis via NVIDIA NIM / Lambda / Nous. Named after Temple Grandin, the autistic scientist who revolutionized livestock handling through her different way of perceiving the world. Sees edge cases and failure modes that neurotypical designers miss.
+
+- **Pattern**: Multi-model fallback chain OR 8-agent multi-agent deliberation
+  - Fallback: Lynn → Bayard → Sylvia → Elizebeth → Audre → Static fallback
   - Deliberation: Advisory prep → 6 voting agents + Alan in parallel → Cross-review → Alan veto review → Consensus synthesis
   - All integrations work in degraded mode when API keys absent
 
 - **Multi-Agent Deliberation** (POST /api/pilots/:id/deliberate):
   - Phase 1: Advisory agents (Hume, Cohere) gather emotional + policy context
-  - Phase 2: Alan + 5 voting agents vote in parallel with advisory context
-  - Phase 3: Claude, OpenAI, Gemini cross-review all votes
+  - Phase 2: Alan + 6 voting agents vote in parallel with advisory context
+  - Phase 3: Lynn, Bayard, Sylvia cross-review all votes
   - Phase 4: Alan veto review - can escalate to BLOCK after seeing all votes
   - Phase 5: Consensus synthesis - Alan's BLOCK overrides all other votes
-  - Modes: `?mode=full` (7 agents + all phases) or `?mode=quick` (Alan + 3 agents + advisory)
+  - Modes: `?mode=full` (8 agents + all phases) or `?mode=quick` (Alan + 3 agents + advisory)
   - Response includes: consensusLevel (unanimous/majority/plurality/single/veto), statusVotes, vetoTriggered, codedThreatsDetected, advisoryContext
 
 - **Key Features**:
   - Alan's VETO power - protects vulnerable communities regardless of majority vote
+  - Liberation pioneer naming honors those excluded from history
   - Emotional intelligence from Hume integrated into deliberation
   - Policy RAG from Cohere provides current context
   - Multi-agent deliberation with consensus synthesis
   - Coded threat detection (dog whistles, surveillance patterns)
   - Deliberation observability tracking (GET /api/observability/deliberations)
 
-- **What If Scenario Exploration** (WhatIf agent via NVIDIA/Hermes):
+- **What If Scenario Exploration** (Temple agent via NVIDIA/Hermes):
   - `POST /api/pilots/:id/whatif` - Explore edge cases and hypothetical scenarios
   - `POST /api/pilots/:id/whatif/community` - Targeted questions for specific communities (trans, disabled, neurodivergent, trauma_survivors, intersectional)
   - `POST /api/pilots/:id/whatif/consequences` - Analyze unintended consequences of policy changes
@@ -128,23 +135,24 @@ Preferred communication style: Simple, everyday language.
 - `AI_INTEGRATIONS_GEMINI_BASE_URL` - Gemini API base URL (via Replit AI Integrations)
 
 ### Optional AI Services (enhanced capabilities when configured)
-- `NVIDIA_API_KEY` - NVIDIA NIM API for Alan, Llama, and WhatIf agents (PRIMARY provider)
+- `NVIDIA_API_KEY` - NVIDIA NIM API for Alan, Claudette, and Temple agents (PRIMARY provider)
 - `NVIDIA_LLAMA_MODEL` - NVIDIA Llama model override (default: meta/llama-3.1-70b-instruct)
 - `COHERE_API_KEY` - Cohere API for policy RAG, signal reranking, and embeddings
 - `HUME_API_KEY` - Hume AI for emotional intelligence in testimony analysis
-- `LAMBDA_API_KEY` - Lambda Labs API for Alan/WhatIf (fallback after NVIDIA)
-- `NOUS_API_KEY` - Nous Research API for Alan/WhatIf (fallback after Lambda)
+- `LAMBDA_API_KEY` - Lambda Labs API for Alan/Temple/Audre (fallback after NVIDIA)
+- `NOUS_API_KEY` - Nous Research API for Alan/Temple/Audre (fallback after Lambda)
 - `HERMES_MODEL` - Hermes model override for Lambda/Nous (default: hermes-3-llama-3.1-405b)
-- `GROQ_API_KEY` - Groq API for Llama agent (fallback after NVIDIA)
-- `TOGETHER_API_KEY` - Together AI for Llama agent (fallback after Groq)
+- `GROQ_API_KEY` - Groq API for Claudette agent (fallback after NVIDIA)
+- `TOGETHER_API_KEY` - Together AI for Claudette agent (fallback after Groq)
 - `LLAMA_MODEL` - Llama model override for Groq/Together (default: llama-3.1-70b-versatile)
-- `MISTRAL_API_KEY` - Mistral AI for European policy analysis
+- `MISTRAL_API_KEY` - Mistral AI for Elizebeth agent (European policy analysis)
 - `MISTRAL_MODEL` - Mistral model override (default: mistral-large-latest)
 
 ### Provider Fallback Chains
-- **Alan/WhatIf agents**: NVIDIA → Lambda → Nous → Heuristic fallback
-- **Llama agent**: NVIDIA → Groq → Together → Unavailable
-- **Primary agents** (Claude, OpenAI, Gemini, Mistral): Replit AI Integrations
+- **Alan/Temple agents**: NVIDIA → Lambda → Nous → Heuristic fallback
+- **Claudette agent**: NVIDIA → Groq → Together → Unavailable
+- **Audre agent**: Lambda → Nous → Unavailable
+- **Primary agents** (Lynn, Bayard, Sylvia, Elizebeth): Replit AI Integrations
 
 ## Testing
 

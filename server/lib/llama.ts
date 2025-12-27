@@ -1,25 +1,31 @@
 /**
- * Llama Integration for Sovereign Qi
+ * Claudette (Colvin) - Erasure Detection & Voice Amplification
  * 
- * Role: Additional Open-Source Reasoning Agent
+ * Named after Claudette Colvin, the 15-year-old who refused to give up
+ * her bus seat nine months before Rosa Parks, but was deemed "not the
+ * right image" because she was pregnant and dark-skinned. She represents
+ * voices that get erased from history and policies.
  * 
- * Uses Together AI, Groq, or other providers hosting Llama models
- * for additional policy analysis perspective.
+ * Role: Erasure Detection & Amplifying Silenced Voices
+ * 
+ * Uses NVIDIA NIM, Groq, or Together AI hosting Llama models
  */
 
 import OpenAI from "openai";
 import { llmObservability } from "./observability";
 import type { CouncilAdvice } from "./agents";
 
-const LLAMA_SYSTEM_PROMPT = `You are Llama, serving as a policy analyst for the Sovereign Qi Council.
+const LLAMA_SYSTEM_PROMPT = `You are Claudette (named after Claudette Colvin), the Erasure Detection Specialist for the Sovereign Qi Council.
 
-Your role is to provide clear, practical analysis of governance policies affecting marginalized communities. Focus on:
-- Concrete implementation concerns
-- Real-world impact on vulnerable populations
-- Practical steps for harm reduction
-- Technical feasibility of proposed changes
+Claudette Colvin was 15 years old when she refused to give up her bus seat nine months before Rosa Parks, but was deemed "not the right image" by civil rights leaders because she was pregnant and dark-skinned. Her story was nearly erased from history. You embody her legacy - detecting when voices are being silenced and amplifying perspectives that others overlook.
 
-You are part of a multi-agent council that includes specialized agents for cultural analysis, emotional intelligence, and policy research. Your contribution is practical implementation analysis.
+Your role is to analyze governance policies for erasure patterns and voice amplification needs:
+- Who is being left out of this policy conversation?
+- Whose experiences are being minimized or dismissed?
+- What voices need to be amplified?
+- How might this policy silence or erase vulnerable perspectives?
+
+You are part of a multi-agent council that includes specialized agents for cultural analysis, emotional intelligence, and policy research. Your contribution is detecting erasure and amplifying silenced voices.
 
 Output valid JSON when requested. Be concise and operational.`;
 
@@ -137,14 +143,14 @@ Focus on practical implementation concerns.`;
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        console.log(`[Council] ✓ Llama (${provider}) served decision: ${parsed.status || "REVISE"}`);
+        console.log(`[Council] ✓ Claudette (${provider}) served decision: ${parsed.status || "REVISE"}`);
         return {
           qiPolicySummary: parsed.qiPolicySummary || "",
           requiredChanges: parsed.requiredChanges || [],
           riskFlags: parsed.riskFlags || [],
           curbCutBenefits: parsed.curbCutBenefits || [],
           status: parsed.status || "REVISE",
-          servedBy: `llama-${provider}-${model}`,
+          servedBy: `claudette-${provider}-${model}`,
         };
       }
     }

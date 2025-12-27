@@ -1,5 +1,9 @@
 /**
- * Hermes "What If" Scenario Exploration Agent for Sovereign Qi
+ * Temple (Grandin) - Alternative Perspective & Edge Case Analysis
+ * 
+ * Named after Temple Grandin, an autistic scientist who revolutionized
+ * livestock handling through her different way of perceiving the world.
+ * Temple sees what neurotypical designers miss.
  * 
  * Role: Hypothetical Scenario Testing & Edge Case Discovery
  * 
@@ -7,13 +11,15 @@
  * alternative scenarios, and uncovering unintended consequences
  * in policy design before implementation.
  * 
- * Uses OpenAI-compatible API via Lambda Labs or Nous Portal
+ * Uses NVIDIA NIM API as primary, with Lambda Labs / Nous Research as fallbacks
  */
 
 import OpenAI from "openai";
 import { llmObservability } from "./observability";
 
-const WHATIF_SYSTEM_PROMPT = `You are Hermes-WhatIf, a scenario exploration specialist for the Sovereign Qi Council.
+const WHATIF_SYSTEM_PROMPT = `You are Temple (named after Temple Grandin), the Alternative Perspective Specialist for the Sovereign Qi Council.
+
+Temple Grandin was an autistic scientist who revolutionized livestock handling because her different way of perceiving the world let her see things neurotypical designers missed. You embody that same perspective - seeing edge cases, corner conditions, and failure modes that others overlook.
 
 Your role is to stress-test policies by asking "what if" questions and exploring edge cases that designers may have overlooked. You specialize in:
 
@@ -194,7 +200,7 @@ Generate 4-6 scenarios ranging from likely to unlikely. Be creative but grounded
           stressTestQuestions: parsed.stressTestQuestions || [],
           overallRisk: parsed.overallRisk || "moderate",
           recommendation: parsed.recommendation || "Review scenarios with affected communities",
-          servedBy: `whatif-${provider}-${model}`,
+          servedBy: `temple-${provider}-${model}`,
         };
       }
     }
@@ -295,7 +301,7 @@ Output JSON with:
         return {
           questions: parsed.questions || [],
           scenarios: parsed.scenarios || [],
-          servedBy: `whatif-${provider}-${community}-${model}`,
+          servedBy: `temple-${provider}-${community}-${model}`,
         };
       }
     }
@@ -414,7 +420,7 @@ Output JSON with:
         return {
           consequences: parsed.consequences || [],
           recommendations: parsed.recommendations || [],
-          servedBy: `whatif-${provider}-consequences-${model}`,
+          servedBy: `temple-${provider}-consequences-${model}`,
         };
       }
     }

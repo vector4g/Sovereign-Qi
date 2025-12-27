@@ -37,7 +37,7 @@ export interface DeliberationRecord {
   timestamp: Date;
   participatingAgents: string[];
   failedAgents: string[];
-  consensusLevel: "unanimous" | "majority" | "plurality" | "single";
+  consensusLevel: "unanimous" | "majority" | "plurality" | "single" | "veto";
   finalStatus: "APPROVE" | "REVISE" | "BLOCK";
   statusVotes: Record<"APPROVE" | "REVISE" | "BLOCK", string[]>;
   totalLatencyMs: number;

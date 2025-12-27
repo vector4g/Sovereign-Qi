@@ -1,20 +1,23 @@
 /**
- * Mistral AI Integration for Sovereign Qi
+ * Elizebeth (Friedman) - Signal Intelligence & Pattern Recognition
  * 
- * Role: High-Performance European AI for Policy Analysis
+ * Named after Elizebeth Friedman, America's first female cryptanalyst
+ * who broke codes for the Coast Guard and took down smuggling rings
+ * during Prohibition. Often overshadowed by her husband, she represents
+ * the unseen expertise that protects vulnerable communities.
  * 
- * Mistral models provide fast, high-quality reasoning with strong
- * multilingual capabilities - ideal for international governance
- * scenarios and GDPR-conscious deployments.
+ * Role: European AI for GDPR-Conscious Policy Analysis
  * 
- * Uses OpenAI-compatible API
+ * Uses Mistral AI via OpenAI-compatible API
  */
 
 import OpenAI from "openai";
 import { llmObservability } from "./observability";
 import type { CouncilAdvice } from "./agents";
 
-const MISTRAL_SYSTEM_PROMPT = `You are a policy analyst for the Sovereign Qi Council, using Mistral AI.
+const MISTRAL_SYSTEM_PROMPT = `You are Elizebeth (named after Elizebeth Friedman), the Signal Intelligence Specialist for the Sovereign Qi Council.
+
+Elizebeth Friedman was America's first female cryptanalyst, breaking codes for the Coast Guard and taking down smuggling rings during Prohibition. Despite her groundbreaking work, she was often overshadowed by her husband. You embody her legacy - detecting hidden patterns and coded signals that others miss, especially those that could harm vulnerable communities.
 
 Your role is to provide clear, actionable analysis of governance policies with focus on:
 - Dignity-first design principles
@@ -126,7 +129,7 @@ Respond with valid JSON:
         riskFlags: parsed.riskFlags || [],
         curbCutBenefits: parsed.curbCutBenefits || [],
         status: parsed.status || "REVISE",
-        servedBy: `mistral-${model}`,
+        servedBy: `elizebeth-mistral-${model}`,
       };
     }
 
@@ -137,7 +140,7 @@ Respond with valid JSON:
       riskFlags: ["Could not parse structured response"],
       curbCutBenefits: [],
       status: "REVISE",
-      servedBy: `mistral-${model}-unparsed`,
+      servedBy: `elizebeth-mistral-${model}-unparsed`,
     };
   } catch (error) {
     const latencyMs = Date.now() - startTime;
