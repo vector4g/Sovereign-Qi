@@ -43,8 +43,9 @@ Preferred communication style: Simple, everyday language.
 - **Cohere**: Signal reranking and semantic search for Morpheus pipeline prioritization
 - **Hume AI**: Emotional intelligence analysis for community testimony (distress detection)
 - **Hermes (Nous Research)**: Neutral-aligned policy reasoning without corporate censorship
+- **Mistral AI**: Fast European AI for policy analysis with GDPR-conscious deployment
 - **Pattern**: Multi-model fallback chain with graceful degradation
-  - Council: Claude → OpenAI → Hermes → Static fallback
+  - Council: Claude → OpenAI → Mistral → Hermes → Static fallback
   - All integrations work in degraded mode when API keys absent
 - **Key Features**:
   - Council advice generation with structured output (APPROVE/REVISE/BLOCK)
@@ -102,6 +103,8 @@ Preferred communication style: Simple, everyday language.
 - `LAMBDA_API_KEY` - Lambda Labs API for Hermes neutral-aligned reasoning
 - `NOUS_API_KEY` - Nous Research API for Hermes (alternative to Lambda)
 - `HERMES_MODEL` - Hermes model override (default: hermes-3-llama-3.1-405b)
+- `MISTRAL_API_KEY` - Mistral AI for fast European policy analysis
+- `MISTRAL_MODEL` - Mistral model override (default: mistral-large-latest)
 
 ## Testing
 
