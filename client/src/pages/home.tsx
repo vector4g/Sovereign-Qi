@@ -15,7 +15,14 @@ export default function Home() {
           <div className="text-2xl font-display font-bold text-white tracking-tighter">
             SOVEREIGN <span className="text-primary">QI</span>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
+            <Link 
+              href="/council"
+              className="text-gray-400 hover:text-white transition-colors font-medium"
+              data-testid="link-council"
+            >
+              The Council
+            </Link>
             {user ? (
               <Link 
                 href="/dashboard"

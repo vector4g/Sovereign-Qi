@@ -179,6 +179,11 @@ export default function Dashboard() {
           <Button variant="ghost" className="justify-start gap-2 text-gray-400 hover:text-white">
             <Activity size={18} /> Simulations
           </Button>
+          <Link href="/council">
+            <Button variant="ghost" className="justify-start gap-2 text-gray-400 hover:text-white w-full" data-testid="link-council-sidebar">
+              <Users size={18} /> The Council
+            </Button>
+          </Link>
         </nav>
 
         <div className="mt-auto pt-6 border-t border-white/10">
