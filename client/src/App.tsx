@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import Login from "@/pages/login";
 import Council from "@/pages/council";
 import Demo from "@/pages/demo";
+import Simulation from "@/pages/simulation";
 
 function Router() {
   return (
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/council" component={Council} />
       <Route path="/demo" component={Demo} />
+      <Route path="/simulation" component={Simulation} />
       <Route component={NotFound} />
     </Switch>
   );
