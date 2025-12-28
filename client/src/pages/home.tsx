@@ -1,8 +1,13 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, Shield, Globe, Cpu, Users } from "lucide-react";
+import { 
+  ArrowRight, Shield, Globe, Cpu, Users, CheckCircle2, 
+  Play, Calendar, Building2, Heart, Scale, FileCheck,
+  Zap, Lock, Eye, TrendingUp, AlertTriangle
+} from "lucide-react";
 import heroBg from "@assets/generated_images/abstract_digital_twin_data_flow.png";
 import { useAuth } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { user } = useAuth();
@@ -12,20 +17,30 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 glass-panel border-b-0 border-b-white/10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-display font-bold text-white tracking-tighter">
-            SOVEREIGN <span className="text-primary">QI</span>
+          <div className="flex items-center gap-3">
+            <div className="text-2xl font-display font-bold text-white tracking-tighter">
+              VECTOR <span className="text-primary">FOR GOOD</span>
+            </div>
+            <span className="text-xs text-gray-500 border-l border-white/20 pl-3 hidden md:block">Liberation-Grade AI</span>
           </div>
           <div className="flex gap-4 items-center">
+            <a 
+              href="#products"
+              className="text-gray-400 hover:text-white transition-colors font-medium hidden md:block"
+              data-testid="link-products"
+            >
+              Products
+            </a>
             <Link 
               href="/simulation"
-              className="text-gray-400 hover:text-white transition-colors font-medium"
+              className="text-gray-400 hover:text-white transition-colors font-medium hidden md:block"
               data-testid="link-simulation"
             >
-              Simulation
+              Demo
             </Link>
             <Link 
               href="/council"
-              className="text-gray-400 hover:text-white transition-colors font-medium"
+              className="text-gray-400 hover:text-white transition-colors font-medium hidden md:block"
               data-testid="link-council"
             >
               The Council
@@ -34,15 +49,17 @@ export default function Home() {
               <Link 
                 href="/dashboard"
                 className="bg-primary/90 hover:bg-primary text-white px-6 py-2 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(124,58,237,0.5)]"
+                data-testid="link-dashboard"
               >
                 Dashboard
               </Link>
             ) : (
               <Link 
                 href="/login"
-                className="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-full font-medium transition-all border border-white/10"
+                className="bg-white text-black px-6 py-2 rounded-full font-medium transition-all hover:bg-gray-100"
+                data-testid="link-login"
               >
-                Log In
+                Request Demo
               </Link>
             )}
           </div>
@@ -50,200 +67,434 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
-          <img src={heroBg} className="w-full h-full object-cover opacity-40" alt="Digital Twin Void" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/60" />
+          <img src={heroBg} className="w-full h-full object-cover opacity-30" alt="Digital Twin Visualization" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-black/60" />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-6xl md:text-8xl font-display font-bold mb-6 text-white leading-tight">
-              Simulation Before <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary neon-glow">Legislation</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
+              <span className="text-primary text-sm font-medium">Trusted by Fortune 100 Legal & Compliance Teams</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-white leading-tight">
+              Test Your Policies <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Before Your People Pay</span>
             </h1>
+            
             <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light mb-10">
-              Experience <span className="text-white font-medium">leadership</span> without surveillance. We use digital twins and zero-knowledge identity to train on the struggle, not the identity—moving from AI as a tool to AI as liberation technology.
+              Simulate governance decisions on digital twins. Get AI council deliberation from 8 perspectives. 
+              Prove you did diligence—<span className="text-white font-medium">before the deposition.</span>
             </p>
-            <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <Link 
-                href={user ? "/dashboard" : "/login"}
-                className="group bg-white text-black px-8 py-4 rounded-full text-lg font-bold flex items-center justify-center gap-2 hover:scale-105 transition-transform"
-              >
-                {user ? "Enter The Lab" : "Access Terminal"} <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+              <Link href={user ? "/dashboard" : "/login"} data-testid="cta-demo">
+                <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-8 py-6 rounded-full font-bold gap-2">
+                  <Calendar className="w-5 h-5" /> Book a Demo
+                </Button>
               </Link>
+              <Link href="/simulation" data-testid="cta-watch">
+                <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-8 py-6 rounded-full font-bold gap-2">
+                  <Play className="w-5 h-5" /> Watch It Work
+                </Button>
+              </Link>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="flex flex-wrap justify-center gap-8 text-gray-500 text-sm">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                <span>EU AI Act Compliant</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4" />
+                <span>GDPR Ready</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FileCheck className="w-4 h-4" />
+                <span>SOC 2 Type II</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4" />
+                <span>Public Benefit Corporation</span>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Simulation Before Legislation */}
-      <section className="py-24 bg-background relative border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-block px-4 py-1 rounded-full bg-secondary/10 text-secondary border border-secondary/20 mb-6 font-mono text-sm">
-              SOVEREIGN QI ENGINE
-            </div>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
-              Digital Twin <br /><span className="text-secondary">Governance</span>
-            </h2>
-            <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-              Sovereign Qi utilizes NVIDIA Omniverse and Isaac Sim to construct high-fidelity digital twins of organizational and civic ecosystems. 
-              We deploy autonomous social agents to A/B test standard "Majority Logic" against dignity-first "Qi Logic" protocols over simulated years.
-            </p>
-            <ul className="space-y-4">
-              {[
-                "High-fidelity simulation of complex social dynamics using Isaac Sim",
-                "Comparative analysis of Majority vs. Qi governance models",
-                "Longitudinal risk assessment of innovation velocity, burnout, and liability exposure over multi-year timelines—without experimenting on live human subjects"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-gray-300">
-                  <div className="w-2 h-2 bg-secondary rounded-full" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 h-[400px] flex items-center justify-center relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent group-hover:opacity-100 transition-opacity" />
-            <Globe className="w-32 h-32 text-secondary/50" />
-            <div className="absolute bottom-6 left-6 font-mono text-sm text-secondary">
-              SYSTEM_STATUS: SIMULATING...
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Synthetic Sovereignty */}
-      <section className="py-24 bg-black/50">
+      {/* Problem Section */}
+      <section className="py-24 bg-black/50 border-t border-white/5">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-white">
-              Synthetic <span className="text-primary">Sovereignty</span> <br/>
-              <span className="text-2xl text-gray-400 block mt-2">(The Anti-Surveillance Move)</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white">
+              Your Current Governance Process Is <span className="text-red-400">Broken</span>
             </h2>
-            <p className="text-gray-400 max-w-3xl mx-auto text-lg leading-relaxed">
-              Marginalized communities are often 'data poor' because they must hide from surveillance to survive. 
-              Sovereign Qi leverages Omniverse Replicator to generate synthetic personas that statistically mirror these lived challenges—such as medical bias faced by a Black trans woman—without ever recording or exposing real individuals.
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              You make policy decisions based on majority logic—optimizing for averages, hoping nothing breaks. 
+              But averages erase edge cases. And when something breaks, it's not the C-suite that suffers.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: Shield,
-                title: "Train on the Struggle",
-                desc: "We model the systemic friction, not the individual identity. Synthetic data captures the dynamic of bias without the surveillance of vulnerable people."
+                icon: AlertTriangle,
+                stat: "75%",
+                label: "of DEI failures",
+                desc: "happen because policies were tested on paper, not on the people they affect"
               },
               {
-                icon: Cpu,
-                title: "Privacy by Default",
-                desc: "No real human data is harvested. We generate statistical twins that face real-world barriers, protecting community anonymity completely."
+                icon: Eye,
+                stat: "Single POV",
+                label: "creates blind spots",
+                desc: "Legal sees liability. HR sees compliance. Nobody sees the trans employee who can't use the bathroom."
               },
               {
-                icon: Users,
-                title: "Robustness & Justice",
-                desc: "Fill the gaps in 'data poor' datasets. Ensure your systems work for the critical edge cases that matter most, not just the statistical majority."
+                icon: Scale,
+                stat: "$2.4M",
+                label: "average settlement",
+                desc: "for duty of care failures you could have prevented with simulation"
               }
-            ].map((feature, i) => (
-              <div key={i} className="glass-panel p-8 rounded-xl hover:border-primary/50 transition-colors">
-                <feature.icon className="w-10 h-10 text-primary mb-6" />
-                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
+            ].map((item, i) => (
+              <div key={i} className="glass-panel p-8 rounded-xl border border-red-500/20 bg-red-500/5">
+                <item.icon className="w-8 h-8 text-red-400 mb-4" />
+                <div className="text-3xl font-display font-bold text-white mb-1">{item.stat}</div>
+                <div className="text-red-400 font-medium mb-3">{item.label}</div>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Qi Wallet */}
-      <section className="py-24 bg-background border-t border-white/5">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6 font-mono text-sm">
-            ZK-IDENTITY PROTOCOL
+      {/* Products Section */}
+      <section id="products" className="py-24 bg-background border-t border-white/5">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-1 rounded-full bg-secondary/10 text-secondary border border-secondary/20 mb-6 font-mono text-sm">
+              PRODUCT SUITE
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
+              Three Products. One Mission.
+            </h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              Protect the people your policies affect most.
+            </p>
           </div>
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-8 text-white">
-            Zero-Knowledge Leadership
-          </h2>
-          <p className="text-xl text-gray-400 mb-12 max-w-3xl mx-auto">
-            The Qi Wallet empowers you to prove your rights without exposing your identity. 
-            Using Decentralized Identifiers (DIDs) and Zero-Knowledge Proofs, a system can ask "Do you have permission?" and receive a cryptographic "Yes"—without ever needing to know who you are.
-          </p>
-          <div className="glass-panel p-8 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-transparent max-w-2xl mx-auto">
-             <div className="font-mono text-left space-y-4 text-sm text-gray-300">
-               <div className="border-b border-white/10 pb-4 mb-4">
-                 <h3 className="text-white font-bold mb-2 flex items-center gap-2"><Shield size={16} className="text-primary"/> THE SAFE OFFICE EXAMPLE</h3>
-                 <p className="text-gray-400 text-xs leading-relaxed">
-                   Traditional systems log: <span className="text-red-400">"Levi entered at 8:02 AM."</span><br/>
-                   Qi Systems verify: <span className="text-green-400">"Someone with permission entered."</span>
-                 </p>
-               </div>
-               <div className="space-y-2">
-                 <div className="flex justify-between">
-                   <span>DOOR_QUERY:</span>
-                   <span className="text-secondary">HAS_VALID_ACCESS_TOKEN?</span>
-                 </div>
-                 <div className="flex justify-between">
-                   <span>WALLET_RESPONSE:</span>
-                   <span className="text-primary">PROOF_VALIDATED (True)</span>
-                 </div>
-                 <div className="flex justify-between pt-2 border-t border-white/5">
-                   <span>IDENTITY_LOGGED:</span>
-                   <span className="text-gray-500">NULL (Anonymity Preserved)</span>
-                 </div>
-               </div>
-             </div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Sovereign QI */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass-panel rounded-2xl overflow-hidden border border-primary/30 bg-gradient-to-b from-primary/10 to-transparent group hover:border-primary/50 transition-all"
+            >
+              <div className="p-8">
+                <div className="w-14 h-14 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
+                  <Cpu className="w-7 h-7 text-primary" />
+                </div>
+                <div className="text-xs font-mono text-primary mb-2">FLAGSHIP PRODUCT</div>
+                <h3 className="text-2xl font-display font-bold text-white mb-4">Sovereign QI</h3>
+                <p className="text-gray-400 mb-6 leading-relaxed">
+                  AI governance simulation and 8-agent council deliberation. Test policies on digital twins before deploying on real humans.
+                </p>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    "NVIDIA Omniverse digital twins",
+                    "8-agent Liberation Pioneer Council",
+                    "Alan's VETO power for vulnerable communities",
+                    "Majority vs Qi Logic A/B testing",
+                    "Full audit trail for compliance"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/simulation" data-testid="link-sovereign-qi">
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-white gap-2">
+                    See Demo <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Safety Intelligence Platform */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass-panel rounded-2xl overflow-hidden border border-secondary/30 bg-gradient-to-b from-secondary/10 to-transparent group hover:border-secondary/50 transition-all"
+            >
+              <div className="p-8">
+                <div className="w-14 h-14 bg-secondary/20 rounded-xl flex items-center justify-center mb-6">
+                  <Globe className="w-7 h-7 text-secondary" />
+                </div>
+                <div className="text-xs font-mono text-secondary mb-2">TRAVEL & SAFETY</div>
+                <h3 className="text-2xl font-display font-bold text-white mb-4">Safety Intelligence</h3>
+                <p className="text-gray-400 mb-6 leading-relaxed">
+                  Real-time LGBTQ+ travel safety data covering 195 countries. Know which destinations are safe before your employees travel.
+                </p>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    "Real-time risk scores by destination",
+                    "Hotel & venue safety ratings",
+                    "Legal landscape monitoring",
+                    "Travel booking integration",
+                    "Proactive danger alerts"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                      <CheckCircle2 className="w-4 h-4 text-secondary mt-0.5 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link href={user ? "/dashboard" : "/login"} data-testid="link-safety-intel">
+                  <Button variant="outline" className="w-full border-secondary/50 text-secondary hover:bg-secondary/10 gap-2">
+                    Learn More <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* ESG Compliance Suite */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="glass-panel rounded-2xl overflow-hidden border border-green-500/30 bg-gradient-to-b from-green-500/10 to-transparent group hover:border-green-500/50 transition-all"
+            >
+              <div className="p-8">
+                <div className="w-14 h-14 bg-green-500/20 rounded-xl flex items-center justify-center mb-6">
+                  <FileCheck className="w-7 h-7 text-green-400" />
+                </div>
+                <div className="text-xs font-mono text-green-400 mb-2">COMPLIANCE</div>
+                <h3 className="text-2xl font-display font-bold text-white mb-4">ESG Compliance</h3>
+                <p className="text-gray-400 mb-6 leading-relaxed">
+                  Prove you did diligence. Documentation, audit trails, and compliance reporting for EU AI Act, GDPR, and duty of care.
+                </p>
+                <ul className="space-y-3 mb-8">
+                  {[
+                    "Data Protection Impact Assessments",
+                    "EU AI Act documentation",
+                    "Governance decision audit logs",
+                    "Exportable compliance reports",
+                    "Investor-ready ESG metrics"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                      <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Link href={user ? "/dashboard" : "/login"} data-testid="link-esg-compliance">
+                  <Button variant="outline" className="w-full border-green-500/50 text-green-400 hover:bg-green-500/10 gap-2">
+                    Learn More <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* The Curb Cut for Humanity */}
+      {/* The Council */}
+      <section className="py-24 bg-black/50 border-t border-white/5">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6 font-mono text-sm">
+                8-AGENT DELIBERATION
+              </div>
+              <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
+                The Council of <br/><span className="text-primary">Liberation Pioneers</span>
+              </h2>
+              <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+                Every agent is named after someone marginalized yet world-changing. They bring perspectives 
+                single decision-makers miss—and Alan (Turing) holds VETO power to protect vulnerable communities.
+              </p>
+              <Link href="/council" data-testid="link-meet-council">
+                <Button variant="outline" className="gap-2 border-primary/50 text-primary hover:bg-primary/10">
+                  <Users className="w-4 h-4" /> Meet the Council
+                </Button>
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { name: "Alan", role: "VETO Power", color: "primary" },
+                { name: "Temple", role: "Edge Cases", color: "secondary" },
+                { name: "Claudette", role: "Erasure Detection", color: "yellow-400" },
+                { name: "Audre", role: "Intersectional", color: "pink-400" },
+                { name: "Lynn", role: "Architecture", color: "blue-400" },
+                { name: "Bayard", role: "Strategy", color: "orange-400" },
+                { name: "Sylvia", role: "Street-Level", color: "red-400" },
+                { name: "Elizebeth", role: "Signals", color: "green-400" }
+              ].map((agent, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  className="glass-panel p-4 rounded-lg border border-white/10 hover:border-primary/30 transition-colors"
+                >
+                  <div className={`text-${agent.color} font-bold`}>{agent.name}</div>
+                  <div className="text-xs text-gray-500">{agent.role}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ROI Section */}
+      <section className="py-24 bg-background border-t border-white/5">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
+              The Business Case
+            </h2>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              Reduce risk. Increase innovation. Prove compliance.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { metric: "90%", label: "Faster Policy Testing", desc: "Weeks instead of months" },
+              { metric: "8x", label: "More Perspectives", desc: "Multi-agent vs single POV" },
+              { metric: "100%", label: "Audit Trail Coverage", desc: "Every decision documented" },
+              { metric: "$0", label: "Real Human Risk", desc: "All testing on digital twins" }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-2">
+                  {item.metric}
+                </div>
+                <div className="text-white font-bold mb-1">{item.label}</div>
+                <div className="text-gray-500 text-sm">{item.desc}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Who We Serve */}
       <section className="py-24 bg-black/50 border-t border-white/5">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
-              The Curb Cut for <span className="text-secondary">Humanity</span>
+              Built for Enterprise
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Sovereign Qi is built on an accessibility-first principle: design for those most excluded, and everyone else inherits the safety and clarity. When our models learn to read neurodivergent cues, anti-trans dog-whistles, and intersectional bias, they become more reliable for veterans, stroke survivors, kids in conflict, and anyone navigating complex systems.
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              Serving the teams that protect people at scale.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                title: "Trauma-Informed AI",
-                desc: "Neurodivergent-aware sensing that also improves support for trauma-affected veterans."
+                icon: Scale,
+                title: "Legal & Compliance",
+                roles: ["General Counsel", "Chief Compliance Officer", "Risk Management"],
+                benefit: "Prove diligence before litigation"
               },
               {
-                title: "Safety Beyond Identity",
-                desc: "Anti-trans dog-whistle detection that also flags subtle school bullying and workplace harassment."
+                icon: Heart,
+                title: "People & DEI",
+                roles: ["Chief Diversity Officer", "HR Leadership", "Employee Experience"],
+                benefit: "Build DEI that's real, not theater"
               },
               {
-                title: "Universal Care",
-                desc: "Bias detection tuned on trans healthcare that raises diagnostic quality for all edge-case patients."
+                icon: Building2,
+                title: "City & Municipal",
+                roles: ["CTO/CIO", "Policy Teams", "Public Safety"],
+                benefit: "Civic tech that earns trust"
               }
             ].map((item, i) => (
-              <div key={i} className="glass-panel p-8 rounded-xl border border-white/5 hover:border-secondary/30 transition-all group">
-                <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-secondary/20 transition-colors">
-                  <span className="font-mono text-secondary text-lg font-bold">0{i+1}</span>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
-                  {item.desc}
-                </p>
+              <div key={i} className="glass-panel p-8 rounded-xl border border-white/10 hover:border-primary/30 transition-colors">
+                <item.icon className="w-10 h-10 text-primary mb-6" />
+                <h3 className="text-xl font-bold text-white mb-4">{item.title}</h3>
+                <ul className="space-y-2 mb-6">
+                  {item.roles.map((role, j) => (
+                    <li key={j} className="text-gray-400 text-sm flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                      {role}
+                    </li>
+                  ))}
+                </ul>
+                <div className="text-secondary font-medium text-sm">{item.benefit}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* CTA Section */}
+      <section className="py-24 bg-gradient-to-b from-primary/10 to-background border-t border-primary/20">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
+            Ready to Govern Without Guessing?
+          </h2>
+          <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+            Book a demo to see Sovereign QI deliberate on a real governance scenario. 
+            Watch 8 agents find the blind spots you didn't know you had.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href={user ? "/dashboard" : "/login"} data-testid="cta-bottom-demo">
+              <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-10 py-6 rounded-full font-bold gap-2">
+                <Calendar className="w-5 h-5" /> Book a Demo
+              </Button>
+            </Link>
+            <a href="mailto:sales@vectorforgood.com" data-testid="cta-contact">
+              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-10 py-6 rounded-full font-bold">
+                Contact Sales
+              </Button>
+            </a>
+          </div>
+          <p className="text-gray-500 text-sm mt-8">
+            Enterprise pricing. Custom pilots. White-glove onboarding.
+          </p>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="py-12 border-t border-white/10 bg-black text-center text-gray-500 text-sm">
-        <p>© 2025 Sovereign Qi. Liberation-Grade AI.</p>
+      <footer className="py-12 border-t border-white/10 bg-black">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+              <div className="text-xl font-display font-bold text-white tracking-tighter mb-2">
+                VECTOR <span className="text-primary">FOR GOOD</span>
+              </div>
+              <p className="text-gray-500 text-sm">Public Benefit Corporation | Liberation-Grade AI</p>
+            </div>
+            <div className="flex gap-6 text-sm text-gray-500">
+              <Link href="/council" className="hover:text-white transition-colors">The Council</Link>
+              <Link href="/simulation" className="hover:text-white transition-colors">Demo</Link>
+              <a href="mailto:sales@vectorforgood.com" className="hover:text-white transition-colors">Contact</a>
+            </div>
+          </div>
+          <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-500 text-sm">
+            <p>© 2025 Vector for Good PBC. Simulation Before Legislation.</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
