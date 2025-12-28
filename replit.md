@@ -89,6 +89,19 @@ All agents are named after liberation pioneers who were persecuted, erased, or e
   - Uses NVIDIA NIM API as primary provider, with Lambda/Nous as fallbacks
   - Heuristic fallbacks when no API keys configured
 
+- **Demo Deliberation** (4-Phase Structured Case Hearing):
+  - `GET /api/demo/deliberation` - Run 4-phase structured deliberation demo
+  - Modes: `?mode=quick` (instant heuristic) or `?mode=full` (30-60s AI-powered)
+  - **Scenario**: LGBTQ+ Travel Safety case with embedded tensions:
+    - Legal vs. lived risk, Corporate liability vs. employee autonomy
+    - Short-term PR vs. long-term ESG, Business necessity vs. safety
+  - **Phase 1: Initial Briefs** - Each agent analyzes independently from their unique lens
+  - **Phase 2: Cross-Critique** - Agents acknowledge agreements and flag blind spots in others
+  - **Phase 3: Council Synthesis** - Identify conflicts, force trade-offs, produce unified policy with attribution
+  - **Phase 4: Reflection** - Show counterfactuals ("if only X decided...") proving collective intelligence wins
+  - **Files**: `server/lib/demo-scenario.ts`, `server/lib/demo-deliberation.ts`, `client/src/pages/demo.tsx`
+  - **UI**: Timeline layout with phase cards, agent cards, expandable details, and Framer Motion animations
+
 ### Morpheus Governance Signal Integration
 - **Purpose**: Detect dog whistles, coded language, and surveillance patterns in organizational communications
 - **Schema**: `governanceSignals` table with 7 categories: dog_whistle, identity_targeting, surveillance_concern, policy_subversion, queer_coded_hostility, ableist_language, racial_microaggression
