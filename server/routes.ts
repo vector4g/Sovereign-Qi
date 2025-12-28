@@ -7,6 +7,7 @@ import { generateCouncilAdviceWithFallback } from "./lib/agents";
 import { runMultiAgentDeliberation, runQuickDeliberation } from "./lib/deliberation";
 import { runQiSimulation } from "./lib/simulator";
 import { exploreWhatIfScenarios, generateCommunityWhatIfs, exploreUnintendedConsequences } from "./lib/hermes-whatif";
+import { runDemoDeliberation, getQuickDemoResult } from "./lib/demo-deliberation";
 import { pilotRateLimit, councilRateLimit, signalRateLimit, getRateLimitStats } from "./lib/rateLimit";
 import { createSanitizationMiddleware } from "./lib/sanitize";
 import { llmObservability } from "./lib/observability";
@@ -554,6 +555,27 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Get org testimony error:", error);
       res.status(500).json({ error: "Failed to fetch testimonies" });
+    }
+  });
+
+  // Demo Deliberation: 4-phase structured case hearing
+  app.get("/api/demo/deliberation", async (req, res) => {
+    try {
+      const mode = req.query.mode as string;
+      
+      if (mode === "quick") {
+        // Return pre-computed heuristic result (instant)
+        const result = getQuickDemoResult();
+        res.json(result);
+      } else {
+        // Run full AI-powered deliberation (takes 30-60 seconds)
+        console.log("[Demo] Starting full 4-phase deliberation...");
+        const result = await runDemoDeliberation();
+        res.json(result);
+      }
+    } catch (error: any) {
+      console.error("Demo deliberation error:", error);
+      res.status(500).json({ error: "Demo deliberation failed", message: error.message });
     }
   });
 

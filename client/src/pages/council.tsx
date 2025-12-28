@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ChevronDown, ChevronUp, Shield, Eye, Users, Scale, Cpu, Mic, Search, Lightbulb, type LucideIcon } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Shield, Eye, Users, Scale, Cpu, Mic, Search, Lightbulb, Play, type LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 
 interface Agent {
@@ -355,7 +356,7 @@ export default function Council() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="glass-panel rounded-2xl p-8 border border-secondary/20 text-center"
+            className="glass-panel rounded-2xl p-8 border border-secondary/20 text-center mb-12"
           >
             <h2 className="text-3xl font-display font-bold text-white mb-6">
               The Promise
@@ -374,6 +375,27 @@ export default function Council() {
                 Our council ensures no one does.
               </p>
             </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass-panel rounded-2xl p-8 border border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5 text-center"
+          >
+            <h2 className="text-2xl font-display font-bold text-white mb-4">
+              See the Council in Action
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto mb-6">
+              Watch all 8 agents deliberate on a real-world case: LGBTQ+ employee travel safety.
+              See how each agent analyzes from their unique perspective, challenges each other's blind spots,
+              and synthesizes a unified policy no single agent could produce alone.
+            </p>
+            <Link href="/demo" data-testid="link-demo">
+              <Button className="bg-primary hover:bg-primary/90 text-white gap-2 px-8 py-3 text-lg">
+                <Play className="w-5 h-5" /> Watch Live Case Hearing
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </section>

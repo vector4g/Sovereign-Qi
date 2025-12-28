@@ -1,0 +1,139 @@
+Design the demo as a short, highly structured “case hearing” where each agent must both shine in its specialty and run into its own limits, with the council resolving the gaps collectively.[1][2]
+
+## 1. Choose the right scenario
+
+Pick a scenario that naturally requires multiple lenses and has at least one subtle trap.
+
+- Incident type: “High‑risk but legally gray” travel safety case, e.g.  
+  “A Fortune 100 travel program is sending employees to a country where queer relationships are criminalized but rarely enforced; one employee was harassed outside a hotel, and local police demanded a bribe.”  
+- Embedded tensions:  
+  - Legal vs. lived risk (official law vs. on‑the‑ground patterns)  
+  - Corporate liability vs. employee autonomy  
+  - Short‑term PR vs. long‑term ESG and policy design[3][2]
+
+This lets safety, legal, ESG, and PR/ops agents each have something important to say, but no single agent can safely decide alone.[3]
+
+## 2. Define each agent’s “strength + blind spot”
+
+Give each council member a crisp charter and one intentional weakness to set up the “collective intelligence” moment.[4][2]
+
+Example council for your domain:
+
+- **Safety Intelligence Agent**  
+  - Strength: Reads global incident patterns, risk indices, local laws, historical hate‑crime data.  
+  - Weakness: Over‑indexes on quantitative risk; may underweight optics, employee sentiment, or feasibility of implementation.
+
+- **ESG & Governance Agent**  
+  - Strength: Maps scenario to ESG frameworks, UNGPs, corporate human rights policy, AI/ethics guidelines.  
+  - Weakness: Tends to propose ideal‑world governance that is slow or hard to operationalize.
+
+- **Legal & Compliance Agent**  
+  - Strength: Focuses on legal exposure, duty of care, regulatory and contract implications.  
+  - Weakness: May converge on “cover your ass” solutions that feel hostile or paternalistic to employees.
+
+- **People & DEI Agent**  
+  - Strength: Advocates for queer travelers’ lived experience, psychological safety, and inclusion.  
+  - Weakness: May push remedies that are hard to scale or measure for a global program.
+
+- **Operations & Cost Agent**  
+  - Strength: Thinks in budgets, vendor constraints, travel policies, and implementation timelines.  
+  - Weakness: Prone to incrementalism; may resist bolder changes that affect cost/complexity.
+
+This structure makes it obvious where each can shine, and you can script or prompt their blind spots into the system messages so they’re reliably exposed in the demo.[5][4]
+
+## 3. Script the deliberation phases
+
+Use a simple, repeatable protocol so viewers understand “how the council thinks,” not just the final answer.[6][4][1]
+
+Recommended flow for a 3–4 minute demo:
+
+1. **Phase 1 – Initial briefs (round 1)**  
+   - Each agent gets the same scenario and produces:  
+     - 2–3 bullet risk/impact statements from their lens  
+     - 1–2 recommended actions  
+   - Constraint: They are *not* allowed to reference other agents yet.  
+   - Goal: Show clear, differentiated strengths.  
+
+2. **Phase 2 – Cross‑critique (round 2)**  
+   - Each agent receives a short summary of the others’ briefs and must:  
+     - Acknowledge 1 thing they agree with  
+     - Flag 1 critical risk or blind spot they see in the others’ proposals  
+   - This is where weaknesses show: e.g. Safety calls Legal too conservative; Ops pushes back on ESG’s complexity.[7][3]
+
+3. **Phase 3 – Council synthesis (facilitator / chair agent)**  
+   - A neutral “Council Chair” (or “Alignment Agent”) receives all briefs + critiques.  
+   - Tasks:  
+     - Identify 2–3 conflicts.  
+     - Force trade‑offs: “We cannot both maintain current travel volume *and* guarantee X level of safety; what compromise is acceptable?”  
+     - Output a single policy/action plan with explicit attribution: which pieces came from which agent and why certain objections were overruled.
+
+4. **Phase 4 – Weakness overcome (reflection)**  
+   - Have the Chair generate a closing reflection:  
+     - “If the decision had been made only by the Safety agent, outcome would be X (problem: Y).”  
+     - Repeat for Legal, ESG, etc.  
+   - This explicitly shows the council outperforming any single specialist.
+
+This four‑phase structure mirrors patterns seen in multi‑agent debate research while staying understandable to non‑technical stakeholders.[1][7][6]
+
+## 4. Implementation pattern for the demo
+
+You can implement this in your existing stack (Replit + Cohere + your orchestration layer) with a very small state machine.[2][1]
+
+High‑level implementation:
+
+- **State machine / orchestrator**  
+  - States: `INITIAL_BRIEFS` → `CROSS_CRITIQUE` → `SYNTHESIS` → `REFLECTION`.  
+  - At each state, call the relevant agent prompts and collect outputs into a shared “council record.”
+
+- **Prompts**  
+  - System prompt per agent:  
+    - Define expertise, priorities, and the *intentional* bias/weakness.  
+    - Instruct brevity and structured bullets for live demo readability.  
+  - System prompt for Chair:  
+    - “You are the impartial chair of a multi‑agent safety council. Your job is to: (1) resolve conflicts, (2) enforce duty of care and ESG alignment, (3) produce one coherent decision. You must cite which agent influenced each key decision.”
+
+- **UI for the demo**  
+  - Timeline or column layout:  
+    - Row per phase, column per agent, with the Chair in a highlighted column at the end.  
+  - Visual cues for strengths vs. weaknesses:  
+    - Green tags: “Unique insight from Safety,” “ESG catch.”  
+    - Yellow/red tags: “Risk if Legal decision alone,” etc.  
+  - Optionally, let the user toggle “What if only X agent decided?” and show the counterfactual outcome text generated in Phase 4.
+
+This keeps the demo constrained but makes multi‑agent value extremely legible for enterprise audiences.[2][6]
+
+## 5. Tune the scenario to your buyer
+
+For different audiences you can keep the council constant but change the case file.[8][2]
+
+- For **Travel / HR buyers**:  
+  - Scenario around duty of care, destination risk tiers, and employee opt‑out policies.  
+- For **ESG / CSR teams**:  
+  - Scenario around vendor selection, sponsoring events in countries with anti‑LGBTQ+ laws, or handling a public backlash to a travel incident.  
+- For **Security / Risk teams**:  
+  - Scenario around threat intelligence, geofencing, and incident escalation pathways for queer travelers.
+
+In each case, ensure the “trap” in the scenario is something where acting on only one discipline (Legal, Safety, Ops) would produce a plausible but clearly suboptimal outcome, so the council’s collective intelligence is visibly superior.[7][3]
+
+If you share which agents you’ve already defined (names + focus), a next step can be drafting concrete system prompts and a JSON I/O shape for each phase that your Replit project can implement quickly.
+
+[1](https://www.yixtian.com/blog/10-multi-agent-debate-w-state-pattern)
+[2](https://cohere.com/blog/multi-agent-systems)
+[3](https://www.iiia.csic.es/media/publications/Final_Version_-_PhD_Thesis_-_Jordi_Ganzer_Ripoll.pdf)
+[4](https://logikon.ai/docs/delib_prompting)
+[5](https://github.com/logikon-ai/awesome-deliberative-prompting/blob/main/README.md)
+[6](https://doc.agentscope.io/tutorial/workflow_multiagent_debate.html)
+[7](https://arxiv.org/abs/2511.07784)
+[8](https://www.promptingguide.ai/introduction/examples)
+[9](https://clinton.presidentiallibraries.us/items/show/47239?output=omeka-xml)
+[10](https://www.ipcc.ch/pdf/assessment-report/ar5/wg3/ipcc_wg3_ar5_full.pdf)
+[11](https://www.med.navy.mil/Portals/62/Documents/NMFA/NMCPHC/root/Documents/oem/5100.23.pdf?ver=CLCZgtE8JZHcmsTIRZhZGQ%3D%3D)
+[12](https://www.frbsf.org/wp-content/uploads/investing-in-what-works.pdf)
+[13](https://supremecourthistory.org/wp-content/uploads/2025/02/Volume-40-Number-2-2015.pdf)
+[14](https://openreview.net/forum?id=Vusd1Hw2D9)
+[15](https://digitalcommons.ndu.edu/cgi/viewcontent.cgi?article=1018&context=ndupress-books)
+[16](https://yalelawjournal.org/pdf/Conti-BrownWishnick_op75zdsu.pdf)
+[17](https://www.youtube.com/watch?v=4J8-D0sgU9A)
+[18](https://history.defense.gov/Portals/70/Documents/annual_reports/1996_DoD_AR.pdf?ver=2014-06-24-153009-697)
+[19](https://github.com/Skytliang/Multi-Agents-Debate)
+[20](https://www.reddit.com/r/AI_Agents/comments/1iytsyx/a_collection_of_system_prompts_for_popular_ai/)
