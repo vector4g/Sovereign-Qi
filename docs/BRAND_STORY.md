@@ -1,3 +1,18 @@
+# Vector for Good — The Unified Brand Story
+
+## Who We Are
+
+**Vector for Good** is a Public Benefit Corporation building liberation-grade AI for enterprise governance. We believe the institutions that shape people's lives should be required to test their decisions *before* deploying them on real humans—especially the most vulnerable ones.
+
+We sell three products:
+- **Sovereign QI** — AI governance simulation and multi-agent council deliberation
+- **Safety Intelligence Platform** — Real-time LGBTQ+ travel safety data and risk assessment  
+- **ESG Compliance Suite** — Tools for meeting EU AI Act, GDPR, and duty of care requirements
+
+All three share the same DNA: *simulation before legislation, privacy by design, liberation by default.*
+
+---
+
 # The Council of Liberation Pioneers
 ## The Soul Behind Sovereign Qi's AI Agents
 
@@ -165,4 +180,46 @@ When **Elizebeth** decrypts coded threats, we honor women's hidden labor.
 
 ---
 
+## The Vector for Good Difference
+
+### Liberation-Grade AI
+
+We didn't build AI and then try to make it ethical. We started with the ethics—with the people who've been harmed by institutions—and built AI that embodies their hard-won wisdom.
+
+**Liberation-grade** means:
+- Designed *with* marginalized communities, not just *about* them
+- Protects before it optimizes
+- Asks "who gets hurt?" before "who benefits?"
+- Treats privacy as a right, not a feature
+- Makes compliance a byproduct, not an afterthought
+
+### Our Customers
+
+We serve organizations that affect people's lives:
+- **Fortune 100 companies** protecting employees and communities
+- **Cities and municipalities** modernizing civic tech without surveillance
+- **Healthcare systems** serving diverse patient populations
+
+We don't work with organizations whose business model depends on harming the communities our agents protect.
+
+### Our Commitment
+
+Every product we ship:
+1. **Tests before deploying** — Simulation, not experimentation
+2. **Includes marginalized perspectives** — Through our 8-agent council
+3. **Protects privacy by design** — Zero-knowledge proofs, synthetic data, no real PII
+4. **Documents for compliance** — EU AI Act, GDPR, duty of care built-in
+5. **Honors our namesakes** — The liberation pioneers who fought so we could build
+
+---
+
+## Related Documents
+
+- **[SALES_COPY.md](./SALES_COPY.md)** — Sales messaging, value propositions, and call-to-action language
+- **[DPIA_AI_ACT_COMPLIANCE.md](./DPIA_AI_ACT_COMPLIANCE.md)** — Data protection and AI Act compliance documentation
+
+---
+
 *This brand story transforms our AI agents from technical tools into carriers of liberation legacy. Each agent doesn't just analyze policy—they bring the perspective of someone who lived the consequences of unjust systems.*
+
+**Vector for Good PBC | Liberation-Grade AI for Enterprise Governance**
