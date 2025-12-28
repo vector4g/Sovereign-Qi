@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { TourProvider, TourTriggerButton, dashboardTourSteps, useTour } from "@/lib/tour";
 
 interface Pilot {
   id: string;
@@ -51,7 +52,7 @@ interface CouncilAdvice {
   status: "APPROVE" | "REVISE" | "BLOCK";
 }
 
-export default function Dashboard() {
+function DashboardContent() {
   const { user, logout, isLoading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -60,12 +61,22 @@ export default function Dashboard() {
   const [simulationResults, setSimulationResults] = useState<Record<string, SimulationResult>>({});
   const [councilAdvice, setCouncilAdvice] = useState<Record<string, CouncilAdvice>>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { hasCompletedTour, startTour, isActive: tourIsActive } = useTour();
 
   useEffect(() => {
     if (!authLoading && !user) {
       setLocation("/login");
     }
   }, [user, authLoading, setLocation]);
+
+  useEffect(() => {
+    if (!authLoading && user && !hasCompletedTour && !tourIsActive) {
+      const timer = setTimeout(() => {
+        startTour();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [authLoading, user, hasCompletedTour, tourIsActive, startTour]);
 
   const { data: pilots = [], isLoading: pilotsLoading } = useQuery({
     queryKey: ["pilots"],
@@ -172,7 +183,7 @@ export default function Dashboard() {
           </span>
         </Link>
         
-        <nav className="flex flex-col gap-2">
+        <nav className="flex flex-col gap-2" data-tour="sidebar-nav">
           <Button variant="ghost" className="justify-start gap-2 bg-white/5 text-white">
             <LayoutDashboard size={18} /> Dashboard
           </Button>
@@ -202,19 +213,21 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
-        <header className="flex justify-between items-center mb-10">
+        <header className="flex justify-between items-center mb-10" data-tour="welcome">
           <div>
             <h1 className="text-3xl font-display font-bold text-white">Pilot Overview</h1>
             <p className="text-gray-400">Manage digital twins and simulation runs.</p>
           </div>
           
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-white gap-2" data-testid="button-new-pilot">
-                <Plus size={18} /> New Pilot
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-[#0f172a] border-white/10 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="flex gap-3">
+            <TourTriggerButton />
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-primary hover:bg-primary/90 text-white gap-2" data-testid="button-new-pilot">
+                  <Plus size={18} /> New Pilot
+                </Button>
+              </DialogTrigger>
+            <DialogContent className="bg-[#0f172a] border-white/10 text-white max-w-2xl max-h-[90vh] overflow-y-auto" data-tour="pilot-form">
               <DialogHeader>
                 <DialogTitle>Configure New Pilot</DialogTitle>
                 <div className="mt-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md text-xs text-blue-200">
@@ -290,12 +303,13 @@ export default function Dashboard() {
                 </Button>
               </form>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </header>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Pilot List */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-1 space-y-4" data-tour="pilot-list">
              <h2 className="text-lg font-bold text-gray-400 uppercase tracking-wider text-xs mb-4">Active Pilots</h2>
              {pilotsLoading ? (
                <div className="text-gray-500">Loading pilots...</div>
@@ -504,5 +518,13 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <TourProvider steps={dashboardTourSteps}>
+      <DashboardContent />
+    </TourProvider>
   );
 }
