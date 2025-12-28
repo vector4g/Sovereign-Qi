@@ -59,8 +59,7 @@ export default function Home() {
               Simulation Before <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary neon-glow">Legislation</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light mb-10">
-              We use digital twins and zero-knowledge identity to train on the struggle, not the identity.
-              Experience leadership without surveillance, moving from AI as a tool to AI as liberation technology.
+              Experience <span className="text-white font-medium">leadership</span> without surveillance. We use digital twins and zero-knowledge identity to train on the struggle, not the identity—moving from AI as a tool to AI as liberation technology.
             </p>
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link 
@@ -78,19 +77,21 @@ export default function Home() {
       <section className="py-24 bg-background relative border-t border-white/5">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
           <div>
+            <div className="inline-block px-4 py-1 rounded-full bg-secondary/10 text-secondary border border-secondary/20 mb-6 font-mono text-sm">
+              SOVEREIGN QI ENGINE
+            </div>
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
-              Simulation Before <br /><span className="text-secondary">Legislation</span>
+              Digital Twin <br /><span className="text-secondary">Governance</span>
             </h2>
             <p className="text-lg text-gray-400 mb-8 leading-relaxed">
               Sovereign Qi utilizes NVIDIA Omniverse and Isaac Sim to construct high-fidelity digital twins of organizational and civic ecosystems. 
-              We deploy autonomous social agents to A/B test standard 'Majority Logic' against dignity-first 'Qi Logic' protocols. 
-              This approach allows us to measure innovation velocity, burnout rates, and liability exposure over simulated years, eliminating the ethical risks of experimenting on live human subjects.
+              We deploy autonomous social agents to A/B test standard "Majority Logic" against dignity-first "Qi Logic" protocols over simulated years.
             </p>
             <ul className="space-y-4">
               {[
                 "High-fidelity simulation of complex social dynamics using Isaac Sim",
                 "Comparative analysis of Majority vs. Qi governance models",
-                "Longitudinal risk assessment over simulated multi-year timelines"
+                "Longitudinal risk assessment of innovation velocity, burnout, and liability exposure over multi-year timelines—without experimenting on live human subjects"
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-gray-300">
                   <div className="w-2 h-2 bg-secondary rounded-full" />
