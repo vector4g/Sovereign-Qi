@@ -196,7 +196,9 @@ Compliance by default.
 2. **Run a Pilot:** Test your most controversial policy in simulation
 3. **Get Compliant:** Start building your EU AI Act documentation now
 
-**Contact:** [sales@vectorforgood.com]
+**Website:** [vectorforgood.com](https://vectorforgood.com)  
+**Contact:** [sales@vectorforgood.com](mailto:sales@vectorforgood.com)  
+**Demo:** [vectorforgood.com/demo](https://vectorforgood.com/demo)
 
 ---
 

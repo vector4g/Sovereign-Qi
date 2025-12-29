@@ -463,7 +463,7 @@ export default function Home() {
                 <Calendar className="w-5 h-5" /> Book a Demo
               </Button>
             </Link>
-            <a href="mailto:sales@vectorforgood.com" data-testid="cta-contact">
+            <a href="https://vectorforgood.com/contact" target="_blank" rel="noopener noreferrer" data-testid="cta-contact">
               <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-10 py-6 rounded-full font-bold">
                 Contact Sales
               </Button>
@@ -471,6 +471,11 @@ export default function Home() {
           </div>
           <p className="text-gray-500 text-sm mt-8">
             Enterprise pricing. Custom pilots. White-glove onboarding.
+          </p>
+          <p className="text-primary text-sm mt-2">
+            <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="hover:underline">
+              vectorforgood.com
+            </a>
           </p>
         </div>
       </section>
@@ -480,15 +485,26 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <div className="text-xl font-display font-bold text-white tracking-tighter mb-2">
-                VECTOR <span className="text-primary">FOR GOOD</span>
-              </div>
+              <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="block mb-2">
+                <div className="text-xl font-display font-bold text-white tracking-tighter hover:text-primary transition-colors">
+                  VECTOR <span className="text-primary">FOR GOOD</span>
+                </div>
+              </a>
               <p className="text-gray-500 text-sm">Public Benefit Corporation | Liberation-Grade AI</p>
+              <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="text-primary text-sm hover:underline">
+                vectorforgood.com
+              </a>
             </div>
-            <div className="flex gap-6 text-sm text-gray-500">
-              <Link href="/council" className="hover:text-white transition-colors">The Council</Link>
-              <Link href="/simulation" className="hover:text-white transition-colors">Demo</Link>
-              <a href="mailto:sales@vectorforgood.com" className="hover:text-white transition-colors">Contact</a>
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6 text-sm text-gray-500 items-center">
+              <div className="flex gap-6">
+                <Link href="/council" className="hover:text-white transition-colors">The Council</Link>
+                <Link href="/simulation" className="hover:text-white transition-colors">Demo</Link>
+                <a href="https://vectorforgood.com/contact" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact</a>
+              </div>
+              <div className="flex gap-4 text-xs">
+                <a href="https://vectorforgood.com/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy</a>
+                <a href="https://vectorforgood.com/terms" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms</a>
+              </div>
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-500 text-sm">
