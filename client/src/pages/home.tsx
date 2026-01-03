@@ -10,6 +10,9 @@ import vectorLogo from "@assets/vector-logo_1767470093417.png";
 import sovereignQiLogo from "@assets/Gemini_Generated_Image_jny8c8jny8c8jny8_(1)_1767470665497.png";
 import safetyIntelLogo from "@assets/Gemini_Generated_Image_p2bm07p2bm07p2bm_1767471242892.png";
 import esgComplianceLogo from "@assets/Gemini_Generated_Image_71m3f271m3f271m3_1767471538654.png";
+import legalComplianceImg from "@assets/Gemini_Generated_Image_98mppl98mppl98mp_1767472748138.png";
+import peopleDeiImg from "@assets/Gemini_Generated_Image_l2i3aul2i3aul2i3_1767472748139.png";
+import cityMunicipalImg from "@assets/Gemini_Generated_Image_hryekmhryekmhrye_1767472748138.png";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -419,33 +422,50 @@ export default function Home() {
                 icon: Scale,
                 title: "Legal & Compliance",
                 roles: ["General Counsel", "Chief Compliance Officer", "Risk Management"],
-                benefit: "Prove diligence before litigation"
+                benefit: "Prove diligence before litigation",
+                image: legalComplianceImg,
+                tintClass: "bg-purple-500/15"
               },
               {
                 icon: Heart,
                 title: "People & DEI",
                 roles: ["Chief Diversity Officer", "HR Leadership", "Employee Experience"],
-                benefit: "Build DEI that's real, not theater"
+                benefit: "Build DEI that's real, not theater",
+                image: peopleDeiImg,
+                tintClass: "bg-gradient-to-br from-purple-500/15 to-cyan-500/15"
               },
               {
                 icon: Building2,
                 title: "City & Municipal",
                 roles: ["CTO/CIO", "Policy Teams", "Public Safety"],
-                benefit: "Civic tech that earns trust"
+                benefit: "Civic tech that earns trust",
+                image: cityMunicipalImg,
+                tintClass: "bg-cyan-500/15"
               }
             ].map((item, i) => (
-              <div key={i} className="glass-panel p-8 rounded-xl border border-white/10 hover:border-primary/30 transition-colors">
-                <item.icon className="w-10 h-10 text-primary mb-6" />
-                <h3 className="text-xl font-bold text-white mb-4">{item.title}</h3>
-                <ul className="space-y-2 mb-6">
-                  {item.roles.map((role, j) => (
-                    <li key={j} className="text-gray-400 text-sm flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                      {role}
-                    </li>
-                  ))}
-                </ul>
-                <div className="text-secondary font-medium text-sm">{item.benefit}</div>
+              <div 
+                key={i} 
+                className="relative rounded-xl border border-white/10 hover:border-primary/30 transition-all overflow-hidden group min-h-[320px]"
+              >
+                <div 
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                  style={{ backgroundImage: `url(${item.image})` }}
+                />
+                <div className="absolute inset-0 bg-black/60" />
+                <div className={`absolute inset-0 ${item.tintClass}`} />
+                <div className="relative z-10 p-8 h-full flex flex-col">
+                  <item.icon className="w-12 h-12 text-primary mb-6 drop-shadow-lg" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))' }} />
+                  <h3 className="text-xl font-bold text-white mb-4" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{item.title}</h3>
+                  <ul className="space-y-2 mb-6 flex-grow">
+                    {item.roles.map((role, j) => (
+                      <li key={j} className="text-primary text-sm flex items-center gap-2 font-medium" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-lg" />
+                        {role}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="text-cyan-400 font-semibold text-sm" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{item.benefit}</div>
+                </div>
               </div>
             ))}
           </div>
