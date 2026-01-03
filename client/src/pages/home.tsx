@@ -14,6 +14,7 @@ import legalComplianceImg from "@assets/Gemini_Generated_Image_98mppl98mppl98mp_
 import peopleDeiImg from "@assets/Gemini_Generated_Image_l2i3aul2i3aul2i3_1767472748139.png";
 import cityMunicipalImg from "@assets/Gemini_Generated_Image_hryekmhryekmhrye_1767472748138.png";
 import councilChamberImg from "@assets/Gemini_Generated_Image_h7o9svh7o9svh7o9_1767473865791.png";
+import brokenGridImg from "@assets/Gemini_Generated_Image_m8yh53m8yh53m8yh_1767474175691.png";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -139,13 +140,18 @@ export default function Home() {
       </section>
 
       {/* Problem Section */}
-      <section className="py-24 bg-black/50 border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="relative py-24 border-t border-white/5 overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${brokenGridImg})` }}
+        />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6 text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.8)' }}>
               Your Current Governance Process Is <span className="text-red-400">Broken</span>
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
               You make policy decisions based on majority logic—optimizing for averages, hoping nothing breaks. 
               But averages erase edge cases. And when something breaks, it's not the C-suite that suffers.
             </p>
@@ -172,11 +178,11 @@ export default function Home() {
                 desc: "for duty of care failures you could have prevented with simulation"
               }
             ].map((item, i) => (
-              <div key={i} className="glass-panel p-8 rounded-xl border border-red-500/20 bg-red-500/5">
+              <div key={i} className="p-8 rounded-xl border border-red-500/30 bg-black/60 backdrop-blur-sm">
                 <item.icon className="w-8 h-8 text-red-400 mb-4" />
                 <div className="text-3xl font-display font-bold text-white mb-1">{item.stat}</div>
                 <div className="text-red-400 font-medium mb-3">{item.label}</div>
-                <p className="text-gray-400 text-sm">{item.desc}</p>
+                <p className="text-gray-300 text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
