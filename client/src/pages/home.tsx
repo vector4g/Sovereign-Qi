@@ -15,6 +15,14 @@ import peopleDeiImg from "@assets/Gemini_Generated_Image_l2i3aul2i3aul2i3_176747
 import cityMunicipalImg from "@assets/Gemini_Generated_Image_hryekmhryekmhrye_1767472748138.png";
 import councilChamberImg from "@assets/Gemini_Generated_Image_h7o9svh7o9svh7o9_1767473865791.png";
 import brokenGridImg from "@assets/Gemini_Generated_Image_m8yh53m8yh53m8yh_1767474175691.png";
+import alanTuringImg from "@assets/alan_turing.jpg";
+import lynnConwayImg from "@assets/lynn_conway.jpg";
+import bayardRustinImg from "@assets/bayard_rustin.jpg";
+import sylviaRiveraImg from "@assets/sylvia_rivera.jpg";
+import elizebethFriedmanImg from "@assets/elizebeth_friedman.jpg";
+import claudetteColvinImg from "@assets/claudette_colvin.jpg";
+import audreLordeImg from "@assets/audre_lorde.jpg";
+import templeGrandinImg from "@assets/temple_grandin.jpg";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -324,51 +332,156 @@ export default function Home() {
         </div>
       </section>
 
-      {/* The Council */}
+      {/* The Council - Liberation Pioneers */}
       <section className="py-24 bg-black/50 border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6 font-mono text-sm">
-                8-AGENT DELIBERATION
-              </div>
-              <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
-                The Council of <br/><span className="text-primary">Liberation Pioneers</span>
-              </h2>
-              <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-                Every agent is named after someone marginalized yet world-changing. They bring perspectives 
-                single decision-makers miss—and Alan (Turing) holds VETO power to protect vulnerable communities.
-              </p>
-              <Link href="/council" data-testid="link-meet-council">
-                <Button variant="outline" className="gap-2 border-primary/50 text-primary hover:bg-primary/10">
-                  <Users className="w-4 h-4" /> Meet the Council
-                </Button>
-              </Link>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6 font-mono text-sm">
+              8-AGENT DELIBERATION
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { name: "Alan", role: "VETO Power", color: "primary" },
-                { name: "Temple", role: "Edge Cases", color: "secondary" },
-                { name: "Claudette", role: "Erasure Detection", color: "yellow-400" },
-                { name: "Audre", role: "Intersectional", color: "pink-400" },
-                { name: "Lynn", role: "Architecture", color: "blue-400" },
-                { name: "Bayard", role: "Strategy", color: "orange-400" },
-                { name: "Sylvia", role: "Street-Level", color: "red-400" },
-                { name: "Elizebeth", role: "Signals", color: "green-400" }
-              ].map((agent, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="glass-panel p-4 rounded-lg border border-white/10 hover:border-primary/30 transition-colors"
-                >
-                  <div className={`text-${agent.color} font-bold`}>{agent.name}</div>
-                  <div className="text-xs text-gray-500">{agent.role}</div>
-                </motion.div>
-              ))}
-            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
+              The Council of <span className="text-primary">Liberation Pioneers</span>
+            </h2>
+            <p className="text-xl text-gray-400 max-w-4xl mx-auto">
+              Every agent is named after someone marginalized yet world-changing. They bring perspectives 
+              single decision-makers miss—and Alan holds <span className="text-red-400 font-bold">VETO power</span> to protect vulnerable communities.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            {[
+              { 
+                name: "Alan", 
+                fullName: "Alan Turing",
+                role: "Cultural Codebreaker", 
+                power: "VETO",
+                color: "from-purple-500 to-violet-600",
+                borderColor: "border-purple-500",
+                image: alanTuringImg,
+                bio: "Gay mathematician who cracked Enigma. Chemically castrated for his sexuality.",
+                years: "1912–1954"
+              },
+              { 
+                name: "Lynn", 
+                fullName: "Lynn Conway",
+                role: "Technical Architecture", 
+                power: null,
+                color: "from-blue-400 to-cyan-500",
+                borderColor: "border-blue-400",
+                image: lynnConwayImg,
+                bio: "Trans computer scientist fired from IBM in 1968. Revolutionized chip design.",
+                years: "1938–2024"
+              },
+              { 
+                name: "Bayard", 
+                fullName: "Bayard Rustin",
+                role: "Strategic Coordination", 
+                power: null,
+                color: "from-orange-400 to-amber-500",
+                borderColor: "border-orange-400",
+                image: bayardRustinImg,
+                bio: "Gay architect of the 1963 March on Washington. Erased due to his sexuality.",
+                years: "1912–1987"
+              },
+              { 
+                name: "Sylvia", 
+                fullName: "Sylvia Rivera",
+                role: "Street-Level Harm", 
+                power: null,
+                color: "from-red-400 to-pink-500",
+                borderColor: "border-red-400",
+                image: sylviaRiveraImg,
+                bio: "Trans Latina at Stonewall. Co-founded STAR for homeless trans youth.",
+                years: "1951–2002"
+              },
+              { 
+                name: "Elizebeth", 
+                fullName: "Elizebeth Friedman",
+                role: "Signal Intelligence", 
+                power: null,
+                color: "from-green-400 to-emerald-500",
+                borderColor: "border-green-400",
+                image: elizebethFriedmanImg,
+                bio: "America's first female cryptanalyst. Overshadowed by her husband.",
+                years: "1892–1980"
+              },
+              { 
+                name: "Claudette", 
+                fullName: "Claudette Colvin",
+                role: "Erasure Detection", 
+                power: null,
+                color: "from-yellow-400 to-orange-400",
+                borderColor: "border-yellow-400",
+                image: claudetteColvinImg,
+                bio: "Refused her bus seat 9 months before Rosa Parks. Deemed 'not the right image.'",
+                years: "b. 1939"
+              },
+              { 
+                name: "Audre", 
+                fullName: "Audre Lorde",
+                role: "Intersectional Analysis", 
+                power: null,
+                color: "from-pink-400 to-rose-500",
+                borderColor: "border-pink-400",
+                image: audreLordeImg,
+                bio: "Black lesbian feminist poet. 'The master's tools will never dismantle the master's house.'",
+                years: "1934–1992"
+              },
+              { 
+                name: "Temple", 
+                fullName: "Temple Grandin",
+                role: "Edge Case Specialist", 
+                power: null,
+                color: "from-cyan-400 to-teal-500",
+                borderColor: "border-cyan-400",
+                image: templeGrandinImg,
+                bio: "Autistic scientist who sees what neurotypical designers miss.",
+                years: "b. 1947"
+              }
+            ].map((agent, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className={`group relative glass-panel rounded-xl overflow-hidden border ${agent.borderColor}/30 hover:${agent.borderColor} transition-all hover:shadow-lg`}
+                style={{ boxShadow: agent.power ? '0 0 20px rgba(168, 85, 247, 0.3)' : undefined }}
+              >
+                <div className="p-4 flex flex-col items-center text-center">
+                  <div className={`relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-3 ring-2 ring-offset-2 ring-offset-black ${agent.borderColor}`}>
+                    <img 
+                      src={agent.image} 
+                      alt={agent.fullName}
+                      className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${agent.color} opacity-20 group-hover:opacity-0 transition-opacity`} />
+                  </div>
+                  {agent.power && (
+                    <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full animate-pulse">
+                      {agent.power}
+                    </span>
+                  )}
+                  <h3 className={`text-lg font-bold bg-gradient-to-r ${agent.color} bg-clip-text text-transparent`}>
+                    {agent.name}
+                  </h3>
+                  <div className="text-xs text-gray-400 font-medium mb-1">{agent.role}</div>
+                  <p className="text-[10px] text-gray-500 leading-tight hidden md:block">{agent.bio}</p>
+                  <div className="text-[9px] text-gray-600 mt-1">{agent.years}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link href="/council" data-testid="link-meet-council">
+              <Button variant="outline" className="gap-2 border-primary/50 text-primary hover:bg-primary/10">
+                <Users className="w-4 h-4" /> Meet the Full Council
+              </Button>
+            </Link>
+            <p className="text-xs text-gray-600 mt-4">
+              Photos: Public domain via Wikimedia Commons, Library of Congress, and institutional archives
+            </p>
           </div>
         </div>
       </section>
