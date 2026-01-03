@@ -6,6 +6,7 @@ import {
   Zap, Lock, Eye, TrendingUp, AlertTriangle
 } from "lucide-react";
 import heroBg from "@assets/generated_images/abstract_digital_twin_data_flow.png";
+import vectorLogo from "@assets/vector-logo_1767470093417.png";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -18,9 +19,9 @@ export default function Home() {
       <nav className="fixed top-0 w-full z-50 glass-panel border-b-0 border-b-white/10 px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="text-2xl font-display font-bold text-white tracking-tighter">
-              VECTOR <span className="text-primary">FOR GOOD</span>
-            </div>
+            <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer">
+              <img src={vectorLogo} alt="Vector for Good" className="h-10 w-auto" />
+            </a>
             <span className="text-xs text-gray-500 border-l border-white/20 pl-3 hidden md:block">Liberation-Grade AI</span>
           </div>
           <div className="flex gap-4 items-center">
@@ -485,10 +486,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="block mb-2">
-                <div className="text-xl font-display font-bold text-white tracking-tighter hover:text-primary transition-colors">
-                  VECTOR <span className="text-primary">FOR GOOD</span>
-                </div>
+              <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="block mb-3">
+                <img src={vectorLogo} alt="Vector for Good" className="h-12 w-auto" />
               </a>
               <p className="text-gray-500 text-sm">Public Benefit Corporation | Liberation-Grade AI</p>
               <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="text-primary text-sm hover:underline">
