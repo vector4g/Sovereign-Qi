@@ -15,6 +15,7 @@ import peopleDeiImg from "@assets/Gemini_Generated_Image_l2i3aul2i3aul2i3_176747
 import cityMunicipalImg from "@assets/Gemini_Generated_Image_hryekmhryekmhrye_1767472748138.png";
 import councilChamberImg from "@assets/Gemini_Generated_Image_h7o9svh7o9svh7o9_1767473865791.png";
 import brokenGridImg from "@assets/Gemini_Generated_Image_m8yh53m8yh53m8yh_1767474175691.png";
+import businessCaseImg from "@assets/Gemini_Generated_Image_2pxxvc2pxxvc2pxx_1767475383937.png";
 import alanTuringImg from "@assets/alan_turing.jpg";
 import lynnConwayImg from "@assets/lynn_conway.jpg";
 import bayardRustinImg from "@assets/bayard_rustin.jpg";
@@ -487,13 +488,21 @@ export default function Home() {
       </section>
 
       {/* ROI Section */}
-      <section className="py-24 bg-background border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="relative py-24 border-t border-white/5 overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${businessCaseImg})` }}
+        />
+        <div 
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,20,0.4) 0%, rgba(0,0,20,0.7) 100%)' }}
+        />
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}>
               The Business Case
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
               Reduce risk. Increase innovation. Prove compliance.
             </p>
           </div>
@@ -511,13 +520,13 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="text-center"
+                className="text-center p-6 rounded-xl bg-black/30 backdrop-blur-sm border border-white/10"
               >
-                <div className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-2">
+                <div className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-2" style={{ textShadow: '0 0 30px rgba(124,58,237,0.5)' }}>
                   {item.metric}
                 </div>
-                <div className="text-white font-bold mb-1">{item.label}</div>
-                <div className="text-gray-500 text-sm">{item.desc}</div>
+                <div className="text-white font-bold mb-1" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{item.label}</div>
+                <div className="text-gray-300 text-sm" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{item.desc}</div>
               </motion.div>
             ))}
           </div>
