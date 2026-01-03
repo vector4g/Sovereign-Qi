@@ -211,12 +211,12 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
             className="mb-4 p-3 bg-white/5 rounded-lg border border-white/5"
           >
             <p className="text-sm text-gray-400 font-mono">
-              <span className="text-primary">SPECIALIZATION:</span>{" "}
+              <span className="text-violet-300 font-semibold">SPECIALIZATION:</span>{" "}
               {agent.specialization}
             </p>
           </motion.div>
 
-          <blockquote className="text-gray-300 italic text-sm border-l-2 border-primary/50 pl-4 mb-4">
+          <blockquote className="text-gray-300 italic text-sm border-l-2 border-violet-400/60 pl-4 mb-4">
             "{agent.quote}"
           </blockquote>
 
@@ -240,7 +240,7 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 w-full flex items-center justify-center gap-2 py-2 text-sm text-primary hover:text-primary/80 transition-colors"
+            className="mt-4 w-full flex items-center justify-center gap-2 py-2 text-sm text-violet-300 hover:text-violet-200 transition-colors font-medium"
             data-testid={`button-expand-${agent.id}`}
           >
             {isExpanded ? (
@@ -320,7 +320,7 @@ export default function Council() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6 font-mono text-sm">
+            <div className="inline-block px-4 py-1 rounded-full bg-violet-500/20 text-violet-200 border border-violet-400/30 mb-6 font-mono text-sm font-medium">
               LIBERATION TECHNOLOGY
             </div>
             <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-white leading-tight">
@@ -399,7 +399,7 @@ export default function Council() {
             </p>
             <div className="inline-block p-6 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl border border-white/10">
               <p className="text-xl text-white font-medium">
-                <span className="text-primary">Sovereign Qi</span> exists
+                <span className="text-violet-300 font-semibold">Sovereign Qi</span> exists
                 because these people shouldn't have had to fight alone.
               </p>
               <p className="text-secondary mt-2 font-bold">
