@@ -4,6 +4,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ChevronDown, ChevronUp, Shield, Eye, Users, Scale, Cpu, Mic, Search, Lightbulb, Play, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
+import alanTuringImg from "@assets/alan_turing.jpg";
+import lynnConwayImg from "@assets/stock_images/lynn_conway_computer_a4e223ba.jpg";
+import bayardRustinImg from "@assets/bayard_rustin.jpg";
+import sylviaRiveraImg from "@assets/stock_images/sylvia_rivera_transg_a631fc2e.jpg";
+import elizebethFriedmanImg from "@assets/stock_images/elizebeth_friedman_c_3150aa3f.jpg";
+import claudetteColvinImg from "@assets/stock_images/claudette_colvin_civ_ee78d53d.jpg";
+import audreLordeImg from "@assets/stock_images/audre_lorde_poet_act_bfc9316a.jpg";
+import templeGrandinImg from "@assets/temple_grandin.jpg";
 
 interface Agent {
   id: string;
@@ -16,6 +24,7 @@ interface Agent {
   bio: string;
   icon: LucideIcon;
   color: string;
+  image: string;
   hasVeto?: boolean;
 }
 
@@ -31,6 +40,7 @@ const agents: Agent[] = [
     bio: "The father of computer science who broke Nazi codes at Bletchley Park, shortening WWII by years and saving millions of lives. Prosecuted by the British government for being gay, chemically castrated, and driven to suicide at 41. Alan holds veto power in our council because we will never again let brilliant minds be destroyed by the systems they save. When Alan detects coded threats—dog whistles, surveillance disguised as safety, policies that target identities—his BLOCK overrides everything.",
     icon: Shield,
     color: "from-red-500 to-orange-500",
+    image: alanTuringImg,
     hasVeto: true,
   },
   {
@@ -44,6 +54,7 @@ const agents: Agent[] = [
     bio: "Autistic scientist who revolutionized livestock handling by seeing the world differently. Rejected by neurotypical gatekeepers, she persisted and became one of the most influential animal behaviorists alive. Temple explores 'What If' scenarios—the edge cases, the unintended consequences, the perspectives that don't fit standard models. She asks: 'What if we're wrong? What does this look like from an entirely different angle?'",
     icon: Lightbulb,
     color: "from-amber-500 to-yellow-500",
+    image: templeGrandinImg,
   },
   {
     id: "claudette",
@@ -56,6 +67,7 @@ const agents: Agent[] = [
     bio: "At 15, she refused to give up her bus seat in Montgomery, Alabama—NINE MONTHS before Rosa Parks. But civil rights leaders decided she wasn't the 'right image' because she was pregnant, dark-skinned, and working-class. Her act of resistance was erased from history. Claudette detects when marginalized voices are being erased, sanitized, or deemed 'not the right messenger.'",
     icon: Mic,
     color: "from-pink-500 to-rose-500",
+    image: claudetteColvinImg,
   },
   {
     id: "audre",
@@ -68,6 +80,7 @@ const agents: Agent[] = [
     bio: "Black lesbian feminist warrior poet who refused to separate her identities or her struggles. While white feminists talked about gender and Black activists talked about race, Audre insisted we examine where these systems intersect and compound. Audre performs intersectional analysis—identifying how policies that seem neutral on one axis create compounding harm when identities overlap.",
     icon: Users,
     color: "from-purple-500 to-violet-500",
+    image: audreLordeImg,
   },
   {
     id: "lynn",
@@ -80,6 +93,7 @@ const agents: Agent[] = [
     bio: "Trans woman who made foundational contributions to computer chip design (VLSI). Fired from IBM in 1968 for transitioning, she rebuilt her career in secret and became a legend—only publicly coming out in 1999 at age 61. Lynn handles technical architecture and system design, advocating for policies that give people second chances—systems that don't punish people for transitioning, coming out, or leaving abusive situations.",
     icon: Cpu,
     color: "from-cyan-500 to-blue-500",
+    image: lynnConwayImg,
   },
   {
     id: "bayard",
@@ -92,6 +106,7 @@ const agents: Agent[] = [
     bio: "Gay Black Quaker who was the chief architect of the 1963 March on Washington. He taught MLK about nonviolence, organized the logistics of the largest demonstration in US history, but was pushed into the shadows because white allies and Black leaders feared his homosexuality would 'hurt the movement.' Bayard handles strategic coordination and coalition-building, identifying when competing interests can find common ground.",
     icon: Scale,
     color: "from-emerald-500 to-green-500",
+    image: bayardRustinImg,
   },
   {
     id: "sylvia",
@@ -104,6 +119,7 @@ const agents: Agent[] = [
     bio: "Trans Latina who fought at Stonewall and spent her life protecting homeless trans youth. Booed off the stage at a 1973 pride rally for demanding the movement prioritize trans people and sex workers. Died in poverty after a lifetime of service. Sylvia performs street-level harm detection. She asks: 'What does this policy do to the homeless? To sex workers? To undocumented people?'",
     icon: Eye,
     color: "from-fuchsia-500 to-pink-500",
+    image: sylviaRiveraImg,
   },
   {
     id: "elizebeth",
@@ -116,6 +132,7 @@ const agents: Agent[] = [
     bio: "America's first female cryptanalyst who broke codes for the Coast Guard, took down smuggling rings, and laid groundwork for the NSA. Her work was classified for decades and often attributed to her husband or the FBI. Elizebeth specializes in signal intelligence and pattern recognition—detecting surveillance, hidden agendas, and coded language in policy documents.",
     icon: Search,
     color: "from-indigo-500 to-purple-500",
+    image: elizebethFriedmanImg,
   },
 ];
 
@@ -145,11 +162,13 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
           <div className="flex items-start gap-4 mb-4">
             <motion.div
               whileHover={{ scale: 1.1, rotate: 5 }}
-              className={`w-16 h-16 rounded-xl bg-gradient-to-br ${agent.color} p-0.5 flex-shrink-0`}
+              className={`w-20 h-20 rounded-full bg-gradient-to-br ${agent.color} p-1 flex-shrink-0`}
             >
-              <div className="w-full h-full bg-background rounded-[10px] flex items-center justify-center">
-                <Icon className="w-8 h-8 text-white" />
-              </div>
+              <img 
+                src={agent.image} 
+                alt={agent.namesake}
+                className="w-full h-full rounded-full object-cover"
+              />
             </motion.div>
 
             <div className="flex-1 min-w-0">
