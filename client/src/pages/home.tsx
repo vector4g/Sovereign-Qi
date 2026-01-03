@@ -8,6 +8,7 @@ import {
 import heroBg from "@assets/generated_images/abstract_digital_twin_data_flow.png";
 import vectorLogo from "@assets/vector-logo_1767470093417.png";
 import sovereignQiLogo from "@assets/Gemini_Generated_Image_jny8c8jny8c8jny8_(1)_1767470665497.png";
+import safetyIntelLogo from "@assets/Gemini_Generated_Image_p2bm07p2bm07p2bm_1767471242892.png";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -239,8 +240,8 @@ export default function Home() {
               className="glass-panel rounded-2xl overflow-hidden border border-secondary/30 bg-gradient-to-b from-secondary/10 to-transparent group hover:border-secondary/50 transition-all"
             >
               <div className="p-8">
-                <div className="w-14 h-14 bg-secondary/20 rounded-xl flex items-center justify-center mb-6">
-                  <Globe className="w-7 h-7 text-secondary" />
+                <div className="w-20 h-20 mb-6">
+                  <img src={safetyIntelLogo} alt="Safety Intelligence" className="w-full h-full object-contain" />
                 </div>
                 <div className="text-xs font-mono text-secondary mb-2">TRAVEL & SAFETY</div>
                 <h3 className="text-2xl font-display font-bold text-white mb-4">Safety Intelligence</h3>
