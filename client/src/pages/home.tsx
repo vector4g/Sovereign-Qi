@@ -5,7 +5,7 @@ import {
   Play, Calendar, Building2, Heart, Scale, FileCheck,
   Zap, Lock, Eye, TrendingUp, AlertTriangle
 } from "lucide-react";
-import heroBg from "@assets/generated_images/abstract_digital_twin_data_flow.png";
+import heroBg from "@assets/Gemini_Generated_Image_ikjberikjberikjb_1767472048932.png";
 import vectorLogo from "@assets/vector-logo_1767470093417.png";
 import sovereignQiLogo from "@assets/Gemini_Generated_Image_jny8c8jny8c8jny8_(1)_1767470665497.png";
 import safetyIntelLogo from "@assets/Gemini_Generated_Image_p2bm07p2bm07p2bm_1767471242892.png";
@@ -73,8 +73,9 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
-          <img src={heroBg} className="w-full h-full object-cover opacity-30" alt="Digital Twin Visualization" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-black/60" />
+          <img src={heroBg} className="w-full h-full object-cover" alt="8-Agent Council Visualization" />
+          <div className="absolute inset-0 bg-black/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center py-20">
@@ -83,28 +84,28 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
-              <span className="text-primary text-sm font-medium">Trusted by Fortune 100 Legal & Compliance Teams</span>
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/20 border border-primary/40 mb-10 backdrop-blur-sm">
+              <span className="text-primary text-sm font-semibold tracking-wide">Trusted by Fortune 100 Legal & Compliance Teams</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-white leading-tight">
-              Test Your Policies <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Before Your People Pay</span>
+            <h1 className="font-display font-bold mb-4 text-white leading-none">
+              <span className="block text-5xl md:text-6xl lg:text-7xl mb-2">Test Your Policies</span>
+              <span className="block text-6xl md:text-8xl lg:text-[120px] text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-cyan-400">Before Your People Pay</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light mb-10">
+            <p className="text-lg md:text-2xl text-gray-400 max-w-3xl mx-auto font-light mb-12 mt-8">
               Simulate governance decisions on digital twins. Get AI council deliberation from 8 perspectives. 
               Prove you did diligence—<span className="text-white font-medium">before the deposition.</span>
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <Link href={user ? "/dashboard" : "/login"} data-testid="cta-demo">
-                <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-8 py-6 rounded-full font-bold gap-2">
+                <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-10 py-7 rounded-full font-bold gap-2 shadow-lg">
                   <Calendar className="w-5 h-5" /> Book a Demo
                 </Button>
               </Link>
               <Link href="/simulation" data-testid="cta-watch">
-                <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-8 py-6 rounded-full font-bold gap-2">
+                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 text-lg px-10 py-7 rounded-full font-bold gap-2 backdrop-blur-sm">
                   <Play className="w-5 h-5" /> Watch It Work
                 </Button>
               </Link>
