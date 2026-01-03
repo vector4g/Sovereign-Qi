@@ -445,27 +445,29 @@ export default function Home() {
             ].map((item, i) => (
               <div 
                 key={i} 
-                className="relative rounded-xl border border-white/10 hover:border-primary/30 transition-all overflow-hidden group min-h-[340px]"
+                className="relative rounded-xl border border-white/10 hover:border-primary/30 transition-all overflow-hidden group min-h-[420px]"
               >
                 <div 
-                  className="absolute inset-0 bg-cover bg-top transition-transform duration-500 group-hover:scale-105"
-                  style={{ backgroundImage: `url(${item.image})` }}
+                  className="absolute inset-0 bg-cover transition-transform duration-500 group-hover:scale-105"
+                  style={{ backgroundImage: `url(${item.image})`, backgroundPosition: 'center top' }}
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.85))' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.9) 100%)' }} />
                 <div className={`absolute inset-0 ${item.tintClass}`} />
-                <div className="relative z-10 p-8 h-full flex flex-col">
-                  <item.icon 
-                    className="w-14 h-14 text-primary mb-6" 
-                    style={{ filter: 'drop-shadow(0 0 16px currentColor) drop-shadow(0 4px 12px rgba(0,0,0,0.9))' }} 
-                  />
-                  <div className="mt-auto rounded-lg p-4 -mx-4 -mb-4" style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)' }}>
-                    <h3 
-                      className="text-xl font-bold text-white mb-3" 
-                      style={{ textShadow: '0 2px 16px rgba(0,0,0,0.95), 0 4px 32px rgba(0,0,0,0.8)' }}
-                    >
-                      {item.title}
-                    </h3>
-                    <ul className="space-y-2 mb-4">
+                <div className="relative z-10 h-full flex flex-col justify-end p-6">
+                  <div className="rounded-xl p-5" style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)' }}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <item.icon 
+                        className="w-10 h-10 text-primary flex-shrink-0" 
+                        style={{ filter: 'drop-shadow(0 0 12px currentColor)' }} 
+                      />
+                      <h3 
+                        className="text-xl font-bold text-white" 
+                        style={{ textShadow: '0 2px 16px rgba(0,0,0,0.95)' }}
+                      >
+                        {item.title}
+                      </h3>
+                    </div>
+                    <ul className="space-y-1.5 mb-3 pl-1">
                       {item.roles.map((role, j) => (
                         <li 
                           key={j} 
@@ -475,13 +477,13 @@ export default function Home() {
                             textShadow: '0 0 20px rgba(139, 92, 246, 0.6), 0 2px 8px rgba(0,0,0,0.9)' 
                           }}
                         >
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full" style={{ boxShadow: '0 0 8px rgba(139,92,246,0.8)' }} />
+                          <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" style={{ boxShadow: '0 0 8px rgba(139,92,246,0.8)' }} />
                           {role}
                         </li>
                       ))}
                     </ul>
                     <div 
-                      className="text-cyan-400 font-semibold text-sm" 
+                      className="text-cyan-400 font-semibold text-sm pl-1" 
                       style={{ textShadow: '0 2px 16px rgba(0,0,0,0.95)' }}
                     >
                       {item.benefit}

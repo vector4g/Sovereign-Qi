@@ -1,0 +1,53 @@
+Great progress on text legibility! Now let's optimize the card layout to showcase more of the professional photography while keeping text readable.
+
+LAYOUT OPTIMIZATION:
+
+1. IMAGE POSITIONING:
+   - Change background-position from "center" to "center top"
+   - This ensures faces and key photo elements stay visible at the top
+   - Photos should occupy roughly the top 50-60% of card space
+
+2. TEXT CONTENT POSITIONING:
+   - Move ALL text content to bottom 40-50% of card
+   - Use flexbox with justify-content: flex-end to push content down:
+     .audience-card-content {
+       display: flex;
+       flex-direction: column;
+       justify-content: flex-end;
+       height: 100%;
+       padding: 2rem;
+     }
+
+3. GRADIENT OVERLAY ADJUSTMENT:
+   - Keep gradient that's lighter at top (50% black), darker at bottom (85% black)
+   - Current gradient is good: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.85))
+   - This lets faces/photos show through at top, text is protected at bottom
+
+4. TEXT PANEL REFINEMENT:
+   - The semi-transparent dark panel should only wrap the text content
+   - Position it at the bottom with padding
+   - Leave the top 50% of card completely clear for photo visibility
+   - Current backdrop-blur effect is perfect, keep it
+
+5. ICON POSITIONING:
+   - Move icon to be INSIDE the dark text panel (not floating above it)
+   - Or reduce icon size slightly (from 56px to 48px) so it doesn't dominate
+
+6. CARD HEIGHT:
+   - Ensure cards are tall enough to show both photo and text: min-height: 500px
+   - Or increase to 550px if current feels cramped
+
+VISUAL HIERARCHY:
+Top 50-60%: Professional photography clearly visible
+Bottom 40-50%: Dark panel with all text content
+- Icon (48px)
+- Headline (bold, large)
+- Role bullets (white with purple glow)
+- Value proposition (cyan)
+
+The goal: When someone glances at the cards, they should see:
+1. FIRST: The professional person/people in the photo (human connection)
+2. SECOND: The headline (Legal & Compliance, etc.)
+3. THIRD: The details (roles and value prop)
+
+This creates "magazine cover" style cards where the photo is the hero and text is cleanly organized at bottom.
