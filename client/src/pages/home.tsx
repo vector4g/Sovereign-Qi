@@ -545,9 +545,9 @@ export default function Home() {
           
           <div className="flex flex-col md:flex-row justify-around items-center gap-8 md:gap-12">
             {[
-              { logo: nvidiaInceptionLogo, label: "NVIDIA Inception Member", alt: "NVIDIA Inception Program" },
-              { logo: igltaLogo, label: "IGLTA Partner", alt: "IGLTA Member" },
-              { logo: iqsfLogo, label: "Founded by IQSF 501(c)(3)", alt: "International Queer Safety Foundation" }
+              { logo: nvidiaInceptionLogo, label: "NVIDIA Inception Member", alt: "NVIDIA Inception Program", bg: "bg-white" },
+              { logo: igltaLogo, label: "IGLTA Partner", alt: "IGLTA Member", bg: "bg-white" },
+              { logo: iqsfLogo, label: "Founded by IQSF 501(c)(3)", alt: "International Queer Safety Foundation", bg: "bg-transparent" }
             ].map((partner, i) => (
               <motion.div
                 key={i}
@@ -558,13 +558,12 @@ export default function Home() {
                 className="group flex flex-col items-center"
               >
                 <div 
-                  className="p-6 rounded-2xl border border-white/10 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:scale-105"
-                  style={{ background: 'rgba(255,255,255,0.03)' }}
+                  className={`p-4 rounded-2xl border border-white/10 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:scale-105 ${partner.bg}`}
                 >
                   <img 
                     src={partner.logo} 
                     alt={partner.alt}
-                    className="h-16 w-auto object-contain transition-all duration-300 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"
+                    className="h-16 max-w-[200px] object-contain"
                   />
                 </div>
                 <span className="text-xs text-gray-400 mt-3">{partner.label}</span>
