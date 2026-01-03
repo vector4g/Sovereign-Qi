@@ -445,46 +445,45 @@ export default function Home() {
             ].map((item, i) => (
               <div 
                 key={i} 
-                className="relative rounded-xl border border-white/10 hover:border-primary/30 transition-all overflow-hidden group min-h-[420px]"
+                className="relative rounded-xl border border-white/10 hover:border-primary/30 transition-all overflow-hidden group min-h-[500px]"
               >
                 <div 
                   className="absolute inset-0 bg-cover transition-transform duration-500 group-hover:scale-105"
                   style={{ backgroundImage: `url(${item.image})`, backgroundPosition: 'center top' }}
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.9) 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.7) 100%)' }} />
                 <div className={`absolute inset-0 ${item.tintClass}`} />
-                <div className="relative z-10 h-full flex flex-col justify-end p-6">
-                  <div className="rounded-xl p-5" style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)' }}>
-                    <div className="flex items-center gap-3 mb-3">
+                <div className="relative z-10 h-full flex flex-col justify-end p-4">
+                  <div className="rounded-lg px-4 py-3" style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}>
+                    <div className="flex items-center gap-2.5 mb-2">
                       <item.icon 
-                        className="w-10 h-10 text-primary flex-shrink-0" 
-                        style={{ filter: 'drop-shadow(0 0 12px currentColor)' }} 
+                        className="w-8 h-8 text-primary flex-shrink-0" 
+                        style={{ filter: 'drop-shadow(0 0 10px currentColor)' }} 
                       />
                       <h3 
-                        className="text-xl font-bold text-white" 
-                        style={{ textShadow: '0 2px 16px rgba(0,0,0,0.95)' }}
+                        className="text-lg font-bold text-white" 
+                        style={{ textShadow: '0 2px 12px rgba(0,0,0,0.95)' }}
                       >
                         {item.title}
                       </h3>
                     </div>
-                    <ul className="space-y-1.5 mb-3 pl-1">
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 mb-2 text-xs">
                       {item.roles.map((role, j) => (
-                        <li 
+                        <span 
                           key={j} 
-                          className="text-sm flex items-center gap-2 font-medium" 
+                          className="font-medium" 
                           style={{ 
-                            color: 'rgba(255, 255, 255, 0.95)',
-                            textShadow: '0 0 20px rgba(139, 92, 246, 0.6), 0 2px 8px rgba(0,0,0,0.9)' 
+                            color: 'rgba(255, 255, 255, 0.9)',
+                            textShadow: '0 0 16px rgba(139, 92, 246, 0.5), 0 1px 6px rgba(0,0,0,0.9)' 
                           }}
                         >
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0" style={{ boxShadow: '0 0 8px rgba(139,92,246,0.8)' }} />
                           {role}
-                        </li>
+                        </span>
                       ))}
-                    </ul>
+                    </div>
                     <div 
-                      className="text-cyan-400 font-semibold text-sm pl-1" 
-                      style={{ textShadow: '0 2px 16px rgba(0,0,0,0.95)' }}
+                      className="text-cyan-400 font-semibold text-xs" 
+                      style={{ textShadow: '0 2px 12px rgba(0,0,0,0.95)' }}
                     >
                       {item.benefit}
                     </div>
