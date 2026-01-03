@@ -12,6 +12,7 @@ import elizebethFriedmanImg from "@assets/elizebeth_friedman_wiki.jpg";
 import claudetteColvinImg from "@assets/claudette_colvin_wiki.jpg";
 import audreLordeImg from "@assets/audre_lorde_large.jpg";
 import templeGrandinImg from "@assets/temple_grandin.jpg";
+import councilChamberImg from "@assets/Gemini_Generated_Image_h7o9svh7o9svh7o9_1767473865791.png";
 
 interface Agent {
   id: string;
@@ -161,13 +162,13 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
         <div className="p-6">
           <div className="flex items-start gap-4 mb-4">
             <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              className={`w-20 h-20 rounded-full bg-gradient-to-br ${agent.color} p-1 flex-shrink-0`}
+              whileHover={{ scale: 1.05 }}
+              className={`w-24 h-24 rounded-full bg-gradient-to-br ${agent.color} p-1 flex-shrink-0 ${agent.hasVeto ? 'animate-pulse shadow-[0_0_20px_rgba(239,68,68,0.5)]' : ''}`}
             >
               <img 
                 src={agent.image} 
                 alt={agent.namesake}
-                className="w-full h-full rounded-full object-cover"
+                className="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
               />
             </motion.div>
 
@@ -177,9 +178,13 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
                   {agent.name}
                 </h3>
                 {agent.hasVeto && (
-                  <span className="px-2 py-0.5 text-xs font-mono bg-red-500/20 text-red-400 rounded border border-red-500/30">
-                    VETO
-                  </span>
+                  <motion.span 
+                    animate={{ scale: [1, 1.05, 1], opacity: [0.8, 1, 0.8] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="px-2 py-0.5 text-xs font-mono bg-red-500/30 text-red-300 rounded border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                  >
+                    VETO POWER
+                  </motion.span>
                 )}
               </div>
               <p className="text-sm text-gray-400">
@@ -297,7 +302,12 @@ export default function Council() {
 
       <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
+          <img 
+            src={councilChamberImg} 
+            alt="Council Chamber" 
+            className="absolute inset-0 w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[128px]" />
           <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-secondary/20 rounded-full blur-[96px]" />
         </div>
@@ -415,6 +425,83 @@ export default function Council() {
                 <Play className="w-5 h-5" /> Watch Live Case Hearing
               </Button>
             </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Photo Attribution */}
+      <section className="py-12 px-6 border-t border-white/5">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="glass-panel rounded-xl p-6 border border-white/10"
+          >
+            <h3 className="text-lg font-display font-bold text-white mb-4 text-center">
+              Photo Attribution & Sources
+            </h3>
+            <p className="text-gray-400 text-sm text-center mb-6">
+              All Liberation Pioneer portraits are public domain or Creative Commons licensed from the following archives:
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-gray-500">
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={alanTuringImg} alt="Alan Turing" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Alan Turing</span>
+                <br />NPL/UK Archives
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={bayardRustinImg} alt="Bayard Rustin" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Bayard Rustin</span>
+                <br />Library of Congress
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={claudetteColvinImg} alt="Claudette Colvin" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Claudette Colvin</span>
+                <br />Wikimedia Commons
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={audreLordeImg} alt="Audre Lorde" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Audre Lorde</span>
+                <br />Library of Congress
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={lynnConwayImg} alt="Lynn Conway" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Lynn Conway</span>
+                <br />CC BY-SA 2.5
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={sylviaRiveraImg} alt="Sylvia Rivera" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Sylvia Rivera</span>
+                <br />Wikimedia Commons
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={elizebethFriedmanImg} alt="Elizebeth Friedman" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Elizebeth Friedman</span>
+                <br />NSA Archives (PD)
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full mx-auto mb-2 overflow-hidden border border-white/10">
+                  <img src={templeGrandinImg} alt="Temple Grandin" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-gray-400">Temple Grandin</span>
+                <br />CSU Archives
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
