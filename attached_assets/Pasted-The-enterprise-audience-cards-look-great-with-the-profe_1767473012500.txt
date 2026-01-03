@@ -1,0 +1,55 @@
+The enterprise audience cards look great with the professional photography, but the text is not legible enough. Make these improvements:
+
+TEXT LEGIBILITY FIXES:
+
+1. INCREASE DARK OVERLAY:
+   - Change overlay from 60% black to 75% black: rgba(0, 0, 0, 0.75)
+   - Add gradient overlay that's darker at bottom (where text sits):
+     background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.85))
+
+2. STRONGER TEXT SHADOWS:
+   - Headline: text-shadow: 0 2px 16px rgba(0,0,0,0.95), 0 4px 32px rgba(0,0,0,0.8)
+   - Role bullets: text-shadow: 0 2px 12px rgba(0,0,0,0.9)
+   - Value proposition: text-shadow: 0 2px 16px rgba(0,0,0,0.95)
+
+3. TEXT COLOR ADJUSTMENTS:
+   - Role bullets: Change from purple (#8B5CF6) to white with purple glow:
+     color: rgba(255, 255, 255, 0.95)
+     text-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 2px 8px rgba(0,0,0,0.9)
+   
+4. BACKGROUND POSITIONING:
+   - Ensure photos are positioned so faces/busy areas are at top
+   - Bottom 40% of card should be darker for text placement
+   - Consider adding semi-transparent dark box behind text content:
+     background: rgba(0, 0, 0, 0.4)
+     backdrop-filter: blur(8px)
+     padding: 1.5rem
+     border-radius: 0.5rem
+
+5. ICON IMPROVEMENTS:
+   - Increase icon size to 56px
+   - Add strong glow effect: filter: drop-shadow(0 0 16px currentColor)
+   - Ensure icons are bright and prominent against photos
+
+SPECIFIC CARD ADJUSTMENTS:
+
+Legal & Compliance:
+- Darken left side more (where text sits)
+- Purple tint can stay but reduce to 10% opacity
+
+People & DEI:  
+- Add darker gradient over entire bottom half
+- Ensure faces at top remain visible, text area at bottom is very dark
+
+City & Municipal:
+- Cyan tint is good but darken overall overlay
+- Screen glow is bright, so extra dark overlay needed
+
+FALLBACK OPTION:
+If text is still hard to read, add a semi-transparent card/panel at the bottom:
+- Position absolute, bottom 0, full width
+- Height: 60% of card
+- Background: linear-gradient(to top, rgba(0,0,0,0.9), transparent)
+- This creates a "safe zone" for all text
+
+The goal: Photos should be visible and impactful at top/background, but text must be crystal clear and easy to read.

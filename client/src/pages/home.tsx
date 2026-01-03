@@ -424,7 +424,7 @@ export default function Home() {
                 roles: ["General Counsel", "Chief Compliance Officer", "Risk Management"],
                 benefit: "Prove diligence before litigation",
                 image: legalComplianceImg,
-                tintClass: "bg-purple-500/15"
+                tintClass: "bg-purple-500/10"
               },
               {
                 icon: Heart,
@@ -432,7 +432,7 @@ export default function Home() {
                 roles: ["Chief Diversity Officer", "HR Leadership", "Employee Experience"],
                 benefit: "Build DEI that's real, not theater",
                 image: peopleDeiImg,
-                tintClass: "bg-gradient-to-br from-purple-500/15 to-cyan-500/15"
+                tintClass: "bg-gradient-to-br from-purple-500/10 to-cyan-500/10"
               },
               {
                 icon: Building2,
@@ -440,31 +440,53 @@ export default function Home() {
                 roles: ["CTO/CIO", "Policy Teams", "Public Safety"],
                 benefit: "Civic tech that earns trust",
                 image: cityMunicipalImg,
-                tintClass: "bg-cyan-500/15"
+                tintClass: "bg-cyan-500/10"
               }
             ].map((item, i) => (
               <div 
                 key={i} 
-                className="relative rounded-xl border border-white/10 hover:border-primary/30 transition-all overflow-hidden group min-h-[320px]"
+                className="relative rounded-xl border border-white/10 hover:border-primary/30 transition-all overflow-hidden group min-h-[340px]"
               >
                 <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                  className="absolute inset-0 bg-cover bg-top transition-transform duration-500 group-hover:scale-105"
                   style={{ backgroundImage: `url(${item.image})` }}
                 />
-                <div className="absolute inset-0 bg-black/60" />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.85))' }} />
                 <div className={`absolute inset-0 ${item.tintClass}`} />
                 <div className="relative z-10 p-8 h-full flex flex-col">
-                  <item.icon className="w-12 h-12 text-primary mb-6 drop-shadow-lg" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))' }} />
-                  <h3 className="text-xl font-bold text-white mb-4" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{item.title}</h3>
-                  <ul className="space-y-2 mb-6 flex-grow">
-                    {item.roles.map((role, j) => (
-                      <li key={j} className="text-primary text-sm flex items-center gap-2 font-medium" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-lg" />
-                        {role}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="text-cyan-400 font-semibold text-sm" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{item.benefit}</div>
+                  <item.icon 
+                    className="w-14 h-14 text-primary mb-6" 
+                    style={{ filter: 'drop-shadow(0 0 16px currentColor) drop-shadow(0 4px 12px rgba(0,0,0,0.9))' }} 
+                  />
+                  <div className="mt-auto rounded-lg p-4 -mx-4 -mb-4" style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)' }}>
+                    <h3 
+                      className="text-xl font-bold text-white mb-3" 
+                      style={{ textShadow: '0 2px 16px rgba(0,0,0,0.95), 0 4px 32px rgba(0,0,0,0.8)' }}
+                    >
+                      {item.title}
+                    </h3>
+                    <ul className="space-y-2 mb-4">
+                      {item.roles.map((role, j) => (
+                        <li 
+                          key={j} 
+                          className="text-sm flex items-center gap-2 font-medium" 
+                          style={{ 
+                            color: 'rgba(255, 255, 255, 0.95)',
+                            textShadow: '0 0 20px rgba(139, 92, 246, 0.6), 0 2px 8px rgba(0,0,0,0.9)' 
+                          }}
+                        >
+                          <div className="w-1.5 h-1.5 bg-primary rounded-full" style={{ boxShadow: '0 0 8px rgba(139,92,246,0.8)' }} />
+                          {role}
+                        </li>
+                      ))}
+                    </ul>
+                    <div 
+                      className="text-cyan-400 font-semibold text-sm" 
+                      style={{ textShadow: '0 2px 16px rgba(0,0,0,0.95)' }}
+                    >
+                      {item.benefit}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
