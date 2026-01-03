@@ -13,6 +13,7 @@ import esgComplianceLogo from "@assets/Gemini_Generated_Image_71m3f271m3f271m3_1
 import legalComplianceImg from "@assets/Gemini_Generated_Image_98mppl98mppl98mp_1767472748138.png";
 import peopleDeiImg from "@assets/Gemini_Generated_Image_l2i3aul2i3aul2i3_1767472748139.png";
 import cityMunicipalImg from "@assets/Gemini_Generated_Image_hryekmhryekmhrye_1767472748138.png";
+import councilChamberImg from "@assets/Gemini_Generated_Image_h7o9svh7o9svh7o9_1767473865791.png";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -496,32 +497,40 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-b from-primary/10 to-background border-t border-primary/20">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white">
+      <section className="relative py-28 border-t border-primary/20 overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${councilChamberImg})` }}
+        />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6))' }} />
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/30 border border-primary/50 mb-8 backdrop-blur-sm">
+            <span className="text-white text-sm font-semibold">🎯 8-Agent Liberation Pioneer Council</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-white" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}>
             Ready to Govern Without Guessing?
           </h2>
-          <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>
             Book a demo to see Sovereign QI deliberate on a real governance scenario. 
             Watch 8 agents find the blind spots you didn't know you had.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href={user ? "/dashboard" : "/login"} data-testid="cta-bottom-demo">
-              <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-10 py-6 rounded-full font-bold gap-2">
+              <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-10 py-6 rounded-full font-bold gap-2 shadow-lg">
                 <Calendar className="w-5 h-5" /> Book a Demo
               </Button>
             </Link>
             <a href="https://vectorforgood.com/contact" target="_blank" rel="noopener noreferrer" data-testid="cta-contact">
-              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-10 py-6 rounded-full font-bold">
+              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 text-lg px-10 py-6 rounded-full font-bold backdrop-blur-sm">
                 Contact Sales
               </Button>
             </a>
           </div>
-          <p className="text-gray-500 text-sm mt-8">
+          <p className="text-gray-300 text-sm mt-8" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}>
             Enterprise pricing. Custom pilots. White-glove onboarding.
           </p>
           <p className="text-primary text-sm mt-2">
-            <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="hover:underline">
+            <a href="https://vectorforgood.com" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}>
               vectorforgood.com
             </a>
           </p>
