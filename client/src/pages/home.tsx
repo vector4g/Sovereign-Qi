@@ -84,8 +84,8 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/20 border border-primary/40 mb-10 backdrop-blur-sm">
-              <span className="text-primary text-sm font-semibold tracking-wide">Trusted by Fortune 100 Legal & Compliance Teams</span>
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/40 border border-primary/60 mb-10 backdrop-blur-md shadow-lg">
+              <span className="text-white text-sm font-semibold tracking-wide">Trusted by Fortune 100 Legal & Compliance Teams</span>
             </div>
             
             <h1 className="font-display font-bold mb-4 text-white leading-none">
