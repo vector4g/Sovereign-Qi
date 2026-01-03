@@ -17,12 +17,12 @@ import councilChamberImg from "@assets/Gemini_Generated_Image_h7o9svh7o9svh7o9_1
 import brokenGridImg from "@assets/Gemini_Generated_Image_m8yh53m8yh53m8yh_1767474175691.png";
 import businessCaseImg from "@assets/Gemini_Generated_Image_2pxxvc2pxxvc2pxx_1767475383937.png";
 import alanTuringImg from "@assets/alan_turing.jpg";
-import lynnConwayImg from "@assets/stock_images/lynn_conway_computer_a4e223ba.jpg";
+import lynnConwayImg from "@assets/lynn_conway_wiki.jpg";
 import bayardRustinImg from "@assets/bayard_rustin.jpg";
-import sylviaRiveraImg from "@assets/stock_images/sylvia_rivera_transg_a631fc2e.jpg";
-import elizebethFriedmanImg from "@assets/stock_images/elizebeth_friedman_c_3150aa3f.jpg";
-import claudetteColvinImg from "@assets/stock_images/claudette_colvin_civ_ee78d53d.jpg";
-import audreLordeImg from "@assets/stock_images/audre_lorde_poet_act_bfc9316a.jpg";
+import sylviaRiveraImg from "@assets/sylvia_rivera_wiki.jpg";
+import elizebethFriedmanImg from "@assets/elizebeth_friedman_wiki.jpg";
+import claudetteColvinImg from "@assets/claudette_colvin_wiki.jpg";
+import audreLordeImg from "@assets/audre_lorde_large.jpg";
 import templeGrandinImg from "@assets/temple_grandin.jpg";
 import igltaLogo from "@assets/IGLTA_Member_Logo_HRZ_4color_1__a0c2f6d5-f4ee-4b64-bab0-a8bf4f_1767475742492.png";
 import nvidiaInceptionLogo from "@assets/nvidia-inception-program-badge-rgb-for-screen_1767475770664.png";

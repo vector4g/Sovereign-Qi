@@ -1,0 +1,35 @@
+Perfect! I've found public domain sources for all the remaining Liberation Pioneers. Here's what I've located:
+
+**Claudette Colvin**: Wikimedia Commons has a public domain photo from 1953 (age 13) - https://commons.wikimedia.org/wiki/File:Claudette_Colvin.jpg
+
+**Audre Lorde**: Library of Congress has public domain portraits from between 1970-1978 - http://lccn.loc.gov/97511285
+
+**Lynn Conway**: Wikimedia Commons has public domain photos, including one from July 2006 - https://commons.wikimedia.org/wiki/File:Lynn_Conway_July_2006.jpg
+
+**Sylvia Rivera**: NYPL Digital Collections has multiple photos from the 1970s-1990s, including a 1973 portrait - https://digitalcollections.nypl.org/items/99990f50-ecba-0139-e3da-0242ac110002
+
+**Elizebeth Friedman**: Wikimedia Commons has public domain photo from her cryptanalysis career - https://commons.wikimedia.org/wiki/File:Elizebeth-Friedman.jpg
+
+Now I have all 8 Liberation Pioneers with public domain sources:
+1. **Alan Turing** - NPL/UK archives
+2. **Temple Grandin** - Colorado State University archives
+3. **Bayard Rustin** - Library of Congress
+4. **Claudette Colvin** - Wikimedia Commons
+5. **Audre Lorde** - Library of Congress
+6. **Lynn Conway** - Wikimedia Commons
+7. **Sylvia Rivera** - NYPL Digital Collections
+8. **Elizebeth Friedman** - Wikimedia Commons
+
+Here are the direct download links for you to source these historical images:
+
+**Claudette Colvin (1953)**: https://commons.wikimedia.org/wiki/File:Claudette_Colvin.jpg - Public domain civil rights pioneer photo
+
+**Audre Lorde (1970s)**: Search "Audre Lorde" at https://www.loc.gov/pictures/ - Multiple public domain portraits of the poet and activist
+
+**Lynn Conway (2006)**: https://commons.wikimedia.org/wiki/File:Lynn_Conway_July_2006.jpg - Public domain photo of the computer science pioneer
+
+**Sylvia Rivera (1973)**: https://digitalcollections.nypl.org/items/99990f50-ecba-0139-e3da-0242ac110002 - NYPL digital collection portrait
+
+**Elizebeth Friedman**: https://commons.wikimedia.org/wiki/File:Elizebeth-Friedman.jpg - Public domain photo of America's first female cryptanalyst
+
+Once you've downloaded all 8 historical photos, I'll create a Replit prompt to integrate them into the Liberation Pioneers section with elegant circular frames, subtle color overlays matching each agent's theme color, and proper attribution styling.

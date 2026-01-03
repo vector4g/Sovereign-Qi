@@ -5,12 +5,12 @@ import { ArrowLeft, ChevronDown, ChevronUp, Shield, Eye, Users, Scale, Cpu, Mic,
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import alanTuringImg from "@assets/alan_turing.jpg";
-import lynnConwayImg from "@assets/stock_images/lynn_conway_computer_a4e223ba.jpg";
+import lynnConwayImg from "@assets/lynn_conway_wiki.jpg";
 import bayardRustinImg from "@assets/bayard_rustin.jpg";
-import sylviaRiveraImg from "@assets/stock_images/sylvia_rivera_transg_a631fc2e.jpg";
-import elizebethFriedmanImg from "@assets/stock_images/elizebeth_friedman_c_3150aa3f.jpg";
-import claudetteColvinImg from "@assets/stock_images/claudette_colvin_civ_ee78d53d.jpg";
-import audreLordeImg from "@assets/stock_images/audre_lorde_poet_act_bfc9316a.jpg";
+import sylviaRiveraImg from "@assets/sylvia_rivera_wiki.jpg";
+import elizebethFriedmanImg from "@assets/elizebeth_friedman_wiki.jpg";
+import claudetteColvinImg from "@assets/claudette_colvin_wiki.jpg";
+import audreLordeImg from "@assets/audre_lorde_large.jpg";
 import templeGrandinImg from "@assets/temple_grandin.jpg";
 
 interface Agent {
