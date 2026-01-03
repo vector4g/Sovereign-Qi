@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import heroBg from "@assets/generated_images/abstract_digital_twin_data_flow.png";
 import vectorLogo from "@assets/vector-logo_1767470093417.png";
+import sovereignQiLogo from "@assets/Gemini_Generated_Image_jny8c8jny8c8jny8_(1)_1767470665497.png";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -199,8 +200,8 @@ export default function Home() {
               className="glass-panel rounded-2xl overflow-hidden border border-primary/30 bg-gradient-to-b from-primary/10 to-transparent group hover:border-primary/50 transition-all"
             >
               <div className="p-8">
-                <div className="w-14 h-14 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
-                  <Cpu className="w-7 h-7 text-primary" />
+                <div className="w-20 h-20 mb-6">
+                  <img src={sovereignQiLogo} alt="Sovereign QI" className="w-full h-full object-contain" />
                 </div>
                 <div className="text-xs font-mono text-primary mb-2">FLAGSHIP PRODUCT</div>
                 <h3 className="text-2xl font-display font-bold text-white mb-4">Sovereign QI</h3>
