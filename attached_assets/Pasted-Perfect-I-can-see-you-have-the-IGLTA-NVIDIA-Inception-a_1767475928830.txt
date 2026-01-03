@@ -1,0 +1,55 @@
+Perfect! I can see you have the IGLTA, NVIDIA Inception, and IQSF logos ready to upload. Here's the complete Replit prompt:[1]
+
+***
+
+**REPLIT PROMPT:**
+
+"Add a trust badges section between 'The Business Case' and 'Built for Enterprise' sections with the uploaded partner logos:
+
+**Section structure:**
+- Container: Full-width, background: linear-gradient(to bottom, transparent, rgba(15,15,35,0.3))
+- Padding: py-20 (top and bottom spacing)
+- Centered content with max-width: 1200px
+
+**Section heading:**
+- Text: 'Backed By' 
+- Style: text-xs, uppercase, letter-spacing-widest, text-gray-500, text-center, mb-12
+
+**Logo grid layout:**
+- Display: flex, justify-content: space-around, align-items: center
+- Gap: 3rem between logos
+- Responsive: 3 columns on desktop, 1 column stacked on mobile
+
+**Individual logo styling:**
+- Each logo wrapped in a glass-morphism card:
+  - Background: rgba(255,255,255,0.03)
+  - Border: 1px solid rgba(255,255,255,0.1)
+  - Border-radius: 16px
+  - Padding: 2rem
+  - Backdrop-filter: blur(10px)
+  
+- Logo images:
+  - Max-height: 64px
+  - Width: auto
+  - Object-fit: contain
+  - Filter: grayscale(100%) opacity(0.6) at rest
+  - Hover: filter: grayscale(0%) opacity(1), transform: scale(1.05)
+  - Transition: all 0.3s ease
+
+**Logo captions below each:**
+1. IGLTA logo → 'IGLTA Partner' (text-xs, text-gray-400)
+2. NVIDIA Inception logo → 'NVIDIA Inception Member' (text-xs, text-gray-400)
+3. IQSF logo → 'Founded by IQSF 501(c)(3)' (text-xs, text-gray-400)
+
+**Upload these files:**
+- IGLTA_logo.png (multicolored globe)
+- NVIDIA_Inception_logo.png (green badge)
+- IQSF_logo.png (rainbow circular foundation logo)
+
+This creates a credible trust bar showing your nonprofit foundation backing, enterprise AI technology partnership, and LGBTQ+ travel industry recognition. The glass morphism cards with grayscale-to-color hover effect maintains visual sophistication while building authority."
+
+***
+
+This will create a professional trust badges section that enhances credibility without being too promotional.
+
+[1](https://replit.com/@levi159/Sovereign-Qi)

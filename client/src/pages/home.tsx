@@ -24,6 +24,9 @@ import elizebethFriedmanImg from "@assets/elizebeth_friedman.jpg";
 import claudetteColvinImg from "@assets/claudette_colvin.jpg";
 import audreLordeImg from "@assets/audre_lorde.jpg";
 import templeGrandinImg from "@assets/temple_grandin.jpg";
+import igltaLogo from "@assets/IGLTA_Member_Logo_HRZ_4color_1__a0c2f6d5-f4ee-4b64-bab0-a8bf4f_1767475742492.png";
+import nvidiaInceptionLogo from "@assets/nvidia-inception-program-badge-rgb-for-screen_1767475770664.png";
+import iqsfLogo from "@assets/iqsf_logo_1767475806440.png";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -527,6 +530,44 @@ export default function Home() {
                 </div>
                 <div className="text-white font-bold mb-1" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{item.label}</div>
                 <div className="text-gray-300 text-sm" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{item.desc}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Badges Section */}
+      <section className="py-20" style={{ background: 'linear-gradient(to bottom, transparent, rgba(15,15,35,0.3))' }}>
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-xs uppercase tracking-widest text-gray-500">Backed By</span>
+          </div>
+          
+          <div className="flex flex-col md:flex-row justify-around items-center gap-8 md:gap-12">
+            {[
+              { logo: nvidiaInceptionLogo, label: "NVIDIA Inception Member", alt: "NVIDIA Inception Program" },
+              { logo: igltaLogo, label: "IGLTA Partner", alt: "IGLTA Member" },
+              { logo: iqsfLogo, label: "Founded by IQSF 501(c)(3)", alt: "International Queer Safety Foundation" }
+            ].map((partner, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group flex flex-col items-center"
+              >
+                <div 
+                  className="p-6 rounded-2xl border border-white/10 backdrop-blur-sm transition-all duration-300 group-hover:border-white/20 group-hover:scale-105"
+                  style={{ background: 'rgba(255,255,255,0.03)' }}
+                >
+                  <img 
+                    src={partner.logo} 
+                    alt={partner.alt}
+                    className="h-16 w-auto object-contain transition-all duration-300 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100"
+                  />
+                </div>
+                <span className="text-xs text-gray-400 mt-3">{partner.label}</span>
               </motion.div>
             ))}
           </div>
