@@ -160,42 +160,44 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
         )}
 
         <div className="p-6">
-          <div className="flex items-start gap-4 mb-4">
+          {/* Large Portrait */}
+          <div className="flex justify-center mb-6">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              className={`w-24 h-24 rounded-full bg-gradient-to-br ${agent.color} p-1 flex-shrink-0 ${agent.hasVeto ? 'animate-pulse shadow-[0_0_20px_rgba(239,68,68,0.5)]' : ''}`}
+              whileHover={{ scale: 1.02 }}
+              className={`w-40 h-40 rounded-full bg-gradient-to-br ${agent.color} p-1.5 ${agent.hasVeto ? 'animate-pulse shadow-[0_0_30px_rgba(239,68,68,0.5)]' : ''}`}
             >
               <img 
                 src={agent.image} 
                 alt={agent.namesake}
-                className="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                className="w-full h-full rounded-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
               />
             </motion.div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-2xl font-display font-bold text-white">
-                  {agent.name}
-                </h3>
-                {agent.hasVeto && (
-                  <motion.span 
-                    animate={{ scale: [1, 1.05, 1], opacity: [0.8, 1, 0.8] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="px-2 py-0.5 text-xs font-mono bg-red-500/30 text-red-300 rounded border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
-                  >
-                    VETO POWER
-                  </motion.span>
-                )}
-              </div>
-              <p className="text-sm text-gray-400">
-                Named after{" "}
-                <span className="text-white font-medium">{agent.namesake}</span>
-                <span className="text-gray-500 ml-1">({agent.years})</span>
-              </p>
-            </div>
           </div>
 
-          <div className="mb-4">
+          {/* Name and Info */}
+          <div className="text-center mb-4">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <h3 className="text-2xl font-display font-bold text-white">
+                {agent.name}
+              </h3>
+              {agent.hasVeto && (
+                <motion.span 
+                  animate={{ scale: [1, 1.05, 1], opacity: [0.8, 1, 0.8] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="px-2 py-0.5 text-xs font-mono bg-red-500/30 text-red-300 rounded border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                >
+                  VETO POWER
+                </motion.span>
+              )}
+            </div>
+            <p className="text-sm text-gray-400">
+              Named after{" "}
+              <span className="text-white font-medium">{agent.namesake}</span>
+              <span className="text-gray-500 ml-1">({agent.years})</span>
+            </p>
+          </div>
+
+          <div className="mb-4 text-center">
             <div
               className={`inline-block px-3 py-1 rounded-full text-xs font-mono bg-gradient-to-r ${agent.color} bg-opacity-10 text-white/90 border border-white/10`}
             >
