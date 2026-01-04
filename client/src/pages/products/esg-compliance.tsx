@@ -771,38 +771,43 @@ export default function ESGCompliancePage() {
             </motion.div>
 
             {/* Vector Shield - The Voice */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="glass-panel rounded-xl p-6 border border-amber-500/30 bg-gradient-to-b from-amber-500/10 to-transparent"
-            >
-              <div className="w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4">
-                <Mic className="w-7 h-7 text-amber-400" />
-              </div>
-              <div className="text-xs font-mono text-amber-400 mb-2">THE VOICE</div>
-              <h3 className="text-xl font-bold text-white mb-3">Vector Shield</h3>
-              <ul className="space-y-2 mb-4">
-                {[
-                  "Anonymous employee/vendor reporting",
-                  "End-to-end encrypted submissions",
-                  "Pattern detection across departments",
-                ].map((item, i) => (
-                  <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <div className="p-3 bg-amber-500/10 rounded border border-amber-500/20 mb-4">
-                <p className="text-xs text-gray-500 mb-1">Use Case</p>
-                <p className="text-amber-300 text-sm">Whistleblower protection + ground truth</p>
-              </div>
-              <div className="text-xs text-gray-500">
-                <span className="text-amber-400">Integration:</span> Reality-checks QI simulations
-              </div>
-            </motion.div>
+            <Link href="/products/esg-compliance/vector-shield">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="glass-panel rounded-xl p-6 border border-amber-500/30 bg-gradient-to-b from-amber-500/10 to-transparent hover:border-amber-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Mic className="w-7 h-7 text-amber-400" />
+                </div>
+                <div className="text-xs font-mono text-amber-400 mb-2">THE VOICE</div>
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-amber-300 transition-colors">Vector Shield</h3>
+                <ul className="space-y-2 mb-4">
+                  {[
+                    "Anonymous employee/vendor reporting",
+                    "End-to-end encrypted submissions",
+                    "Pattern detection across departments",
+                  ].map((item, i) => (
+                    <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <div className="p-3 bg-amber-500/10 rounded border border-amber-500/20 mb-4">
+                  <p className="text-xs text-gray-500 mb-1">Use Case</p>
+                  <p className="text-amber-300 text-sm">Whistleblower protection + ground truth</p>
+                </div>
+                <div className="text-xs text-gray-500">
+                  <span className="text-amber-400">Integration:</span> Reality-checks QI simulations
+                </div>
+                <div className="mt-3 text-xs text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                  Learn more <ChevronRight className="w-3 h-3" />
+                </div>
+              </motion.div>
+            </Link>
 
             {/* Vector Mirror - The Eyes */}
             <motion.div
