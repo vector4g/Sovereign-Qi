@@ -325,7 +325,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link href={user ? "/dashboard" : "/login"} data-testid="link-esg-compliance">
+                <Link href="/products/esg-compliance" data-testid="link-esg-compliance">
                   <Button variant="outline" className="w-full border-green-500/50 text-green-400 hover:bg-green-500/10 gap-2">
                     Learn More <ArrowRight className="w-4 h-4" />
                   </Button>
