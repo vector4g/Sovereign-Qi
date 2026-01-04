@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import safetyMapHero from "@/assets/safety-map-hero.png";
+import dangerStatsBg from "@/assets/danger-stats-bg.png";
 
 const dangerStats = [
   { number: "71", label: "countries", desc: "Criminalize LGBTQ+ relationships", color: "text-red-400" },
@@ -248,15 +249,24 @@ export default function SafetyIntelligence() {
       </section>
 
       {/* Problem Statement */}
-      <section className="py-16 px-6 border-t border-white/5">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative py-20 px-6 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={dangerStatsBg} 
+            alt="Danger statistics background" 
+            className="w-full h-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
+        </div>
+        
+        <div className="relative z-10 max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
               Your Employees Are Traveling Into the Unknown
             </h2>
           </motion.div>
@@ -269,11 +279,11 @@ export default function SafetyIntelligence() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="glass-panel rounded-xl p-6 border border-red-500/20 text-center"
+                className="glass-panel rounded-xl p-8 border border-red-500/30 text-center backdrop-blur-md bg-black/40"
               >
-                <p className={`text-4xl font-bold ${stat.color}`}>{stat.number}</p>
-                <p className="text-gray-400 text-sm">{stat.label}</p>
-                <p className="text-white mt-2">{stat.desc}</p>
+                <p className={`text-5xl font-bold ${stat.color} drop-shadow-lg`}>{stat.number}</p>
+                <p className="text-gray-400 text-sm uppercase tracking-wider mt-1">{stat.label}</p>
+                <p className="text-white mt-3 font-medium">{stat.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -282,12 +292,12 @@ export default function SafetyIntelligence() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="glass-panel rounded-xl p-8 border border-white/10 text-center"
+            className="glass-panel rounded-xl p-8 border border-red-500/20 text-center backdrop-blur-md bg-black/30"
           >
-            <p className="text-xl text-gray-300 italic mb-4">
+            <p className="text-xl text-gray-200 italic mb-4">
               "We sent our employee to Uganda for a conference. Two weeks later, he was arrested. We had no idea."
             </p>
-            <cite className="text-gray-500 text-sm">— Fortune 500 HR Director, 2024</cite>
+            <cite className="text-red-400 text-sm font-medium">— Fortune 500 HR Director, 2024</cite>
           </motion.blockquote>
         </div>
       </section>
