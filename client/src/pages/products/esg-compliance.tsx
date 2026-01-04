@@ -704,6 +704,185 @@ export default function ESGCompliancePage() {
         </div>
       </section>
 
+      {/* The Complete ESG Ecosystem */}
+      <section className="py-16 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
+              The Complete ESG Ecosystem
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Three integrated products working together for complete governance intelligence
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {/* Sovereign QI - The Brain */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0 }}
+              className="glass-panel rounded-xl p-6 border border-purple-500/30 bg-gradient-to-b from-purple-500/10 to-transparent"
+            >
+              <div className="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                <Cpu className="w-7 h-7 text-purple-400" />
+              </div>
+              <div className="text-xs font-mono text-purple-400 mb-2">THE BRAIN</div>
+              <h3 className="text-xl font-bold text-white mb-3">Sovereign QI</h3>
+              <ul className="space-y-2 mb-4">
+                {[
+                  "Test policies before deployment",
+                  "8-agent Liberation Pioneer Council",
+                  "Generates audit-ready compliance docs",
+                ].map((item, i) => (
+                  <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="p-3 bg-purple-500/10 rounded border border-purple-500/20 mb-4">
+                <p className="text-xs text-gray-500 mb-1">Use Case</p>
+                <p className="text-purple-300 text-sm">Pre-litigation defense</p>
+              </div>
+              <div className="text-xs text-gray-500">
+                <span className="text-purple-400">Integration:</span> Feeds insights to Mirror
+              </div>
+            </motion.div>
+
+            {/* Vector Shield - The Voice */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass-panel rounded-xl p-6 border border-amber-500/30 bg-gradient-to-b from-amber-500/10 to-transparent"
+            >
+              <div className="w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4">
+                <Mic className="w-7 h-7 text-amber-400" />
+              </div>
+              <div className="text-xs font-mono text-amber-400 mb-2">THE VOICE</div>
+              <h3 className="text-xl font-bold text-white mb-3">Vector Shield</h3>
+              <ul className="space-y-2 mb-4">
+                {[
+                  "Anonymous employee/vendor reporting",
+                  "End-to-end encrypted submissions",
+                  "Pattern detection across departments",
+                ].map((item, i) => (
+                  <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="p-3 bg-amber-500/10 rounded border border-amber-500/20 mb-4">
+                <p className="text-xs text-gray-500 mb-1">Use Case</p>
+                <p className="text-amber-300 text-sm">Whistleblower protection + ground truth</p>
+              </div>
+              <div className="text-xs text-gray-500">
+                <span className="text-amber-400">Integration:</span> Reality-checks QI simulations
+              </div>
+            </motion.div>
+
+            {/* Vector Mirror - The Eyes */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="glass-panel rounded-xl p-6 border border-cyan-500/30 bg-gradient-to-b from-cyan-500/10 to-transparent"
+            >
+              <div className="w-14 h-14 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-4">
+                <Eye className="w-7 h-7 text-cyan-400" />
+              </div>
+              <div className="text-xs font-mono text-cyan-400 mb-2">THE EYES</div>
+              <h3 className="text-xl font-bold text-white mb-3">Vector Mirror</h3>
+              <ul className="space-y-2 mb-4">
+                {[
+                  "Executive ESG performance dashboard",
+                  "Real-time metrics from QI + Shield",
+                  "Board-ready reporting",
+                ].map((item, i) => (
+                  <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="p-3 bg-cyan-500/10 rounded border border-cyan-500/20 mb-4">
+                <p className="text-xs text-gray-500 mb-1">Use Case</p>
+                <p className="text-cyan-300 text-sm">Investor due diligence</p>
+              </div>
+              <div className="text-xs text-gray-500">
+                <span className="text-cyan-400">Integration:</span> Shows policy-vs-reality gaps
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Ecosystem Pricing */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass-panel rounded-xl p-8 border border-green-500/30 bg-gradient-to-r from-green-500/10 via-transparent to-green-500/10"
+          >
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-white mb-2">Enterprise Suite Bundle</h3>
+              <p className="text-gray-400">All three products, fully integrated</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="text-center md:text-left">
+                <div className="flex items-baseline justify-center md:justify-start gap-2 mb-4">
+                  <span className="text-5xl font-bold text-green-400">$150K</span>
+                  <span className="text-gray-500">/year</span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-400">
+                  <p className="flex items-center gap-2 justify-center md:justify-start">
+                    <span className="line-through text-gray-600">À la carte: $165K</span>
+                    <span className="text-green-400 font-medium">(Save $15K)</span>
+                  </p>
+                  <p className="text-xs">QI ($75K) + Shield ($50K) + Mirror ($40K)</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded bg-purple-500/20 flex items-center justify-center">
+                    <Cpu className="w-4 h-4 text-purple-400" />
+                  </div>
+                  <span className="text-gray-300">Sovereign QI</span>
+                  <span className="text-gray-600 ml-auto">$75K/yr</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded bg-amber-500/20 flex items-center justify-center">
+                    <Mic className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <span className="text-gray-300">Vector Shield</span>
+                  <span className="text-gray-600 ml-auto">$50K/yr</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded bg-cyan-500/20 flex items-center justify-center">
+                    <Eye className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  <span className="text-gray-300">Vector Mirror</span>
+                  <span className="text-gray-600 ml-auto">$40K/yr</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 pt-6 border-t border-white/10 text-center">
+              <Button className="bg-green-600 hover:bg-green-700 text-white px-8" data-testid="button-get-ecosystem">
+                Get Full Ecosystem Quote
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Use Cases */}
       <section className="py-16 px-6 border-t border-white/5">
         <div className="max-w-5xl mx-auto">
