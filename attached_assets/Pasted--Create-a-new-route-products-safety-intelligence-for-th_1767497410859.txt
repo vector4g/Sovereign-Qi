@@ -1,0 +1,307 @@
+"Create a new route /products/safety-intelligence for the Safety Intelligence (LGBTQ+ travel safety) product detail page:
+
+Hero Section:
+
+Background: Subtle world map overlay with hotspots (safe=green, caution=yellow, danger=red)
+
+Safety Intelligence logo (circular rainbow spectrum with location pin icon)
+
+Heading: 'Safety Intelligence' (text-5xl, font-bold, white)
+
+Subheading: 'TRAVEL & SAFETY' (text-sm, uppercase, cyan-400)
+
+Tagline: 'Real-time LGBTQ+ travel safety data covering 195 countries. Protect your people before they board the plane.' (text-xl, text-gray-300)
+
+CTA buttons:
+
+'Request Enterprise Demo' (primary, purple-600)
+
+'View Sample Report' (secondary, outline)
+
+Problem Statement Section:
+
+Heading: 'Your Employees Are Traveling Into the Unknown'
+
+Dark card with 3 danger stats:
+
+'71 countries' - 'Criminalize LGBTQ+ relationships' (red accent)
+
+'15 countries' - 'Death penalty for LGBTQ+ people' (deep red)
+
+'$12M average' - 'Cost of duty of care failure lawsuit' (orange)
+
+Quote: 'We sent our employee to Uganda for a conference. Two weeks later, he was arrested. We had no idea.' (attributed to 'Fortune 500 HR Director, 2024')
+
+How Safety Intelligence Works:
+
+3-column layout with icons:
+
+Column 1: Real-Time Risk Monitoring
+
+Icon: Radar/scanning symbol
+
+Live data feeds from:
+
+ILGA (International Lesbian Gay Association)
+
+Human Rights Watch
+
+State Department travel advisories
+
+LGBTQ+ journalist networks
+
+Social media sentiment analysis (X/Twitter, Reddit)
+
+Updates: Every 6 hours
+
+Alert threshold: Immediate notification for law changes or incidents
+
+Column 2: Comprehensive Safety Scores
+
+Icon: Safety shield with rating stars
+
+Risk scoring (0-100) for:
+
+Legal protections (marriage, employment, housing)
+
+Social acceptance (Pride events, community visibility)
+
+Violence risk (hate crimes, police harassment)
+
+Healthcare access (HIV/PrEP, gender-affirming care)
+
+Emergency resources (embassies, safe houses, legal aid)
+
+Granular by city (not just country-level)
+
+Column 3: Actionable Intelligence
+
+Icon: Checklist/action items
+
+Hotel & venue safety ratings (IGLTA-certified properties prioritized)
+
+Local LGBTQ+ resources (community centers, safe bars, emergency contacts)
+
+Travel booking integration (flags unsafe destinations in corporate travel tools)
+
+Automatic policy recommendations (ban travel to high-risk zones)
+
+Key Features Section (cards with hover effects):
+
+1. Destination Risk Profiles
+
+Interactive map showing 195 countries color-coded by safety
+
+Click any country for detailed breakdown:
+
+Legal landscape (anti-LGBTQ+ laws, protections)
+
+Recent incidents (timeline of attacks, arrests, policy changes)
+
+Safe zones vs danger zones within country
+
+Traveler testimonials from LGBTQ+ community
+
+Example preview: 'Uganda - Risk Level: EXTREME - Travel banned for LGBTQ+ employees'
+
+2. Hotel & Venue Certification
+
+Vetted safe hotels (IGLTA partnerships)
+
+'Rainbow Verified' badge system for accommodations
+
+Staff training verification (anti-discrimination policies)
+
+Private check-in options for trans guests
+
+Panic button integration for emergencies
+
+3. Proactive Danger Alerts
+
+Real-time push notifications:
+
+'New anti-LGBTQ+ law passed in [country]'
+
+'Pride event attacked in [city] - avoid area'
+
+'Police raids targeting gay bars in [region]'
+
+Geofencing: Alerts when employee enters high-risk zone
+
+Automatic trip cancellation triggers (duty of care automation)
+
+4. Legal Landscape Monitoring
+
+Track 195 countries' LGBTQ+ laws:
+
+Criminalization status (sex acts, gender expression)
+
+Penalty severity (fines, imprisonment, death penalty)
+
+Enforcement patterns (de jure vs de facto)
+
+Recent prosecutions (case law database)
+
+Quarterly compliance reports for legal teams
+
+5. Corporate Travel Integration
+
+API integrations with:
+
+Concur, SAP, TripActions (corporate booking tools)
+
+Slack/Teams (alert notifications)
+
+HR systems (employee profile flagging with consent)
+
+Automated approval workflows (auto-deny unsafe destinations)
+
+Expense policy rules (mandate safe hotels)
+
+Use Cases Section (tabs with icons):
+
+Tab 1: Fortune 500 HR Teams
+
+Problem: Employee sues for $8M after attack in Russia
+
+Solution: Safety Intelligence auto-flagged Russia as high-risk, recommended travel ban
+
+Outcome: Zero incidents since implementation, 94% employee satisfaction
+
+Tab 2: Professional Services Firms
+
+Problem: Consultant closeted at work, outed during client visit to Saudi Arabia
+
+Solution: Pre-travel risk assessment + safe hotel options + emergency extraction plan
+
+Outcome: Consultant safely returned, firm avoided duty of care lawsuit
+
+Tab 3: Academic Conferences
+
+Problem: Professor arrested in Qatar for 'promoting homosexuality' (wore rainbow pin)
+
+Solution: Conference host used Safety Intelligence to choose Canada instead of Qatar
+
+Outcome: 3,000 attendees safely participated in Pride-affirming event
+
+Tab 4: Luxury Travel Agencies
+
+Problem: High-net-worth client demands 5-star travel but refuses unsafe destinations
+
+Solution: QueerLuxe Travel (powered by Safety Intelligence) curates safe luxury experiences
+
+Outcome: $2M+ bookings, zero safety incidents
+
+Pricing & Plans:
+
+Enterprise: Custom pricing for Fortune 500 (starts at $50K/year)
+
+Unlimited users
+
+API access
+
+Dedicated account manager
+
+Custom risk thresholds
+
+White-label option
+
+Mid-Market: $15K/year (50-500 employees)
+
+Standard risk data
+
+Email alerts
+
+Hotel recommendations
+
+Nonprofit/Academic: 50% discount
+
+Individual Travelers: Coming soon (consumer app in beta)
+
+Integration Partners:
+
+IGLTA (hotel certifications)
+
+ILGA (legal data)
+
+Human Rights Watch (incident monitoring)
+
+State Department (travel advisories)
+
+Concur, SAP, TripActions (corporate travel)
+
+Notion, Airtable (custom dashboards)
+
+Trust & Credibility:
+
+Founded by International Queer Safety Foundation (501c3)
+
+Backed by IGLTA partnership
+
+Advisory board: Former State Dept LGBTQ+ envoys, travel industry leaders
+
+Testimonials from Fortune 100 CHROs (with permission)
+
+FAQ Section (accordion):
+
+How often is data updated? (Every 6 hours + instant alerts)
+
+Do you track individual employees? (No - aggregate safety only, unless employee opts in)
+
+What about closeted employees? (Anonymous risk assessments available)
+
+Can we customize risk thresholds? (Yes - some companies ban all non-marriage-equality countries)
+
+What happens during a crisis? (24/7 emergency hotline + extraction coordination)
+
+CTA Section:
+
+Heading: 'Protect Your People. Prove Diligence.'
+
+Subtext: 'Book a 30-minute demo to see Safety Intelligence assess your company's current travel policy'
+
+Demo includes:
+
+Risk assessment of your top 10 travel destinations
+
+Sample danger alerts for your industry
+
+ROI calculator (lawsuits prevented vs subscription cost)
+
+Form fields: Name, Email, Company, Role, # Employees
+
+Button: 'Get Custom Risk Assessment' (purple-600, large)
+
+Footer:
+
+Link to Privacy Policy (emphasizes data protection)
+
+Link to IGLTA partnership page
+
+Contact: safety@vectorforgood.com
+
+Emergency hotline: 1-800-SAFE-QI (24/7)
+
+Design elements:
+
+Color scheme: Cyan-400 accents (matching Safety Intelligence brand)
+
+Interactive world map with clickable countries
+
+Risk level badges (color-coded: green/yellow/orange/red/black)
+
+Video embed: 2-minute explainer of how Safety Intelligence saved a Fortune 500 from lawsuit
+
+Downloadable: Sample risk report PDF
+
+SEO & Accessibility:
+
+Meta title: 'LGBTQ+ Travel Safety Software | Safety Intelligence by Vector for Good'
+
+Meta description: 'Real-time travel safety data for 195 countries. Protect LGBTQ+ employees from unsafe destinations. Enterprise-grade duty of care platform.'
+
+Alt text for all images
+
+ARIA labels for interactive map
+
+Keyboard navigation support"

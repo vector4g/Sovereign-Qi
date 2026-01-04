@@ -15,6 +15,7 @@ import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import Cookies from "@/pages/cookies";
 import DPA from "@/pages/dpa";
+import SafetyIntelligence from "@/pages/products/safety-intelligence";
 import { CookieBanner } from "@/components/cookie-banner";
 
 function Router() {
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/cookies" component={Cookies} />
       <Route path="/dpa" component={DPA} />
+      <Route path="/products/safety-intelligence" component={SafetyIntelligence} />
       <Route component={NotFound} />
     </Switch>
   );
