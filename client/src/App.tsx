@@ -18,6 +18,7 @@ import DPA from "@/pages/dpa";
 import SafetyIntelligence from "@/pages/products/safety-intelligence";
 import ESGCompliance from "@/pages/products/esg-compliance";
 import VectorShield from "@/pages/products/vector-shield";
+import VectorMirror from "@/pages/products/vector-mirror";
 import { CookieBanner } from "@/components/cookie-banner";
 
 function Router() {
@@ -36,6 +37,7 @@ function Router() {
       <Route path="/products/safety-intelligence" component={SafetyIntelligence} />
       <Route path="/products/esg-compliance" component={ESGCompliance} />
       <Route path="/products/esg-compliance/vector-shield" component={VectorShield} />
+      <Route path="/products/esg-compliance/vector-mirror" component={VectorMirror} />
       <Route component={NotFound} />
     </Switch>
   );

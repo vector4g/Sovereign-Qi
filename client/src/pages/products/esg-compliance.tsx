@@ -810,38 +810,43 @@ export default function ESGCompliancePage() {
             </Link>
 
             {/* Vector Mirror - The Eyes */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="glass-panel rounded-xl p-6 border border-cyan-500/30 bg-gradient-to-b from-cyan-500/10 to-transparent"
-            >
-              <div className="w-14 h-14 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-4">
-                <Eye className="w-7 h-7 text-cyan-400" />
-              </div>
-              <div className="text-xs font-mono text-cyan-400 mb-2">THE EYES</div>
-              <h3 className="text-xl font-bold text-white mb-3">Vector Mirror</h3>
-              <ul className="space-y-2 mb-4">
-                {[
-                  "Executive ESG performance dashboard",
-                  "Real-time metrics from QI + Shield",
-                  "Board-ready reporting",
-                ].map((item, i) => (
-                  <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <div className="p-3 bg-cyan-500/10 rounded border border-cyan-500/20 mb-4">
-                <p className="text-xs text-gray-500 mb-1">Use Case</p>
-                <p className="text-cyan-300 text-sm">Investor due diligence</p>
-              </div>
-              <div className="text-xs text-gray-500">
-                <span className="text-cyan-400">Integration:</span> Shows policy-vs-reality gaps
-              </div>
-            </motion.div>
+            <Link href="/products/esg-compliance/vector-mirror">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="glass-panel rounded-xl p-6 border border-cyan-500/30 bg-gradient-to-b from-cyan-500/10 to-transparent hover:border-cyan-500/50 transition-all cursor-pointer group"
+              >
+                <div className="w-14 h-14 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Eye className="w-7 h-7 text-cyan-400" />
+                </div>
+                <div className="text-xs font-mono text-cyan-400 mb-2">THE EYES</div>
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors">Vector Mirror</h3>
+                <ul className="space-y-2 mb-4">
+                  {[
+                    "Executive ESG performance dashboard",
+                    "Real-time metrics from QI + Shield",
+                    "Board-ready reporting",
+                  ].map((item, i) => (
+                    <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <div className="p-3 bg-cyan-500/10 rounded border border-cyan-500/20 mb-4">
+                  <p className="text-xs text-gray-500 mb-1">Use Case</p>
+                  <p className="text-cyan-300 text-sm">Investor due diligence</p>
+                </div>
+                <div className="text-xs text-gray-500">
+                  <span className="text-cyan-400">Integration:</span> Shows policy-vs-reality gaps
+                </div>
+                <div className="mt-3 text-xs text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                  Learn more <ChevronRight className="w-3 h-3" />
+                </div>
+              </motion.div>
+            </Link>
           </div>
 
           {/* Ecosystem Pricing */}
@@ -971,6 +976,352 @@ export default function ESGCompliancePage() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Liberation Pioneer Integration Grid */}
+      <section className="py-16 px-6 border-t border-white/5 relative overflow-hidden">
+        {/* SVG Dotted Connection Lines Background */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1" fill="rgba(34, 197, 94, 0.3)" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots)" />
+          {/* Connecting lines from center */}
+          <line x1="50%" y1="0" x2="50%" y2="100%" stroke="rgba(34, 197, 94, 0.15)" strokeWidth="2" strokeDasharray="8 4" />
+          <line x1="0" y1="50%" x2="100%" y2="50%" stroke="rgba(34, 197, 94, 0.15)" strokeWidth="2" strokeDasharray="8 4" />
+        </svg>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="text-xs font-mono text-green-400 mb-2">UNIFIED INTELLIGENCE</div>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
+              8 Liberation Pioneers Powering the Ecosystem
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Each agent brings unique expertise to Sovereign QI, Vector Shield, and Vector Mirror - creating comprehensive governance intelligence.
+            </p>
+          </motion.div>
+
+          {/* 4x2 Agent Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* ALAN - VETO Power */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.0 }}
+              className="glass-panel rounded-xl p-5 border border-purple-500/30 relative"
+              data-testid="agent-card-alan"
+            >
+              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">VETO</div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-purple-500 overflow-hidden">
+                    <img src={alanTuringImg} alt="Alan Turing" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">ALAN</h3>
+                  <p className="text-xs text-purple-400">Cultural Codebreaker</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">VETO power - Ultimate compliance check</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Analyzes Shield reports for LGBTQ+ safety patterns</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">VETO rate metric shows policy rigor to board</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* LYNN - Technical Architecture */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.05 }}
+              className="glass-panel rounded-xl p-5 border border-pink-500/30"
+              data-testid="agent-card-lynn"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-pink-500 overflow-hidden">
+                    <img src={lynnConwayImg} alt="Lynn Conway" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">LYNN</h3>
+                  <p className="text-xs text-pink-400">Technical Architect</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">System architecture review for exclusion patterns</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Technical feasibility of anonymous reporting</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Technical debt metrics for governance systems</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* BAYARD - Strategic Coordination */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="glass-panel rounded-xl p-5 border border-blue-500/30"
+              data-testid="agent-card-bayard"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-blue-500 overflow-hidden">
+                    <img src={bayardRustinImg} alt="Bayard Rustin" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">BAYARD</h3>
+                  <p className="text-xs text-blue-400">Strategic Coordinator</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Cross-departmental policy coordination</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Routes reports to appropriate coalition responders</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Coalition health score across departments</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* SYLVIA - Street-Level Harm */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 }}
+              className="glass-panel rounded-xl p-5 border border-red-500/30"
+              data-testid="agent-card-sylvia"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-red-500 overflow-hidden">
+                    <img src={sylviaRiveraImg} alt="Sylvia Rivera" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">SYLVIA</h3>
+                  <p className="text-xs text-red-400">Street-Level Advocate</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Ground-level harm simulation testing</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Prioritizes reports from most vulnerable employees</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Street-level satisfaction score</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* ELIZEBETH - Signal Intelligence */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="glass-panel rounded-xl p-5 border border-green-500/30"
+              data-testid="agent-card-elizebeth"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-green-500 overflow-hidden">
+                    <img src={elizebethFriedmanImg} alt="Elizebeth Friedman" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">ELIZEBETH</h3>
+                  <p className="text-xs text-green-400">Signal Intelligence</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Detects coded language and dog whistles</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Pattern matching across anonymous reports</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Signal strength trend over time</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* CLAUDETTE - Erasure Detection */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className="glass-panel rounded-xl p-5 border border-yellow-500/30"
+              data-testid="agent-card-claudette"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-yellow-500 overflow-hidden">
+                    <img src={claudetteColvinImg} alt="Claudette Colvin" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">CLAUDETTE</h3>
+                  <p className="text-xs text-yellow-400">Erasure Detection</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Identifies whose voices are missing from policy</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Detects suppressed or dismissed reports</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Representation gap score by demographic</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* AUDRE - Intersectional Analysis */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="glass-panel rounded-xl p-5 border border-orange-500/30"
+              data-testid="agent-card-audre"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-orange-500 overflow-hidden">
+                    <img src={audreLordeImg} alt="Audre Lorde" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">AUDRE</h3>
+                  <p className="text-xs text-orange-400">Intersectional Analyst</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Multi-identity impact assessment</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Cross-identity pattern correlation</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Intersectional equity index</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* TEMPLE - Edge Cases */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.35 }}
+              className="glass-panel rounded-xl p-5 border border-teal-500/30"
+              data-testid="agent-card-temple"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full ring-4 ring-teal-500 overflow-hidden">
+                    <img src={templeGrandinImg} alt="Temple Grandin" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">TEMPLE</h3>
+                  <p className="text-xs text-teal-400">Edge Case Specialist</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2 text-xs">
+                  <Cpu className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">What-if scenarios others miss</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Shield className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Neurodivergent accommodation gaps</span>
+                </div>
+                <div className="flex items-start gap-2 text-xs">
+                  <Eye className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300">Edge case coverage percentage</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Connection Legend */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mt-8 flex flex-wrap justify-center gap-6"
+          >
+            <div className="flex items-center gap-2 text-sm">
+              <Cpu className="w-5 h-5 text-purple-400" />
+              <span className="text-gray-400">Sovereign QI Role</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Shield className="w-5 h-5 text-green-400" />
+              <span className="text-gray-400">Vector Shield Analysis</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Eye className="w-5 h-5 text-cyan-400" />
+              <span className="text-gray-400">Vector Mirror Metric</span>
+            </div>
+          </motion.div>
         </div>
       </section>
 
