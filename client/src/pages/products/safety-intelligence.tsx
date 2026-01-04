@@ -13,11 +13,69 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import safetyMapHero from "@/assets/safety-map-hero.png";
 import dangerStatsBg from "@/assets/danger-stats-bg.png";
 import safetyIntelligenceLogo from "@/assets/safety-intelligence-logo.png";
+import qiCertifiedElite from "@/assets/qi-certified-elite.png";
+import qiCertified from "@/assets/qi-certified.png";
+import qiPartner from "@/assets/qi-partner.png";
+import { Accessibility, Moon, Users2, Handshake } from "lucide-react";
 
-const dangerStats = [
-  { number: "71", label: "countries", desc: "Criminalize LGBTQ+ relationships", color: "text-red-400" },
-  { number: "15", label: "countries", desc: "Death penalty for LGBTQ+ people", color: "text-red-600" },
-  { number: "$12M", label: "average", desc: "Cost of duty of care failure lawsuit", color: "text-orange-400" },
+const intersectionalCategories = [
+  {
+    title: "LGBTQ+ Safety",
+    icon: Heart,
+    color: "from-pink-500 to-violet-500",
+    items: ["Legal protections (marriage, employment)", "Social acceptance & visibility", "Violence & hate crime risk", "Healthcare access (HIV/PrEP, gender-affirming)"],
+  },
+  {
+    title: "Neurodivergent Access",
+    icon: Zap,
+    color: "from-cyan-500 to-blue-500",
+    items: ["Sensory-friendly environments", "Clear communication protocols", "Autism-friendly accommodations", "ADHD considerations & support"],
+  },
+  {
+    title: "Solo Female Safety",
+    icon: Moon,
+    color: "from-violet-500 to-purple-500",
+    items: ["Harassment risk assessment", "Well-lit areas & safe routes", "Secure accommodations", "Transportation safety ratings"],
+  },
+  {
+    title: "Disability Access",
+    icon: Accessibility,
+    color: "from-green-500 to-teal-500",
+    items: ["Physical accessibility (beyond ADA)", "Visual/hearing accommodations", "Chronic illness support", "Service animal policies"],
+  },
+  {
+    title: "Anti-Racism & Inclusion",
+    icon: Handshake,
+    color: "from-orange-500 to-amber-500",
+    items: ["Xenophobia risk assessment", "Religious accommodation", "Language barrier support", "Cultural sensitivity training"],
+  },
+];
+
+const qiTiers = [
+  {
+    name: "QI Elite",
+    badge: qiCertifiedElite,
+    color: "from-amber-400 to-yellow-500",
+    borderColor: "border-amber-500/50",
+    description: "Premium 5-star properties meeting all safety standards",
+    requirements: ["Full intersectional staff training", "24/7 safety support hotline", "Emergency extraction protocols", "All 5 safety categories verified"],
+  },
+  {
+    name: "QI Certified",
+    badge: qiCertified,
+    color: "from-cyan-400 to-teal-500",
+    borderColor: "border-cyan-500/50",
+    description: "Standard 3-4 star properties with verified safety",
+    requirements: ["Basic safety standards met", "Staff trained on core categories", "Incident reporting system", "Annual safety audit"],
+  },
+  {
+    name: "QI Partner",
+    badge: qiPartner,
+    color: "from-violet-400 to-purple-500",
+    borderColor: "border-violet-500/50",
+    description: "Entry-level commitment to improvement",
+    requirements: ["Commitment to safety improvement", "Baseline safety assessment", "Progress tracking", "Training roadmap"],
+  },
 ];
 
 const howItWorks = [
@@ -26,39 +84,39 @@ const howItWorks = [
     icon: Radar,
     color: "cyan",
     items: [
-      "ILGA (International Lesbian Gay Association)",
-      "Human Rights Watch",
+      "ILGA & Human Rights Watch data feeds",
       "State Department travel advisories",
-      "LGBTQ+ journalist networks",
-      "Social media sentiment analysis",
+      "Disability rights organization reports",
+      "Women's safety networks",
+      "Anti-racism watchdog monitoring",
     ],
-    footer: "Updates every 6 hours • Instant alerts for law changes",
+    footer: "Updates every 6 hours • Instant alerts for changes",
   },
   {
-    title: "Comprehensive Safety Scores",
+    title: "Intersectional Safety Scores",
     icon: Shield,
     color: "green",
     items: [
-      "Legal protections (marriage, employment, housing)",
-      "Social acceptance (Pride events, visibility)",
-      "Violence risk (hate crimes, police harassment)",
-      "Healthcare access (HIV/PrEP, gender-affirming)",
-      "Emergency resources (embassies, safe houses)",
+      "LGBTQ+ legal & social protections",
+      "Neurodivergent accessibility ratings",
+      "Solo female harassment risk",
+      "Disability accommodation levels",
+      "Racism & religious tolerance",
     ],
-    footer: "Granular by city, not just country-level",
+    footer: "Granular by city, covering all 5 categories",
   },
   {
-    title: "Actionable Intelligence",
+    title: "QI Certified Properties",
     icon: CheckCircle,
     color: "violet",
     items: [
-      "Hotel & venue safety ratings (IGLTA-certified)",
-      "Local LGBTQ+ resources and contacts",
+      "Hotel & venue QI certification tiers",
+      "Verified staff training records",
       "Travel booking integration",
       "Automatic policy recommendations",
-      "Ban travel to high-risk zones",
+      "Emergency response protocols",
     ],
-    footer: "Integrated with corporate travel tools",
+    footer: "Data-driven, not performative",
   },
 ];
 
@@ -66,31 +124,31 @@ const features = [
   {
     title: "Destination Risk Profiles",
     icon: Globe,
-    desc: "Interactive map showing 195 countries color-coded by safety. Click any country for legal landscape, recent incidents, and safe zones.",
-    example: "Uganda - Risk Level: EXTREME - Travel banned for LGBTQ+ employees",
+    desc: "Interactive map showing 195 countries color-coded by intersectional safety. Click any country for detailed breakdown across all 5 categories.",
+    example: "Uganda - Risk Level: EXTREME - Multiple categories flagged",
   },
   {
-    title: "Hotel & Venue Certification",
+    title: "QI Certified Properties",
     icon: Hotel,
-    desc: "Vetted safe hotels with IGLTA partnerships. 'Rainbow Verified' badge system, staff training verification, private check-in for trans guests.",
-    example: "Panic button integration for emergencies",
+    desc: "Vetted safe hotels with QI Certification tiers (Elite/Certified/Partner). Staff training verification, sensory-friendly options, accessibility.",
+    example: "Data-driven certification, not performative",
   },
   {
     title: "Proactive Danger Alerts",
     icon: Bell,
-    desc: "Real-time push notifications for new laws, Pride attacks, police raids. Geofencing alerts when employees enter high-risk zones.",
+    desc: "Real-time push notifications for law changes, hate incidents, accessibility issues. Geofencing alerts for all traveler categories.",
     example: "Automatic trip cancellation triggers",
   },
   {
     title: "Legal Landscape Monitoring",
     icon: Scale,
-    desc: "Track 195 countries' LGBTQ+ laws: criminalization, penalties, enforcement patterns, recent prosecutions.",
+    desc: "Track 195 countries across LGBTQ+ laws, disability rights, women's safety, religious freedom, and anti-discrimination policies.",
     example: "Quarterly compliance reports for legal teams",
   },
   {
     title: "Corporate Travel Integration",
     icon: Plug,
-    desc: "API integrations with Concur, SAP, TripActions, Slack/Teams, HR systems. Automated approval workflows.",
+    desc: "API integrations with Concur, SAP, TripActions, Slack/Teams, HR systems. Automated approval with intersectional risk scoring.",
     example: "Auto-deny unsafe destinations",
   },
 ];
@@ -229,13 +287,13 @@ export default function SafetyIntelligence() {
                 className="w-32 h-32 md:w-40 md:h-40 object-contain"
               />
             </div>
-            <p className="text-sm uppercase tracking-wider text-cyan-400 font-mono mb-4">TRAVEL & SAFETY</p>
+            <p className="text-sm uppercase tracking-wider text-cyan-400 font-mono mb-4">INTERSECTIONAL TRAVEL PROTECTION</p>
             <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-6">
               Safety Intelligence
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-              Real-time LGBTQ+ travel safety data covering 195 countries. 
-              <span className="text-cyan-300 font-medium"> Protect your people before they board the plane.</span>
+              Real-time intersectional travel safety data covering 195 countries. Protecting LGBTQ+, neurodivergent, solo female, disabled, and travelers of color.
+              <span className="text-cyan-300 font-medium"> Intelligence-grade safety, not performative.</span>
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 text-lg" data-testid="button-request-demo">
@@ -328,6 +386,104 @@ export default function SafetyIntelligence() {
                 </motion.div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Intersectional Safety Categories */}
+      <section className="py-16 px-6 border-t border-white/5 bg-gradient-to-b from-transparent to-cyan-950/20">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-display font-bold text-white mb-4">
+              5 Intersectional Safety Categories
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              The first platform protecting ALL marginalized travelers with compounding vulnerabilities
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {intersectionalCategories.map((cat, i) => {
+              const Icon = cat.icon;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  className="glass-panel rounded-xl p-5 border border-white/10 hover:border-white/20 transition-all group"
+                >
+                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-3">{cat.title}</h3>
+                  <ul className="space-y-1.5">
+                    {cat.items.map((item, j) => (
+                      <li key={j} className="text-xs text-gray-400 flex items-start gap-1.5">
+                        <CheckCircle className="w-3 h-3 text-green-400 mt-0.5 flex-shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* QI Certified Tiers */}
+      <section className="py-16 px-6 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-display font-bold text-white mb-4">
+              QI Certified Properties
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Data-driven certification tiers for hotels and venues. Not self-declared — rigorously verified.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {qiTiers.map((tier, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className={`glass-panel rounded-xl p-6 border ${tier.borderColor} text-center`}
+              >
+                <img 
+                  src={tier.badge} 
+                  alt={`${tier.name} certification badge`}
+                  className="w-32 h-32 mx-auto mb-4 object-contain"
+                />
+                <h3 className={`text-xl font-bold bg-gradient-to-r ${tier.color} bg-clip-text text-transparent mb-2`}>
+                  {tier.name}
+                </h3>
+                <p className="text-gray-400 text-sm mb-4">{tier.description}</p>
+                <ul className="space-y-2 text-left">
+                  {tier.requirements.map((req, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs text-gray-300">
+                      <CheckCircle className="w-3.5 h-3.5 text-green-400 mt-0.5 flex-shrink-0" />
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
