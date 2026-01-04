@@ -539,7 +539,7 @@ export default function Simulation() {
       </section>
 
       <footer className="py-12 border-t border-white/10 bg-black text-center text-gray-500 text-sm">
-        <p>© 2025 Sovereign Qi. Liberation-Grade AI.</p>
+        <p>© 2026 Sovereign Qi. Liberation-Grade AI.</p>
       </footer>
     </div>
   );

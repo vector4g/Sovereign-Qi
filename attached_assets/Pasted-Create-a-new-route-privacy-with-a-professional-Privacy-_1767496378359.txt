@@ -1,0 +1,292 @@
+Create a new route /privacy with a professional Privacy Policy page for Vector for Good PBC / Sovereign QI:
+
+Page structure:
+
+Header:
+
+Title: 'Privacy Policy' (text-4xl, font-bold, white)
+
+Subtitle: 'Last Updated: January 3, 2026' (text-sm, text-gray-400)
+
+Intro text: 'At Vector for Good PBC, protecting your privacy isn't just policy—it's our mission. As a Public Benefit Corporation building Liberation-Grade AI, we hold ourselves to the highest standards of data protection and transparency.'
+
+Styling:
+
+Max-width: 800px, centered
+
+Background: dark navy gradient
+
+Typography: text-gray-300 for body, white for headings
+
+Section spacing: mb-8 between sections
+
+Headings: text-2xl, font-semibold, text-purple-400, mb-4
+
+Content sections:
+
+Information We Collect
+
+Account information (name, email, company, role)
+
+Usage data (simulation runs, policy tests, council deliberations)
+
+Technical data (browser type, IP address, device info)
+
+Note: 'We never sell your data. Period.'
+
+How We Use Your Information
+
+Provide Sovereign QI simulation and 8-agent deliberation
+
+Improve AI governance accuracy
+
+Send product updates and security notifications
+
+Comply with legal obligations (EU AI Act, GDPR)
+
+Data Sharing & Third Parties
+
+We do NOT sell or rent your data
+
+Third-party services: Supabase (database), Vercel (hosting), NVIDIA (compute)
+
+All vendors signed DPAs (Data Processing Agreements)
+
+Government requests: Transparent and minimal (see warrant canary)
+
+Your Rights (GDPR & CCPA Compliant)
+
+Right to access your data
+
+Right to deletion (erasure)
+
+Right to portability (download your data)
+
+Right to opt-out of marketing
+
+Contact: privacy@vectorforgood.com
+
+Security Measures
+
+End-to-end encryption for policy simulations
+
+SOC 2 Type II certified infrastructure
+
+Regular security audits
+
+Incident response plan (24-hour notification)
+
+Data Retention
+
+Active accounts: Data retained while account is active
+
+Deleted accounts: 30-day grace period, then permanent deletion
+
+Legal holds: Retained only as required by law
+
+International Data Transfers
+
+Primary servers: US (Vercel/Supabase)
+
+EU expansion: Estonian subsidiary (2026) with local data residency
+
+Standard Contractual Clauses (SCCs) for EU transfers
+
+Children's Privacy
+
+Sovereign QI is not intended for users under 16
+
+We do not knowingly collect data from children
+
+Changes to This Policy
+
+30-day advance notice for material changes
+
+Email notifications to all users
+
+Continued use constitutes acceptance
+
+Public Benefit Corporation Commitment
+
+As a PBC, we balance profit with purpose
+
+We prioritize user privacy over monetization
+
+Annual transparency reports published at vectorforgood.com/transparency
+
+Contact section:
+
+Email: privacy@vectorforgood.com
+
+Mail: Vector for Good PBC, [Salem, NH address]
+
+EU Representative: [To be appointed when Estonian subsidiary launches]
+
+Footer:
+
+Button: 'Download Privacy Policy (PDF)'
+
+Link: 'View Terms of Service'
+
+EU AI Act & GDPR badges at bottom showing compliance logos."
+
+REPLIT PROMPT FOR TERMS OF SERVICE PAGE:
+
+"Create a new route /terms with comprehensive Terms of Service for Vector for Good PBC / Sovereign QI:
+
+Page structure: Same styling as Privacy Policy page
+
+Content sections:
+
+Acceptance of Terms
+
+By using Sovereign QI, you agree to these terms
+
+Definitions: 'Service' = Sovereign QI platform, 'Council' = 8-agent AI system
+
+Users must be 18+ and authorized to represent their organization
+
+Service Description
+
+Sovereign QI provides AI governance simulation via 8-agent Liberation Pioneer Council
+
+Outputs are advisory, not legal advice
+
+Users retain responsibility for final governance decisions
+
+User Accounts & Access
+
+Enterprise licenses (custom pricing)
+
+Academic/Nonprofit discounts available
+
+Account security: Users responsible for credential protection
+
+Prohibition: Sharing accounts, reverse engineering, unauthorized access
+
+Acceptable Use Policy
+
+Permitted: Policy testing, governance simulation, DEI compliance analysis
+
+Prohibited: Surveillance, discriminatory applications, harm to vulnerable groups
+
+VETO power: Alan agent may refuse simulations that risk marginalized communities
+
+Violation consequences: Warning → suspension → termination
+
+Intellectual Property
+
+Vector for Good PBC owns Sovereign QI platform, code, AI models
+
+Users retain ownership of their input data (policies, scenarios)
+
+Council outputs: Joint ownership (Vector + User) for derivative works
+
+Attribution required if publishing case studies using Sovereign QI
+
+Data Rights & Simulation Outputs
+
+Users own their policy documents and simulation inputs
+
+Sovereign QI retains anonymized aggregate data for AI training
+
+Opt-out available for training data inclusion
+
+Audit logs: 7-year retention for compliance
+
+Payment Terms (Enterprise)
+
+Annual subscription model
+
+Custom pilot pricing
+
+30-day payment terms (Net 30)
+
+Refunds: Pro-rated for service outages exceeding SLA
+
+Service Level Agreement (SLA)
+
+99.5% uptime guarantee (excluding scheduled maintenance)
+
+Support response times: Critical (1 hour), High (4 hours), Normal (24 hours)
+
+Downtime credits: 5% per hour of outage
+
+Limitation of Liability
+
+Sovereign QI provides simulations, not legal advice
+
+Users bear ultimate responsibility for policy decisions
+
+No liability for third-party reliance on Council recommendations
+
+Indemnification: Users indemnify Vector for misuse
+
+Warranty Disclaimer
+
+Service provided 'AS IS'
+
+No guarantee of specific outcomes (but we stand by our methodology)
+
+AI models continuously improve based on real-world feedback
+
+Termination
+
+Either party may terminate with 30-day notice
+
+Immediate termination for: Payment default, TOS violation, illegal use
+
+Post-termination: 30-day data export window
+
+Governing Law & Dispute Resolution
+
+Delaware law (Vector for Good PBC incorporated in DE)
+
+Arbitration required (JAMS rules)
+
+Class action waiver
+
+EU users: Estonian law applies after 2026 subsidiary launch
+
+EU AI Act Compliance
+
+Sovereign QI classified as 'High-Risk AI System' (governance applications)
+
+Mandatory human oversight (users retain final decision authority)
+
+Audit trail documentation (7 years)
+
+Transparency: Model cards available upon request
+
+Public Benefit Corporation Mission
+
+Vector for Good PBC prioritizes social good over maximum profit
+
+Liberation-Grade AI commitment: Centering marginalized voices
+
+Annual benefit reports published
+
+Changes to Terms
+
+30-day notice for material changes
+
+Continued use = acceptance
+
+Enterprise customers: Renegotiation option for substantial changes
+
+Contact section:
+
+Legal inquiries: legal@vectorforgood.com
+
+General support: hello@vectorforgood.com
+
+Footer:
+
+'Simulation Before Legislation™' tagline
+
+Link to Privacy Policy
+
+© 2025 Vector for Good PBC
+
+Include downloadable PDF versions of both documents."
+

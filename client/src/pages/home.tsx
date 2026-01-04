@@ -731,7 +731,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-500 text-sm">
-            <p>© 2025 Vector for Good PBC. Simulation Before Legislation.</p>
+            <p>© 2026 Vector for Good PBC. Simulation Before Legislation.</p>
           </div>
         </div>
       </footer>
