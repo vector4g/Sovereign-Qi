@@ -286,7 +286,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link href={user ? "/dashboard" : "/login"} data-testid="link-safety-intel">
+                <Link href="/products/safety-intelligence" data-testid="link-safety-intel">
                   <Button variant="outline" className="w-full border-secondary/50 text-secondary hover:bg-secondary/10 gap-2">
                     Learn More <ArrowRight className="w-4 h-4" />
                   </Button>
