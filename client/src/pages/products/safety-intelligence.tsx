@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import safetyMapHero from "@/assets/safety-map-hero.png";
 import dangerStatsBg from "@/assets/danger-stats-bg.png";
+import safetyIntelligenceLogo from "@/assets/safety-intelligence-logo.png";
 
 const dangerStats = [
   { number: "71", label: "countries", desc: "Criminalize LGBTQ+ relationships", color: "text-red-400" },
@@ -221,12 +222,12 @@ export default function SafetyIntelligence() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <div className="inline-flex items-center gap-3 mb-6">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-500 via-yellow-500 via-green-500 via-blue-500 to-violet-500 p-0.5">
-                <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                  <MapPin className="w-8 h-8 text-cyan-400" />
-                </div>
-              </div>
+            <div className="inline-flex items-center justify-center mb-6">
+              <img 
+                src={safetyIntelligenceLogo} 
+                alt="Safety Intelligence - Intersectional Travel Protection" 
+                className="w-32 h-32 md:w-40 md:h-40 object-contain"
+              />
             </div>
             <p className="text-sm uppercase tracking-wider text-cyan-400 font-mono mb-4">TRAVEL & SAFETY</p>
             <h1 className="text-5xl md:text-6xl font-display font-bold text-white mb-6">
