@@ -18,6 +18,7 @@ import elizebethFriedmanImg from "@assets/elizebeth_friedman_wiki.jpg";
 import claudetteColvinImg from "@assets/claudette_colvin_wiki.jpg";
 import audreLordeImg from "@assets/audre_lorde_large.jpg";
 import templeGrandinImg from "@assets/temple_grandin.jpg";
+import esgEcosystemDiagram from "@assets/Gemini_Generated_Image_s188eos188eos188_1767531304724.png";
 
 const councilAgents = [
   {
@@ -719,6 +720,19 @@ export default function ESGCompliancePage() {
             <p className="text-gray-400 max-w-2xl mx-auto">
               Three integrated products working together for complete governance intelligence
             </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-12"
+          >
+            <img 
+              src={esgEcosystemDiagram} 
+              alt="ESG Compliance Ecosystem - Brain (Governance Simulation), Voice (Employee Reporting), Eyes (Executive Dashboard)" 
+              className="w-full max-w-4xl mx-auto rounded-xl shadow-2xl shadow-green-500/10"
+            />
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-12">
