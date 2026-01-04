@@ -13,6 +13,9 @@ import Demo from "@/pages/demo";
 import Simulation from "@/pages/simulation";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
+import Cookies from "@/pages/cookies";
+import DPA from "@/pages/dpa";
+import { CookieBanner } from "@/components/cookie-banner";
 
 function Router() {
   return (
@@ -25,6 +28,8 @@ function Router() {
       <Route path="/simulation" component={Simulation} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/cookies" component={Cookies} />
+      <Route path="/dpa" component={DPA} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -37,6 +42,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <CookieBanner />
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
