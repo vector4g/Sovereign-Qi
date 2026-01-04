@@ -249,52 +249,37 @@ export default function SafetyIntelligence() {
       </section>
 
       {/* Problem Statement */}
-      <section className="relative py-20 px-6 overflow-hidden">
+      <section className="relative py-24 px-6 overflow-hidden min-h-[500px] flex items-center">
         <div className="absolute inset-0 z-0">
           <img 
             src={dangerStatsBg} 
-            alt="Danger statistics background" 
-            className="w-full h-full object-cover opacity-40"
+            alt="71 countries criminalize LGBTQ+ relationships, 15 have death penalty, $12M average lawsuit cost" 
+            className="w-full h-full object-cover object-center opacity-70"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/90" />
         </div>
         
-        <div className="relative z-10 max-w-5xl mx-auto">
+        <div className="relative z-10 max-w-5xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white drop-shadow-lg">
               Your Employees Are Traveling Into the Unknown
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {dangerStats.map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-panel rounded-xl p-8 border border-red-500/30 text-center backdrop-blur-md bg-black/40"
-              >
-                <p className={`text-5xl font-bold ${stat.color} drop-shadow-lg`}>{stat.number}</p>
-                <p className="text-gray-400 text-sm uppercase tracking-wider mt-1">{stat.label}</p>
-                <p className="text-white mt-3 font-medium">{stat.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+          <div className="h-48 md:h-64" />
 
           <motion.blockquote
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="glass-panel rounded-xl p-8 border border-red-500/20 text-center backdrop-blur-md bg-black/30"
+            className="glass-panel rounded-xl p-6 md:p-8 border border-red-500/20 text-center backdrop-blur-md bg-black/50 max-w-3xl mx-auto"
           >
-            <p className="text-xl text-gray-200 italic mb-4">
+            <p className="text-lg md:text-xl text-gray-200 italic mb-3">
               "We sent our employee to Uganda for a conference. Two weeks later, he was arrested. We had no idea."
             </p>
             <cite className="text-red-400 text-sm font-medium">— Fortune 500 HR Director, 2024</cite>
