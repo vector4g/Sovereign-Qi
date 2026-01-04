@@ -249,42 +249,37 @@ export default function SafetyIntelligence() {
       </section>
 
       {/* Problem Statement */}
-      <section className="relative py-24 px-6 overflow-hidden min-h-[500px] flex items-center">
-        <div className="absolute inset-0 z-0">
+      <section className="relative py-16 px-6 overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-8"
+        >
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-white">
+            Your Employees Are Traveling Into the Unknown
+          </h2>
+        </motion.div>
+
+        <div className="max-w-6xl mx-auto mb-8">
           <img 
             src={dangerStatsBg} 
             alt="71 countries criminalize LGBTQ+ relationships, 15 have death penalty, $12M average lawsuit cost" 
-            className="w-full h-full object-cover object-center opacity-70"
+            className="w-full h-auto rounded-xl shadow-2xl shadow-red-500/20"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-transparent to-background/90" />
         </div>
-        
-        <div className="relative z-10 max-w-5xl mx-auto w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-8"
-          >
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-white drop-shadow-lg">
-              Your Employees Are Traveling Into the Unknown
-            </h2>
-          </motion.div>
 
-          <div className="h-48 md:h-64" />
-
-          <motion.blockquote
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="glass-panel rounded-xl p-6 md:p-8 border border-red-500/20 text-center backdrop-blur-md bg-black/50 max-w-3xl mx-auto"
-          >
-            <p className="text-lg md:text-xl text-gray-200 italic mb-3">
-              "We sent our employee to Uganda for a conference. Two weeks later, he was arrested. We had no idea."
-            </p>
-            <cite className="text-red-400 text-sm font-medium">— Fortune 500 HR Director, 2024</cite>
-          </motion.blockquote>
-        </div>
+        <motion.blockquote
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="glass-panel rounded-xl p-6 md:p-8 border border-red-500/20 text-center max-w-3xl mx-auto"
+        >
+          <p className="text-lg md:text-xl text-gray-200 italic mb-3">
+            "We sent our employee to Uganda for a conference. Two weeks later, he was arrested. We had no idea."
+          </p>
+          <cite className="text-red-400 text-sm font-medium">— Fortune 500 HR Director, 2024</cite>
+        </motion.blockquote>
       </section>
 
       {/* How It Works */}
