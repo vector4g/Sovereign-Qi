@@ -725,8 +725,8 @@ export default function Home() {
                 <a href="https://vectorforgood.com/contact" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact</a>
               </div>
               <div className="flex gap-4 text-xs">
-                <a href="https://vectorforgood.com/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy</a>
-                <a href="https://vectorforgood.com/terms" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms</a>
+                <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+                <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
               </div>
             </div>
           </div>

@@ -11,6 +11,8 @@ import Login from "@/pages/login";
 import Council from "@/pages/council";
 import Demo from "@/pages/demo";
 import Simulation from "@/pages/simulation";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
 
 function Router() {
   return (
@@ -21,6 +23,8 @@ function Router() {
       <Route path="/council" component={Council} />
       <Route path="/demo" component={Demo} />
       <Route path="/simulation" component={Simulation} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route component={NotFound} />
     </Switch>
   );
