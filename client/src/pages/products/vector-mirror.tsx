@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import mirrorDashboard from "@assets/Gemini_Generated_Image_frx3uufrx3uufrx3_1767531909471.png";
 import ecosystemCycle from "@assets/Gemini_Generated_Image_yqbtsjyqbtsjyqbt_1767532163545.png";
+import esgReportMockup from "@assets/generated_images/esg_compliance_report_mockup.png";
 
 const dashboardSections = [
   { icon: Cpu, title: "Sovereign QI Data", desc: "Live feed of governance simulation results and Council deliberations", color: "purple" },
@@ -412,6 +413,87 @@ export default function VectorMirrorPage() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Sample Deliverable */}
+      <section className="py-16 px-6 border-t border-white/5 bg-gradient-to-b from-cyan-950/5 to-transparent">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="text-xs font-mono text-cyan-400 mb-2">AUTOMATED DELIVERABLE</div>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
+              Board-Ready ESG Compliance Reports
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              One-click generation of comprehensive compliance documentation combining data from all three Vector products.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <img 
+              src={esgReportMockup} 
+              alt="ESG Compliance Report Q4 2025 - Multi-page corporate report showing Executive Summary with 94/100 ESG score, 8-Agent Council Deliberation documentation, Vector Shield reporting trends, Gap Analysis, and Investor Metrics" 
+              className="w-full rounded-2xl shadow-2xl shadow-cyan-500/10 border border-cyan-500/20"
+              data-testid="img-esg-report-mockup"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl pointer-events-none" />
+            <div className="absolute bottom-6 left-6 right-6 flex flex-wrap gap-3 justify-center">
+              <div className="px-3 py-1.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-300 text-xs font-medium backdrop-blur-sm">
+                Court-Ready Documentation
+              </div>
+              <div className="px-3 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-medium backdrop-blur-sm">
+                Audit-Ready Evidence
+              </div>
+              <div className="px-3 py-1.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-medium backdrop-blur-sm">
+                Investor-Ready Metrics
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-8 grid md:grid-cols-5 gap-4"
+          >
+            {[
+              { pages: "1", title: "Cover", desc: "Company branding + compliance badges" },
+              { pages: "2-3", title: "Executive Summary", desc: "ESG score, key metrics, board highlights" },
+              { pages: "4-5", title: "Governance", desc: "8-Agent Council deliberations + VETO log" },
+              { pages: "6-7", title: "Employee Voice", desc: "Shield trends, satisfaction, anonymous quotes" },
+              { pages: "8-10", title: "Analysis", desc: "Gap analysis, recommendations, investor metrics" },
+            ].map((section, i) => (
+              <div key={i} className="glass-panel rounded-lg p-4 border border-white/10 text-center">
+                <div className="text-xs text-cyan-400 font-mono mb-1">Pages {section.pages}</div>
+                <div className="text-sm font-bold text-white mb-1">{section.title}</div>
+                <div className="text-xs text-gray-500">{section.desc}</div>
+              </div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 text-center"
+          >
+            <Button className="bg-cyan-600 hover:bg-cyan-700 text-white" data-testid="button-download-sample-report">
+              <Download className="w-4 h-4 mr-2" />
+              Download Sample Report
+            </Button>
+          </motion.div>
         </div>
       </section>
 
